@@ -1,0 +1,154 @@
+body {
+  font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+canvas {
+  height: 300px;
+}
+
+table {
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.gf-b--dark1,
+.dataTable td {
+  border: 1px solid DarkGreen;
+}
+
+.gf-b--light2,
+.dataTable th {
+  border: 1px solid LightYellow;
+}
+
+.gf-bg-light1 {
+  background: #e0ffe0;
+}
+
+.gf-bg-medium1 {
+  background: LimeGreen;
+}
+
+.gf-bg-dark1,
+.dataTable th {
+  background: DarkGreen;
+}
+
+.gf-bg-light2 {
+  background: LightYellow;
+}
+
+.gf-bg-medium2 {
+  background: Yellow;
+}
+
+.gf-bg-dark2 {
+  background: Olive;
+}
+
+.gf-light1 {
+  color: #e0ffe0;
+}
+
+.gf-medium1 {
+  color: LimeGreen;
+}
+
+.gf-dark1 {
+  color: DarkGreen;
+}
+
+.gf-light2,
+.dataTable th {
+  color: LightYellow;
+}
+
+.gf-medium2 {
+  color: Yellow;
+}
+
+.gf-dark2 {
+  color: Olive;
+}
+
+.gf-f-entity {
+  font-size: x-small;
+}
+
+.gf-h-entity {
+  height: 180px;
+}
+
+.dataTable tbody tr:nth-child(2n) td {
+  background: #e0ffe0;
+}
+
+.dataTable tbody tr:nth-child(2n + 1) td {
+  background: White;
+}
+
+#ALIGN_LEFT,
+.progressTextCell,
+.rowCount,
+.textCell,
+.alignLeft {
+  text-align: left;
+}
+
+#ALIGN_MIDDLE,
+#bgg_cornerlogo,
+.imageBlock,
+.alignMiddle {
+  vertical-align: middle;
+}
+
+#ALIGN_RIGHT,
+.numberCell,
+.progressNumberCell,
+.alignRight {
+  text-align: right;
+}
+
+#DISPLAY_INLINE_BLOCK,
+.textImageLink,
+.displayInlineBlock {
+  display: inline-block;
+}
+
+#FLOAT_RIGHT,
+.imageBlock,
+.floatRight {
+  float: right;
+}
+
+#FONT_SMALL,
+.dataTable,
+.rowCount,
+.fontSmall {
+  font-size: small;
+}
+
+#PADDING_LR3,
+.progressUI td,
+.paddingLR3 {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+#PADDING_TOP_10,
+.rowCount,
+.paddingTop10 {
+  padding-top: 10px;
+}
+
+#WIDTH_60,
+.filterField,
+.width60 {
+  width: 60px;
+}
+
+#WIDTH_FULL,
+.textImageLink,
+.widthFull {
+  width: 100%;
+}
