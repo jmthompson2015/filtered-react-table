@@ -1,13 +1,7 @@
-/* eslint no-console: ["error", { allow: ["log"] }] */
-
-import ActionCreator from "../../state/ActionCreator.js";
-import Reducer from "../../state/Reducer.js";
-
-import DataTableContainer from "../../container/DataTableContainer.js";
-import FilterContainer from "../../container/FilterContainer.js";
-
 import TableRows from "./TableRows.js";
 import TableColumns from "./TableColumns.js";
+
+const { ActionCreator, DataTableContainer, FilterContainer, Reducer } = FilteredReactTable;
 
 const store = Redux.createStore(Reducer.root);
 store.dispatch(ActionCreator.setTableColumns(TableColumns));
