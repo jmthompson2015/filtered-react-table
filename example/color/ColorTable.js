@@ -1,17 +1,10 @@
-import TableRows from "./TableRows.js";
 import TableColumns from "./TableColumns.js";
+import TableRows from "./TableRows.js";
 
-const { ActionCreator, DataTableContainer, FilterContainer, Reducer } = FilteredReactTable;
+const frt = new FilteredReactTable(TableColumns, TableRows);
 
-const store = Redux.createStore(Reducer.root);
-store.dispatch(ActionCreator.setTableColumns(TableColumns));
-store.dispatch(ActionCreator.setTableRows(TableRows));
-store.dispatch(ActionCreator.setDefaultFilters());
+const filter = frt.filterElement();
+ReactDOM.render(filter, document.getElementById("filter"));
 
-const container0 = React.createElement(FilterContainer);
-const element0 = React.createElement(ReactRedux.Provider, { store }, container0);
-ReactDOM.render(element0, document.getElementById("filter"));
-
-const container1 = React.createElement(DataTableContainer);
-const element1 = React.createElement(ReactRedux.Provider, { store }, container1);
-ReactDOM.render(element1, document.getElementById("table"));
+const table = frt.tableElement();
+ReactDOM.render(table, document.getElementById("table"));

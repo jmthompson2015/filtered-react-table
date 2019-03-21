@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.FilteredReactTable = {}));
-}(this, function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.FilteredReactTable = factory());
+}(this, function () { 'use strict';
 
   const ActionType = {};
 
@@ -977,11 +977,40 @@
     mapDispatchToProps
   )(FilterUI);
 
-  exports.ActionCreator = ActionCreator;
-  exports.DataTableContainer = DataTableContainer;
-  exports.FilterContainer = FilterContainer;
-  exports.Reducer = Reducer;
+  const verifyParameter = (name, value) => {
+    if (value === undefined) {
+      throw new Error(`Undefined parameter: ${name}`);
+    }
+    if (!Array.isArray(value)) {
+      throw new Error(`Parameter not an array: ${name}`);
+    }
+  };
 
-  Object.defineProperty(exports, '__esModule', { value: true });
+  class FilteredReactTable {
+    constructor(tableColumns, tableRows) {
+      verifyParameter("tableColumns", tableColumns);
+      verifyParameter("tableRows", tableRows);
+
+      this.store = Redux.createStore(Reducer.root);
+
+      this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
+      this.store.dispatch(ActionCreator.setTableRows(tableRows));
+      this.store.dispatch(ActionCreator.setDefaultFilters());
+    }
+
+    filterElement() {
+      const container = React.createElement(FilterContainer);
+
+      return React.createElement(ReactRedux.Provider, { store: this.store }, container);
+    }
+
+    tableElement() {
+      const container = React.createElement(DataTableContainer);
+
+      return React.createElement(ReactRedux.Provider, { store: this.store }, container);
+    }
+  }
+
+  return FilteredReactTable;
 
 }));

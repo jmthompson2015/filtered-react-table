@@ -1,5 +1,5 @@
 export default {
-  input: "rollup-main.js",
+  input: "FilteredReactTable.js",
   output: {
     file: "./dist/filtered-react-table.js",
     format: "umd",
