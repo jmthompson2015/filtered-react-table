@@ -1,10 +1,25 @@
+import BFO from "./BooleanFilterOperator.js";
 import Filter from "./Filter.js";
 import NFO from "./NumberFilterOperator.js";
 import SFO from "./StringFilterOperator.js";
 
 QUnit.module("Filter");
 
-QUnit.test("create() create", assert => {
+QUnit.test("create() boolean", assert => {
+  // Setup.
+  const columnKey = "red";
+  const operatorKey = BFO.IS_TRUE;
+
+  // Run.
+  const result = Filter.create({ columnKey, operatorKey });
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.columnKey, columnKey);
+  assert.equal(result.operatorKey, operatorKey);
+});
+
+QUnit.test("create() number", assert => {
   // Setup.
   const columnKey = "red";
   const operatorKey = NFO.IS_GREATER_THAN;
@@ -34,6 +49,21 @@ QUnit.test("create() string", assert => {
   assert.equal(result.columnKey, columnKey);
   assert.equal(result.operatorKey, operatorKey);
   assert.equal(result.rhs, rhs);
+});
+
+QUnit.test("isBooleanFilter()", assert => {
+  // Setup.
+  const columnKey = "name";
+
+  // Run / Verify.
+  assert.equal(
+    Filter.isBooleanFilter(Filter.create({ columnKey, operatorKey: BFO.IS_TRUE })),
+    true
+  );
+  assert.equal(
+    Filter.isBooleanFilter(Filter.create({ columnKey, operatorKey: BFO.IS_FALSE })),
+    true
+  );
 });
 
 QUnit.test("isNumberFilter()", assert => {
@@ -114,6 +144,21 @@ QUnit.test("isStringFilter() undefined", assert => {
   assert.equal(result, false);
 });
 
+QUnit.test("passes() boolean", assert => {
+  // Setup.
+  const columnKey = "liked";
+  const operatorKey = BFO.IS_TRUE;
+  const filter1 = Filter.create({ columnKey, operatorKey });
+  const filter2 = Filter.create({ columnKey: "bogus", operatorKey });
+  const filter3 = Filter.create({ columnKey, operatorKey: BFO.IS_FALSE });
+  const data = { liked: true };
+
+  // Run / Verify.
+  assert.equal(Filter.passes(filter1, data), true, "filter1");
+  assert.equal(Filter.passes(filter2, data), false, "filter2");
+  assert.equal(Filter.passes(filter3, data), false, "filter3");
+});
+
 QUnit.test("passes() number", assert => {
   // Setup.
   const columnKey = "red";
@@ -133,7 +178,7 @@ QUnit.test("passes() number", assert => {
 
   // Run / Verify.
   assert.equal(Filter.passes(filter1, data), true, "filter1");
-  assert.equal(Filter.passes(filter2, data), true, "filter2");
+  assert.equal(Filter.passes(filter2, data), false, "filter2");
   assert.equal(Filter.passes(filter3, data), false, "filter3");
   assert.equal(Filter.passes(filter4, data), true, "filter4");
   assert.equal(Filter.passes(filter5, data), true, "filter5");
@@ -152,7 +197,7 @@ QUnit.test("passes() string", assert => {
 
   // Run / Verify.
   assert.equal(Filter.passes(filter1, data), true, "filter1");
-  assert.equal(Filter.passes(filter2, data), true, "filter2");
+  assert.equal(Filter.passes(filter2, data), false, "filter2");
   assert.equal(Filter.passes(filter3, data), false, "filter3");
   assert.equal(Filter.passes(filter4, data), true, "filter4");
 });
@@ -181,6 +226,20 @@ QUnit.test("passesAll()", assert => {
   assert.equal(Filter.passesAll(filters, data4), true);
   assert.equal(Filter.passesAll(filters, data5), true);
   assert.equal(Filter.passesAll(filters, data6), false);
+});
+
+QUnit.test("toString() boolean", assert => {
+  // Setup.
+  const columnKey = "liked";
+  const operatorKey = BFO.IS_TRUE;
+  const filter = Filter.create({ columnKey, operatorKey });
+
+  // Run.
+  const result = Filter.toString(filter);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, "Filter (liked is true)");
 });
 
 QUnit.test("toString() number", assert => {

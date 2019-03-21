@@ -24,6 +24,11 @@ const TableColumns = [
     key: "blue",
     label: "Blue",
     type: "number"
+  },
+  {
+    key: "liked",
+    label: "Liked",
+    type: "boolean"
   }
 ];
 

@@ -11,7 +11,8 @@ const TableRows = [
     red: 0,
     green: 255,
     blue: 0,
-    category: "primary"
+    category: "primary",
+    liked: true
   },
   {
     name: "Blue",
@@ -60,14 +61,16 @@ const TableRows = [
     red: 127,
     green: 255,
     blue: 0,
-    category: "tertiary"
+    category: "tertiary",
+    liked: true
   },
   {
     name: "Spring Green",
     red: 0,
     green: 255,
     blue: 127,
-    category: "tertiary"
+    category: "tertiary",
+    liked: true
   },
   {
     name: "Violet",

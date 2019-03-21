@@ -40,6 +40,11 @@ const TableColumns = [
     label: "Category",
     className: "tl",
     convertFunction: row => (row.category ? firstCharUpper(row.category) : undefined)
+  },
+  {
+    key: "liked",
+    label: "Liked",
+    type: "boolean"
   }
 ];
 

@@ -27,6 +27,7 @@ QUnit.test("compareFunction() CONTAINS", assert => {
   assert.equal(operator.compareFunction("test", "st"), true);
   assert.equal(operator.compareFunction("test", "test"), true);
   assert.equal(operator.compareFunction("test", "vi"), false);
+  assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
 QUnit.test("compareFunction() DOES_NOT_CONTAIN", assert => {
@@ -38,6 +39,7 @@ QUnit.test("compareFunction() DOES_NOT_CONTAIN", assert => {
   assert.equal(operator.compareFunction("test", "st"), false);
   assert.equal(operator.compareFunction("test", "test"), false);
   assert.equal(operator.compareFunction("test", "vi"), true);
+  assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
 QUnit.test("compareFunction() IS", assert => {
@@ -49,6 +51,7 @@ QUnit.test("compareFunction() IS", assert => {
   assert.equal(operator.compareFunction("store", "test"), false);
   assert.equal(operator.compareFunction("test", "test"), true);
   assert.equal(operator.compareFunction("test", "violet"), false);
+  assert.equal(operator.compareFunction(undefined, "violet"), false);
 });
 
 QUnit.test("compareFunction() IS_NOT", assert => {
@@ -60,6 +63,7 @@ QUnit.test("compareFunction() IS_NOT", assert => {
   assert.equal(operator.compareFunction("store", "test"), true);
   assert.equal(operator.compareFunction("test", "test"), false);
   assert.equal(operator.compareFunction("test", "violet"), true);
+  assert.equal(operator.compareFunction(undefined, "violet"), true);
 });
 
 QUnit.test("compareFunction() BEGINS_WITH", assert => {
@@ -71,6 +75,7 @@ QUnit.test("compareFunction() BEGINS_WITH", assert => {
   assert.equal(operator.compareFunction("test", "st"), false);
   assert.equal(operator.compareFunction("test", "test"), true);
   assert.equal(operator.compareFunction("test", "vi"), false);
+  assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
 QUnit.test("compareFunction() ENDS_WITH", assert => {
@@ -82,6 +87,7 @@ QUnit.test("compareFunction() ENDS_WITH", assert => {
   assert.equal(operator.compareFunction("test", "st"), true);
   assert.equal(operator.compareFunction("test", "test"), true);
   assert.equal(operator.compareFunction("test", "vi"), false);
+  assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
 QUnit.test("keys and values", assert => {

@@ -1,9 +1,10 @@
+import BFO from "./BooleanFilterOperator.js";
 import NFO from "./NumberFilterOperator.js";
 import SFO from "./StringFilterOperator.js";
 
 const Filter = {};
 
-const operator = opKey => NFO.properties[opKey] || SFO.properties[opKey];
+const operator = opKey => BFO.properties[opKey] || NFO.properties[opKey] || SFO.properties[opKey];
 
 const compareFunction = opKey => operator(opKey).compareFunction;
 
@@ -15,6 +16,9 @@ Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) =>
     rhs2
   });
 
+Filter.isBooleanFilter = filter =>
+  filter !== undefined && Object.keys(BFO.properties).includes(filter.operatorKey);
+
 Filter.isNumberFilter = filter =>
   filter !== undefined && Object.keys(NFO.properties).includes(filter.operatorKey);
 
@@ -23,10 +27,9 @@ Filter.isStringFilter = filter =>
 
 Filter.passes = (filter, data) => {
   const value = data[filter.columnKey];
+  const compare = compareFunction(filter.operatorKey);
 
-  return value === undefined
-    ? true
-    : compareFunction(filter.operatorKey)(value, filter.rhs, filter.rhs2);
+  return compare(value, filter.rhs, filter.rhs2);
 };
 
 Filter.passesAll = (filters, data) => {
@@ -48,10 +51,18 @@ Filter.passesAll = (filters, data) => {
 };
 
 Filter.toString = filter => {
-  const rhs = Filter.isStringFilter(filter) ? `"${filter.rhs}"` : `${filter.rhs}`;
-  const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
+  const operatorLabel = operator(filter.operatorKey).label;
 
-  return `Filter (${filter.columnKey} ${operator(filter.operatorKey).label} ${rhs}${rhs2})`;
+  if (Filter.isBooleanFilter(filter)) {
+    return `Filter (${filter.columnKey} ${operatorLabel})`;
+  }
+
+  if (Filter.isStringFilter(filter)) {
+    return `Filter (${filter.columnKey} ${operatorLabel} "${filter.rhs}")`;
+  }
+
+  const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
+  return `Filter (${filter.columnKey} ${operatorLabel} ${filter.rhs}${rhs2})`;
 };
 
 Object.freeze(Filter);

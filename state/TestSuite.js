@@ -1,5 +1,6 @@
 import ActionCreatorTest from "./ActionCreator.test.js";
 import ActionTypeTest from "./ActionType.test.js";
+import BooleanFilterOperatorTest from "./BooleanFilterOperator.test.js";
 import FilterTest from "./Filter.test.js";
 import NumberFilterOperatorTest from "./NumberFilterOperator.test.js";
 import ReducerTest from "./Reducer.test.js";

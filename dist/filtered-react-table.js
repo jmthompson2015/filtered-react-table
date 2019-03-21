@@ -57,6 +57,26 @@
 
   Object.freeze(AppState);
 
+  const BooleanFilterOperator = {
+    IS_TRUE: "bfoIsTrue",
+    IS_FALSE: "bfoIsFalse"
+  };
+
+  BooleanFilterOperator.properties = {
+    bfoIsTrue: {
+      label: "is true",
+      compareFunction: lhs => lhs === true,
+      key: "bfoIsTrue"
+    },
+    bfoIsFalse: {
+      label: "is false",
+      compareFunction: lhs => lhs === false,
+      key: "bfoIsFalse"
+    }
+  };
+
+  Object.freeze(BooleanFilterOperator);
+
   const NumberFilterOperator = {
     IS: "nfoIs",
     IS_NOT: "nfoIsNot",
@@ -107,12 +127,12 @@
   StringFilterOperator.properties = {
     sfoContains: {
       label: "contains",
-      compareFunction: (lhs, rhs) => lhs.includes(rhs),
+      compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.includes(rhs)),
       key: "sfoContains"
     },
     sfoDoesNotContain: {
       label: "does not contain",
-      compareFunction: (lhs, rhs) => !lhs.includes(rhs),
+      compareFunction: (lhs, rhs) => (lhs === undefined ? false : !lhs.includes(rhs)),
       key: "sfoDoesNotContain"
     },
     sfoIs: {
@@ -127,12 +147,12 @@
     },
     sfoBeginsWith: {
       label: "begins with",
-      compareFunction: (lhs, rhs) => lhs.startsWith(rhs),
+      compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.startsWith(rhs)),
       key: "sfoBeginsWith"
     },
     sfoEndsWith: {
       label: "ends with",
-      compareFunction: (lhs, rhs) => lhs.endsWith(rhs),
+      compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.endsWith(rhs)),
       key: "sfoEndsWith"
     }
   };
@@ -141,7 +161,7 @@
 
   const Filter = {};
 
-  const operator = opKey => NumberFilterOperator.properties[opKey] || StringFilterOperator.properties[opKey];
+  const operator = opKey => BooleanFilterOperator.properties[opKey] || NumberFilterOperator.properties[opKey] || StringFilterOperator.properties[opKey];
 
   const compareFunction = opKey => operator(opKey).compareFunction;
 
@@ -153,6 +173,9 @@
       rhs2
     });
 
+  Filter.isBooleanFilter = filter =>
+    filter !== undefined && Object.keys(BooleanFilterOperator.properties).includes(filter.operatorKey);
+
   Filter.isNumberFilter = filter =>
     filter !== undefined && Object.keys(NumberFilterOperator.properties).includes(filter.operatorKey);
 
@@ -161,10 +184,11 @@
 
   Filter.passes = (filter, data) => {
     const value = data[filter.columnKey];
+    console.log(`Filter.passes() value = ${value}`);
+    const compare = compareFunction(filter.operatorKey);
+    console.log(`Filter.passes() compare = ${compare}`);
 
-    return value === undefined
-      ? true
-      : compareFunction(filter.operatorKey)(value, filter.rhs, filter.rhs2);
+    return compare(value, filter.rhs, filter.rhs2);
   };
 
   Filter.passesAll = (filters, data) => {
@@ -186,10 +210,18 @@
   };
 
   Filter.toString = filter => {
-    const rhs = Filter.isStringFilter(filter) ? `"${filter.rhs}"` : `${filter.rhs}`;
-    const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
+    const operatorLabel = operator(filter.operatorKey).label;
 
-    return `Filter (${filter.columnKey} ${operator(filter.operatorKey).label} ${rhs}${rhs2})`;
+    if (Filter.isBooleanFilter(filter)) {
+      return `Filter (${filter.columnKey} ${operatorLabel})`;
+    }
+
+    if (Filter.isStringFilter(filter)) {
+      return `Filter (${filter.columnKey} ${operatorLabel} "${filter.rhs}")`;
+    }
+
+    const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
+    return `Filter (${filter.columnKey} ${operatorLabel} ${filter.rhs}${rhs2})`;
   };
 
   Object.freeze(Filter);
@@ -597,18 +629,11 @@
     return TableColumnUtilities.tableColumn(tableColumns, columnKey);
   };
 
-  const operatorsFor = column => {
-    let answer;
+  const columnFromDocument = (tableColumns, index) => {
+    const element = document.getElementById(`columnSelect${index}`);
+    const columnKey = element.value;
 
-    switch (column.type) {
-      case "number":
-        answer = NumberFilterOperator;
-        break;
-      default:
-        answer = StringFilterOperator;
-    }
-
-    return EnumUtilities.values(answer);
+    return TableColumnUtilities.tableColumn(tableColumns, columnKey);
   };
 
   const createAddButton = handleOnClick => ReactDOMFactories.button({ onClick: handleOnClick }, "+");
@@ -620,6 +645,23 @@
       initialValue: column.key,
       onChange: handleChange
     });
+
+  const operatorsFor = column => {
+    let answer;
+
+    switch (column.type) {
+      case "boolean":
+        answer = BooleanFilterOperator;
+        break;
+      case "number":
+        answer = NumberFilterOperator;
+        break;
+      default:
+        answer = StringFilterOperator;
+    }
+
+    return EnumUtilities.values(answer);
+  };
 
   const createOperatorSelect = (filter, index, column, handleChange) => {
     const operators = operatorsFor(column);
@@ -634,6 +676,10 @@
 
   const createFilterUI = (filter, index, column, handleChange) => {
     const idKey = `rhsField${index}`;
+
+    if (column.type === "boolean") {
+      return ReactUtilities.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+    }
 
     if (column.type === "number") {
       if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
@@ -685,6 +731,27 @@
   const createRemoveButton = (isRemoveHidden, handleOnClick) =>
     ReactDOMFactories.button({ hidden: isRemoveHidden, onClick: handleOnClick }, "-");
 
+  const operatorKeyFromDocument = (column, index) => {
+    const element = document.getElementById(`operatorSelect${index}`);
+    const operatorKey = element.value;
+    const operators = operatorsFor(column);
+    const operatorKeys = R.map(op => op.key, operators);
+
+    return operatorKeys.includes(operatorKey) ? operatorKey : operators[0].key;
+  };
+
+  const rhsFromDocument = index => {
+    const element = document.getElementById(`rhsField${index}`);
+
+    return element ? element.value : undefined;
+  };
+
+  const rhs2FromDocument = index => {
+    const element = document.getElementById(`rhs2Field${index}`);
+
+    return element ? element.value : undefined;
+  };
+
   class FilterRow extends React.Component {
     constructor(props) {
       super(props);
@@ -701,35 +768,34 @@
 
     handleChangeFunction() {
       const { index, onChange, tableColumns } = this.props;
-      const columnKey = document.getElementById(`columnSelect${index}`).value;
-      const operatorKey = document.getElementById(`operatorSelect${index}`).value;
-      const rhs = document.getElementById(`rhsField${index}`).value;
-
-      let rhs2;
-      const rhs2Element = document.getElementById(`rhs2Field${index}`);
-
-      if (rhs2Element) {
-        rhs2 = rhs2Element.value;
-      }
+      const column = columnFromDocument(tableColumns, index);
+      const operatorKey = operatorKeyFromDocument(column, index);
+      const rhs = rhsFromDocument(index);
+      const rhs2 = rhs2FromDocument(index);
 
       let newFilter;
-      const column = TableColumnUtilities.tableColumn(tableColumns, columnKey);
 
-      if (column.type === "number") {
+      if (column.type === "boolean") {
         newFilter = Filter.create({
-          columnKey,
+          columnKey: column.key,
+          operatorKey
+        });
+      } else if (column.type === "number") {
+        newFilter = Filter.create({
+          columnKey: column.key,
           operatorKey,
-          rhs: parseInt(rhs, 10),
+          rhs: rhs ? parseInt(rhs, 10) : undefined,
           rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
         });
       } else {
         newFilter = Filter.create({
-          columnKey,
+          columnKey: column.key,
           operatorKey,
           rhs
         });
       }
 
+      // console.log(`FilterRow.handleChange() newFilter = ${JSON.stringify(newFilter)}`);
       onChange(newFilter, index);
     }
 
@@ -835,6 +901,12 @@
             operatorKey: firstOpKey,
             rhs: ""
           });
+        } else if (firstColumn.type === "boolean") {
+          const firstOpKey = Object.keys(BooleanFilterOperator.properties)[0];
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: firstOpKey
+          });
         } else if (firstColumn.type === "number") {
           const firstOpKey = Object.keys(NumberFilterOperator.properties)[0];
           newFilter = Filter.create({
@@ -871,7 +943,13 @@
       const firstColumn = tableColumns[0];
       let newFilter;
 
-      if (firstColumn.type === "number") {
+      if (firstColumn.type === "boolean") {
+        const firstOperatorKey = Object.keys(BooleanFilterOperator.properties)[0];
+        newFilter = Filter.create({
+          columnKey: firstColumn.key,
+          operatorKey: firstOperatorKey
+        });
+      } else if (firstColumn.type === "number") {
         const firstOperatorKey = Object.keys(NumberFilterOperator.properties)[0];
         newFilter = Filter.create({
           columnKey: firstColumn.key,

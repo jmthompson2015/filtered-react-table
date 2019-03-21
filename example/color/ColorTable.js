@@ -1,3 +1,4 @@
+import FilteredReactTable from "../../FilteredReactTable.js";
 import TableColumns from "./TableColumns.js";
 import TableRows from "./TableRows.js";
 

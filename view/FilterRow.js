@@ -1,3 +1,4 @@
+import BFO from "../state/BooleanFilterOperator.js";
 import EU from "../state/EnumUtilities.js";
 import Filter from "../state/Filter.js";
 import NFO from "../state/NumberFilterOperator.js";
@@ -16,18 +17,11 @@ const columnFor = (tableColumns, filter) => {
   return TCU.tableColumn(tableColumns, columnKey);
 };
 
-const operatorsFor = column => {
-  let answer;
+const columnFromDocument = (tableColumns, index) => {
+  const element = document.getElementById(`columnSelect${index}`);
+  const columnKey = element.value;
 
-  switch (column.type) {
-    case "number":
-      answer = NFO;
-      break;
-    default:
-      answer = SFO;
-  }
-
-  return EU.values(answer);
+  return TCU.tableColumn(tableColumns, columnKey);
 };
 
 const createAddButton = handleOnClick => ReactDOMFactories.button({ onClick: handleOnClick }, "+");
@@ -39,6 +33,23 @@ const createColumnSelect = (tableColumns, filter, index, column, handleChange) =
     initialValue: column.key,
     onChange: handleChange
   });
+
+const operatorsFor = column => {
+  let answer;
+
+  switch (column.type) {
+    case "boolean":
+      answer = BFO;
+      break;
+    case "number":
+      answer = NFO;
+      break;
+    default:
+      answer = SFO;
+  }
+
+  return EU.values(answer);
+};
 
 const createOperatorSelect = (filter, index, column, handleChange) => {
   const operators = operatorsFor(column);
@@ -53,6 +64,10 @@ const createOperatorSelect = (filter, index, column, handleChange) => {
 
 const createFilterUI = (filter, index, column, handleChange) => {
   const idKey = `rhsField${index}`;
+
+  if (column.type === "boolean") {
+    return ReactUtils.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+  }
 
   if (column.type === "number") {
     if (filter.operatorKey === NFO.IS_IN_THE_RANGE) {
@@ -104,6 +119,27 @@ const createFilterUI = (filter, index, column, handleChange) => {
 const createRemoveButton = (isRemoveHidden, handleOnClick) =>
   ReactDOMFactories.button({ hidden: isRemoveHidden, onClick: handleOnClick }, "-");
 
+const operatorKeyFromDocument = (column, index) => {
+  const element = document.getElementById(`operatorSelect${index}`);
+  const operatorKey = element.value;
+  const operators = operatorsFor(column);
+  const operatorKeys = R.map(op => op.key, operators);
+
+  return operatorKeys.includes(operatorKey) ? operatorKey : operators[0].key;
+};
+
+const rhsFromDocument = index => {
+  const element = document.getElementById(`rhsField${index}`);
+
+  return element ? element.value : undefined;
+};
+
+const rhs2FromDocument = index => {
+  const element = document.getElementById(`rhs2Field${index}`);
+
+  return element ? element.value : undefined;
+};
+
 class FilterRow extends React.Component {
   constructor(props) {
     super(props);
@@ -120,35 +156,34 @@ class FilterRow extends React.Component {
 
   handleChangeFunction() {
     const { index, onChange, tableColumns } = this.props;
-    const columnKey = document.getElementById(`columnSelect${index}`).value;
-    const operatorKey = document.getElementById(`operatorSelect${index}`).value;
-    const rhs = document.getElementById(`rhsField${index}`).value;
-
-    let rhs2;
-    const rhs2Element = document.getElementById(`rhs2Field${index}`);
-
-    if (rhs2Element) {
-      rhs2 = rhs2Element.value;
-    }
+    const column = columnFromDocument(tableColumns, index);
+    const operatorKey = operatorKeyFromDocument(column, index);
+    const rhs = rhsFromDocument(index);
+    const rhs2 = rhs2FromDocument(index);
 
     let newFilter;
-    const column = TCU.tableColumn(tableColumns, columnKey);
 
-    if (column.type === "number") {
+    if (column.type === "boolean") {
       newFilter = Filter.create({
-        columnKey,
+        columnKey: column.key,
+        operatorKey
+      });
+    } else if (column.type === "number") {
+      newFilter = Filter.create({
+        columnKey: column.key,
         operatorKey,
-        rhs: parseInt(rhs, 10),
+        rhs: rhs ? parseInt(rhs, 10) : undefined,
         rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
       });
     } else {
       newFilter = Filter.create({
-        columnKey,
+        columnKey: column.key,
         operatorKey,
         rhs
       });
     }
 
+    // console.log(`FilterRow.handleChange() newFilter = ${JSON.stringify(newFilter)}`);
     onChange(newFilter, index);
   }
 

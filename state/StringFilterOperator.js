@@ -10,12 +10,12 @@ const StringFilterOperator = {
 StringFilterOperator.properties = {
   sfoContains: {
     label: "contains",
-    compareFunction: (lhs, rhs) => lhs.includes(rhs),
+    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.includes(rhs)),
     key: "sfoContains"
   },
   sfoDoesNotContain: {
     label: "does not contain",
-    compareFunction: (lhs, rhs) => !lhs.includes(rhs),
+    compareFunction: (lhs, rhs) => (lhs === undefined ? false : !lhs.includes(rhs)),
     key: "sfoDoesNotContain"
   },
   sfoIs: {
@@ -30,12 +30,12 @@ StringFilterOperator.properties = {
   },
   sfoBeginsWith: {
     label: "begins with",
-    compareFunction: (lhs, rhs) => lhs.startsWith(rhs),
+    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.startsWith(rhs)),
     key: "sfoBeginsWith"
   },
   sfoEndsWith: {
     label: "ends with",
-    compareFunction: (lhs, rhs) => lhs.endsWith(rhs),
+    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.endsWith(rhs)),
     key: "sfoEndsWith"
   }
 };

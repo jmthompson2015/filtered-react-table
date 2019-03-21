@@ -1,3 +1,4 @@
+import BFO from "../state/BooleanFilterOperator.js";
 import Filter from "../state/Filter.js";
 import NFO from "../state/NumberFilterOperator.js";
 import SFO from "../state/StringFilterOperator.js";
@@ -56,6 +57,12 @@ class FilterUI extends React.Component {
           operatorKey: firstOpKey,
           rhs: ""
         });
+      } else if (firstColumn.type === "boolean") {
+        const firstOpKey = Object.keys(BFO.properties)[0];
+        newFilter = Filter.create({
+          columnKey: firstColumn.key,
+          operatorKey: firstOpKey
+        });
       } else if (firstColumn.type === "number") {
         const firstOpKey = Object.keys(NFO.properties)[0];
         newFilter = Filter.create({
@@ -92,7 +99,13 @@ class FilterUI extends React.Component {
     const firstColumn = tableColumns[0];
     let newFilter;
 
-    if (firstColumn.type === "number") {
+    if (firstColumn.type === "boolean") {
+      const firstOperatorKey = Object.keys(BFO.properties)[0];
+      newFilter = Filter.create({
+        columnKey: firstColumn.key,
+        operatorKey: firstOperatorKey
+      });
+    } else if (firstColumn.type === "number") {
       const firstOperatorKey = Object.keys(NFO.properties)[0];
       newFilter = Filter.create({
         columnKey: firstColumn.key,
