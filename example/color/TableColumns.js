@@ -1,5 +1,7 @@
 import ColorSwatch from "./ColorSwatch.js";
 
+const firstCharUpper = string => string.charAt(0).toUpperCase() + string.substring(1);
+
 const TableColumns = [
   {
     key: "swatch",
@@ -36,7 +38,8 @@ const TableColumns = [
   {
     key: "category",
     label: "Category",
-    className: "tl"
+    className: "tl",
+    convertFunction: row => (row.category ? firstCharUpper(row.category) : undefined)
   }
 ];
 

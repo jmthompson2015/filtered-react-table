@@ -345,7 +345,7 @@
   const filterTableColumns = tableColumns => {
     const reduceFunction1 = (accum1, column) => {
       const reduceFunction0 = (accum0, key) => {
-        if (["cellFunction", "defaultFilter"].includes(key)) {
+        if (["cellFunction", "convertFunction", "defaultFilter"].includes(key)) {
           return accum0;
         }
         const value = column[key];
@@ -977,10 +977,33 @@
     mapDispatchToProps
   )(FilterUI);
 
+  const convert = (tableColumns, tableRows) => {
+    const mapFunction = row => {
+      const reduceFunction = (accum, column) => {
+        const value = column.convertFunction ? column.convertFunction(row) : row[column.key];
+
+        return R.assoc(column.key, value, accum);
+      };
+
+      return R.reduce(reduceFunction, {}, tableColumns);
+    };
+
+    return R.map(mapFunction, tableRows);
+  };
+
+  const hasConvertFunctions = tableColumns => {
+    const reduceFunction = (accum, column) =>
+      column.convertFunction ? R.append(column.convertFunction, accum) : accum;
+    const convertFunctions = R.reduce(reduceFunction, [], tableColumns);
+
+    return convertFunctions.length > 0;
+  };
+
   const verifyParameter = (name, value) => {
     if (value === undefined) {
       throw new Error(`Undefined parameter: ${name}`);
     }
+
     if (!Array.isArray(value)) {
       throw new Error(`Parameter not an array: ${name}`);
     }
@@ -991,10 +1014,14 @@
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
 
+      const tableRows2 = hasConvertFunctions(tableColumns)
+        ? convert(tableColumns, tableRows)
+        : tableRows;
+
       this.store = Redux.createStore(Reducer.root);
 
       this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
-      this.store.dispatch(ActionCreator.setTableRows(tableRows));
+      this.store.dispatch(ActionCreator.setTableRows(tableRows2));
       this.store.dispatch(ActionCreator.setDefaultFilters());
     }
 

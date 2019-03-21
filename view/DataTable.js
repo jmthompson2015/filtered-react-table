@@ -9,7 +9,7 @@ const determineValue = (column, row) =>
 const filterTableColumns = tableColumns => {
   const reduceFunction1 = (accum1, column) => {
     const reduceFunction0 = (accum0, key) => {
-      if (["cellFunction", "defaultFilter"].includes(key)) {
+      if (["cellFunction", "convertFunction", "defaultFilter"].includes(key)) {
         return accum0;
       }
       const value = column[key];

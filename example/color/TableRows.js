@@ -4,84 +4,84 @@ const TableRows = [
     red: 255,
     green: 0,
     blue: 0,
-    category: "Primary"
+    category: "primary"
   },
   {
     name: "Green",
     red: 0,
     green: 255,
     blue: 0,
-    category: "Primary"
+    category: "primary"
   },
   {
     name: "Blue",
     red: 0,
     green: 0,
     blue: 255,
-    category: "Primary"
+    category: "primary"
   },
   {
     name: "Yellow",
     red: 255,
     green: 255,
     blue: 0,
-    category: "Secondary"
+    category: "secondary"
   },
   {
     name: "Magenta",
     red: 255,
     green: 0,
     blue: 255,
-    category: "Secondary"
+    category: "secondary"
   },
   {
     name: "Cyan",
     red: 0,
     green: 255,
     blue: 255,
-    category: "Secondary"
+    category: "secondary"
   },
   {
     name: "Orange",
     red: 255,
     green: 127,
     blue: 0,
-    category: "Tertiary"
+    category: "tertiary"
   },
   {
     name: "Rose",
     red: 255,
     green: 0,
     blue: 127,
-    category: "Tertiary"
+    category: "tertiary"
   },
   {
     name: "Chartreuse",
     red: 127,
     green: 255,
     blue: 0,
-    category: "Tertiary"
+    category: "tertiary"
   },
   {
     name: "Spring Green",
     red: 0,
     green: 255,
     blue: 127,
-    category: "Tertiary"
+    category: "tertiary"
   },
   {
     name: "Violet",
     red: 127,
     green: 0,
     blue: 255,
-    category: "Tertiary"
+    category: "tertiary"
   },
   {
     name: "Azure",
     red: 0,
     green: 127,
     blue: 255,
-    category: "Tertiary"
+    category: "tertiary"
   }
 ];
 

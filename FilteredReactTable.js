@@ -4,10 +4,33 @@ import Reducer from "./state/Reducer.js";
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
 
+const convert = (tableColumns, tableRows) => {
+  const mapFunction = row => {
+    const reduceFunction = (accum, column) => {
+      const value = column.convertFunction ? column.convertFunction(row) : row[column.key];
+
+      return R.assoc(column.key, value, accum);
+    };
+
+    return R.reduce(reduceFunction, {}, tableColumns);
+  };
+
+  return R.map(mapFunction, tableRows);
+};
+
+const hasConvertFunctions = tableColumns => {
+  const reduceFunction = (accum, column) =>
+    column.convertFunction ? R.append(column.convertFunction, accum) : accum;
+  const convertFunctions = R.reduce(reduceFunction, [], tableColumns);
+
+  return convertFunctions.length > 0;
+};
+
 const verifyParameter = (name, value) => {
   if (value === undefined) {
     throw new Error(`Undefined parameter: ${name}`);
   }
+
   if (!Array.isArray(value)) {
     throw new Error(`Parameter not an array: ${name}`);
   }
@@ -18,10 +41,14 @@ class FilteredReactTable {
     verifyParameter("tableColumns", tableColumns);
     verifyParameter("tableRows", tableRows);
 
+    const tableRows2 = hasConvertFunctions(tableColumns)
+      ? convert(tableColumns, tableRows)
+      : tableRows;
+
     this.store = Redux.createStore(Reducer.root);
 
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
-    this.store.dispatch(ActionCreator.setTableRows(tableRows));
+    this.store.dispatch(ActionCreator.setTableRows(tableRows2));
     this.store.dispatch(ActionCreator.setDefaultFilters());
   }
 
