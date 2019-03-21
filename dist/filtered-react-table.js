@@ -184,9 +184,7 @@
 
   Filter.passes = (filter, data) => {
     const value = data[filter.columnKey];
-    console.log(`Filter.passes() value = ${value}`);
     const compare = compareFunction(filter.operatorKey);
-    console.log(`Filter.passes() compare = ${compare}`);
 
     return compare(value, filter.rhs, filter.rhs2);
   };
