@@ -1,154 +1,61 @@
 body {
+  background-color: Gainsboro;
   font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
 }
 
-canvas {
-  height: 300px;
-}
-
-table {
-  border-collapse: collapse;
-  text-align: center;
-}
-
-.gf-b--dark1,
-.dataTable td {
-  border: 1px solid DarkGreen;
-}
-
-.gf-b--light2,
-.dataTable th {
-  border: 1px solid LightYellow;
-}
-
-.gf-bg-light1 {
-  background: #e0ffe0;
-}
-
-.gf-bg-medium1 {
-  background: LimeGreen;
-}
-
-.gf-bg-dark1,
-.dataTable th {
-  background: DarkGreen;
-}
-
-.gf-bg-light2 {
-  background: LightYellow;
-}
-
-.gf-bg-medium2 {
-  background: Yellow;
-}
-
-.gf-bg-dark2 {
-  background: Olive;
-}
-
-.gf-light1 {
-  color: #e0ffe0;
-}
-
-.gf-medium1 {
-  color: LimeGreen;
-}
-
-.gf-dark1 {
-  color: DarkGreen;
-}
-
-.gf-light2,
-.dataTable th {
-  color: LightYellow;
-}
-
-.gf-medium2 {
-  color: Yellow;
-}
-
-.gf-dark2 {
-  color: Olive;
-}
-
-.gf-f-entity {
+.frt-filter {
+  background: #f0f0f0;
   font-size: x-small;
+  padding: 2px;
 }
 
-.gf-h-entity {
-  height: 180px;
-}
-
-.dataTable tbody tr:nth-child(2n) td {
-  background: #e0ffe0;
-}
-
-.dataTable tbody tr:nth-child(2n + 1) td {
-  background: White;
-}
-
-#ALIGN_LEFT,
-.progressTextCell,
-.rowCount,
-.textCell,
-.alignLeft {
-  text-align: left;
-}
-
-#ALIGN_MIDDLE,
-#bgg_cornerlogo,
-.imageBlock,
-.alignMiddle {
-  vertical-align: middle;
-}
-
-#ALIGN_RIGHT,
-.numberCell,
-.progressNumberCell,
-.alignRight {
-  text-align: right;
-}
-
-#DISPLAY_INLINE_BLOCK,
-.textImageLink,
-.displayInlineBlock {
-  display: inline-block;
-}
-
-#FLOAT_RIGHT,
-.imageBlock,
-.floatRight {
+.frt-filter .buttons {
   float: right;
-}
-
-#FONT_SMALL,
-.dataTable,
-.rowCount,
-.fontSmall {
   font-size: small;
 }
 
-#PADDING_LR3,
-.progressUI td,
-.paddingLR3 {
-  padding-left: 3px;
-  padding-right: 3px;
+.frt-filter .button-panel {
+  padding: 2px;
+  text-align: center;
 }
 
-#PADDING_TOP_10,
-.rowCount,
-.paddingTop10 {
+.frt-filter .field {
+  width: 100px;
+}
+
+.frt-filter .title {
+  font-size: large;
+  font-weight: bold;
+  padding: 2px;
+  text-align: left;
+}
+
+.frt-rowCount {
+  font-size: small;
   padding-top: 10px;
+  text-align: left;
 }
 
-#WIDTH_60,
-.filterField,
-.width60 {
-  width: 60px;
+.frt-table {
+  border-collapse: collapse;
+  font-size: small;
+  text-align: center;
 }
 
-#WIDTH_FULL,
-.textImageLink,
-.widthFull {
-  width: 100%;
+.frt-table td {
+  border: 1px solid Gray;
+}
+
+.frt-table th {
+  background: Gray;
+  border: 1px solid White;
+  color: White;
+}
+
+.frt-table tbody tr:nth-child(2n) td {
+  background: #f0f0f0;
+}
+
+.frt-table tbody tr:nth-child(2n + 1) td {
+  background: White;
 }

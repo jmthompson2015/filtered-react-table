@@ -56,7 +56,7 @@ class DataTable extends React.Component {
     const mapFunction = data => this.createRow(data, data.id || data.name);
     const rows = R.map(mapFunction, rowData);
 
-    return this.Table({ className: "dataTable", columns: myTableColumns, sortable: true }, rows);
+    return this.Table({ className: "frt-table", columns: myTableColumns, sortable: true }, rows);
   }
 
   render() {
@@ -66,9 +66,9 @@ class DataTable extends React.Component {
     const table = this.createTable(rowData);
 
     const rows = [
-      ReactUtils.createRow(ReactUtils.createCell(rowCount, "top", "rowCount"), "topRow"),
+      ReactUtils.createRow(ReactUtils.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
       ReactUtils.createRow(ReactUtils.createCell(table), "tableRow"),
-      ReactUtils.createRow(ReactUtils.createCell(rowCount, "bottom", "rowCount"), "bottomRow")
+      ReactUtils.createRow(ReactUtils.createCell(rowCount, "bottom", "frt-rowCount"), "bottomRow")
     ];
 
     return ReactUtils.createTable(rows);

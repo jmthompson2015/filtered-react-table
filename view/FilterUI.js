@@ -30,14 +30,14 @@ class FilterUI extends React.Component {
     const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
     const cells = [
-      ReactUtils.createCell(filterCacheButton, "filterCacheButton", "pa1"),
-      ReactUtils.createCell(restoreButton, "restoreButton", "pa1"),
-      ReactUtils.createCell(unfilterButton, "unfilterButton", "pa1"),
-      ReactUtils.createCell(filterButton, "filterButton", "pa1")
+      ReactUtils.createCell(filterCacheButton, "filterCacheButton"),
+      ReactUtils.createCell(restoreButton, "restoreButton"),
+      ReactUtils.createCell(unfilterButton, "unfilterButton"),
+      ReactUtils.createCell(filterButton, "filterButton")
     ];
     const row = ReactUtils.createRow(cells);
 
-    return ReactUtils.createTable(row, "buttonTable", "f6 fr");
+    return ReactUtils.createTable(row, "buttonTable", "buttons");
   }
 
   createTable() {
@@ -91,7 +91,7 @@ class FilterUI extends React.Component {
       rows.push(row);
     }
 
-    return ReactUtils.createTable(rows, "filterTable", "gf-bg-light2 f6 mh1");
+    return ReactUtils.createTable(rows, "filterTable");
   }
 
   handleAddOnClickFunction(index) {
@@ -140,12 +140,16 @@ class FilterUI extends React.Component {
   }
 
   render() {
-    const filterTable = ReactUtils.createCell(this.createTable(), "filterTable", "v-top");
+    const filterTable = ReactUtils.createCell(
+      this.createTable(),
+      "filterTable",
+      "frt-innerFilterTable"
+    );
     const rows0 = ReactUtils.createRow(filterTable, "filterTableCells");
     const table0 = ReactUtils.createTable(rows0, "filterTableRow");
-    const cell0 = ReactUtils.createCell("Filter", "filterTitle", "b f4 gf-light2 pa1 tl");
+    const cell0 = ReactUtils.createCell("Filter", "filterTitle", "title");
     const cell1 = ReactUtils.createCell(table0, "filterTable");
-    const cell2 = ReactUtils.createCell(this.createButtonTable(), "buttonTable", "center pa2");
+    const cell2 = ReactUtils.createCell(this.createButtonTable(), "buttonTable", "button-panel");
 
     const rows = [
       ReactUtils.createRow(cell0, "filterTitleRow"),
@@ -153,7 +157,7 @@ class FilterUI extends React.Component {
       ReactUtils.createRow(cell2, "buttonRow")
     ];
 
-    return ReactUtils.createTable(rows, "filterTable", "gf-bg-dark1 gf-f-entity pa1");
+    return ReactUtils.createTable(rows, "filterTable", "frt-filter");
   }
 }
 

@@ -8,7 +8,6 @@ class ColorSwatch extends React.Component {
     const { color, height, showDescription, showTitle, width } = this.props;
 
     const swatch = ReactDOMFactories.div({
-      className: "center mh0",
       style: { backgroundColor: toStyle(color), height, width }
     });
 
@@ -32,7 +31,7 @@ class ColorSwatch extends React.Component {
         rows.push(RU.createRow(cell2, "descriptionRow"));
       }
 
-      return RU.createTable(rows, "colorSwatchTable", "center mh0");
+      return RU.createTable(rows, "colorSwatchTable");
     }
 
     return swatch;
@@ -52,12 +51,12 @@ ColorSwatch.propTypes = {
 };
 
 ColorSwatch.defaultProps = {
-  descriptionClass: "f6 tc",
+  descriptionClass: undefined,
   height: 25,
   showTitle: false,
   showDescription: false,
   title: "Color",
-  titleClass: "b f5 tc",
+  titleClass: undefined,
   width: 110
 };
 

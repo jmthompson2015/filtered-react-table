@@ -47,13 +47,12 @@
     filters = [],
     tableColumns = [],
     tableRows = []
-  } = {}) =>
-    Immutable({
-      filteredTableRows,
-      filters,
-      tableColumns,
-      tableRows
-    });
+  } = {}) => ({
+    filteredTableRows,
+    filters,
+    tableColumns,
+    tableRows
+  });
 
   Object.freeze(AppState);
 
@@ -165,13 +164,12 @@
 
   const compareFunction = opKey => operator(opKey).compareFunction;
 
-  Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) =>
-    Immutable({
-      columnKey,
-      operatorKey,
-      rhs,
-      rhs2
-    });
+  Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) => ({
+    columnKey,
+    operatorKey,
+    rhs,
+    rhs2
+  });
 
   Filter.isBooleanFilter = filter =>
     filter !== undefined && Object.keys(BooleanFilterOperator.properties).includes(filter.operatorKey);
@@ -293,74 +291,37 @@
 
   const ReactUtilities = {};
 
-  ReactUtilities.createButton = (element, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className
-    });
-
-    return ReactDOMFactories.button(newProps, element);
-  };
-
   ReactUtilities.createCell = (element, key, className, props = {}) => {
     const newProps = R.merge(props, {
       key,
-      className: `dtc${className ? ` ${className}` : ""}`
+      className,
+      style: {
+        display: "table-cell"
+      }
     });
 
     return ReactDOMFactories.div(newProps, element);
   };
 
-  ReactUtilities.createFlexbox = (cells, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className: `flex${className ? ` ${className}` : ""}`
-    });
-
-    return ReactDOMFactories.div(newProps, cells);
-  };
-
-  ReactUtilities.createFlexboxWrap = (cells, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className: `flex flex-wrap${className ? ` ${className}` : ""}`
-    });
-
-    return ReactDOMFactories.div(newProps, cells);
-  };
-
-  ReactUtilities.createImg = (src, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      src,
-      key,
-      className
-    });
-
-    return ReactDOMFactories.img(newProps);
-  };
-
   ReactUtilities.createRow = (cells, key, className, props = {}) => {
     const newProps = R.merge(props, {
       key,
-      className: `dt-row${className ? ` ${className}` : ""}`
+      className,
+      style: {
+        display: "table-row"
+      }
     });
 
     return ReactDOMFactories.div(newProps, cells);
-  };
-
-  ReactUtilities.createSpan = (element, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className
-    });
-
-    return ReactDOMFactories.span(newProps, element);
   };
 
   ReactUtilities.createTable = (rows, key, className, props = {}) => {
     const newProps = R.merge(props, {
       key,
-      className: `dt${className ? ` ${className}` : ""}`
+      className,
+      style: {
+        display: "table"
+      }
     });
 
     return ReactDOMFactories.div(newProps, rows);
@@ -422,7 +383,7 @@
       const mapFunction = data => this.createRow(data, data.id || data.name);
       const rows = R.map(mapFunction, rowData);
 
-      return this.Table({ className: "dataTable", columns: myTableColumns, sortable: true }, rows);
+      return this.Table({ className: "frt-table", columns: myTableColumns, sortable: true }, rows);
     }
 
     render() {
@@ -432,9 +393,9 @@
       const table = this.createTable(rowData);
 
       const rows = [
-        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "top", "rowCount"), "topRow"),
+        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
         ReactUtilities.createRow(ReactUtilities.createCell(table), "tableRow"),
-        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "bottom", "rowCount"), "bottomRow")
+        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "bottom", "frt-rowCount"), "bottomRow")
       ];
 
       return ReactUtilities.createTable(rows);
@@ -685,7 +646,7 @@
           ReactUtilities.createCell(
             React.createElement(NumberInput, {
               id: idKey,
-              className: "filterField",
+              className: "field",
               initialValue: filter ? filter.rhs : undefined,
               onBlur: handleChange
             }),
@@ -695,7 +656,7 @@
           ReactUtilities.createCell(
             React.createElement(NumberInput, {
               id: `rhs2Field${index}`,
-              className: "filterField",
+              className: "field",
               initialValue: filter ? filter.rhs2 : undefined,
               onBlur: handleChange
             }),
@@ -707,7 +668,7 @@
       return ReactUtilities.createCell(
         React.createElement(NumberInput, {
           id: idKey,
-          className: "filterField",
+          className: "field",
           initialValue: filter ? filter.rhs : undefined,
           onBlur: handleChange
         }),
@@ -718,7 +679,7 @@
     return ReactUtilities.createCell(
       React.createElement(StringInput, {
         id: idKey,
-        className: "filterField",
+        className: "field",
         initialValue: filter ? filter.rhs : undefined,
         onBlur: handleChange
       }),
@@ -872,14 +833,14 @@
       const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
       const cells = [
-        ReactUtilities.createCell(filterCacheButton, "filterCacheButton", "pa1"),
-        ReactUtilities.createCell(restoreButton, "restoreButton", "pa1"),
-        ReactUtilities.createCell(unfilterButton, "unfilterButton", "pa1"),
-        ReactUtilities.createCell(filterButton, "filterButton", "pa1")
+        ReactUtilities.createCell(filterCacheButton, "filterCacheButton"),
+        ReactUtilities.createCell(restoreButton, "restoreButton"),
+        ReactUtilities.createCell(unfilterButton, "unfilterButton"),
+        ReactUtilities.createCell(filterButton, "filterButton")
       ];
       const row = ReactUtilities.createRow(cells);
 
-      return ReactUtilities.createTable(row, "buttonTable", "f6 fr");
+      return ReactUtilities.createTable(row, "buttonTable", "buttons");
     }
 
     createTable() {
@@ -933,7 +894,7 @@
         rows.push(row);
       }
 
-      return ReactUtilities.createTable(rows, "filterTable", "gf-bg-light2 f6 mh1");
+      return ReactUtilities.createTable(rows, "filterTable");
     }
 
     handleAddOnClickFunction(index) {
@@ -982,12 +943,16 @@
     }
 
     render() {
-      const filterTable = ReactUtilities.createCell(this.createTable(), "filterTable", "v-top");
+      const filterTable = ReactUtilities.createCell(
+        this.createTable(),
+        "filterTable",
+        "frt-innerFilterTable"
+      );
       const rows0 = ReactUtilities.createRow(filterTable, "filterTableCells");
       const table0 = ReactUtilities.createTable(rows0, "filterTableRow");
-      const cell0 = ReactUtilities.createCell("Filter", "filterTitle", "b f4 gf-light2 pa1 tl");
+      const cell0 = ReactUtilities.createCell("Filter", "filterTitle", "title");
       const cell1 = ReactUtilities.createCell(table0, "filterTable");
-      const cell2 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "center pa2");
+      const cell2 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "button-panel");
 
       const rows = [
         ReactUtilities.createRow(cell0, "filterTitleRow"),
@@ -995,7 +960,7 @@
         ReactUtilities.createRow(cell2, "buttonRow")
       ];
 
-      return ReactUtilities.createTable(rows, "filterTable", "gf-bg-dark1 gf-f-entity pa1");
+      return ReactUtilities.createTable(rows, "filterTable", "frt-filter");
     }
   }
 

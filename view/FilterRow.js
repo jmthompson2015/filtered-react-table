@@ -75,7 +75,7 @@ const createFilterUI = (filter, index, column, handleChange) => {
         ReactUtils.createCell(
           React.createElement(NumberInput, {
             id: idKey,
-            className: "filterField",
+            className: "field",
             initialValue: filter ? filter.rhs : undefined,
             onBlur: handleChange
           }),
@@ -85,7 +85,7 @@ const createFilterUI = (filter, index, column, handleChange) => {
         ReactUtils.createCell(
           React.createElement(NumberInput, {
             id: `rhs2Field${index}`,
-            className: "filterField",
+            className: "field",
             initialValue: filter ? filter.rhs2 : undefined,
             onBlur: handleChange
           }),
@@ -97,7 +97,7 @@ const createFilterUI = (filter, index, column, handleChange) => {
     return ReactUtils.createCell(
       React.createElement(NumberInput, {
         id: idKey,
-        className: "filterField",
+        className: "field",
         initialValue: filter ? filter.rhs : undefined,
         onBlur: handleChange
       }),
@@ -108,7 +108,7 @@ const createFilterUI = (filter, index, column, handleChange) => {
   return ReactUtils.createCell(
     React.createElement(StringInput, {
       id: idKey,
-      className: "filterField",
+      className: "field",
       initialValue: filter ? filter.rhs : undefined,
       onBlur: handleChange
     }),
