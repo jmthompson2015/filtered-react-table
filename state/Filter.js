@@ -8,13 +8,12 @@ const operator = opKey => BFO.properties[opKey] || NFO.properties[opKey] || SFO.
 
 const compareFunction = opKey => operator(opKey).compareFunction;
 
-Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) =>
-  Immutable({
-    columnKey,
-    operatorKey,
-    rhs,
-    rhs2
-  });
+Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) => ({
+  columnKey,
+  operatorKey,
+  rhs,
+  rhs2
+});
 
 Filter.isBooleanFilter = filter =>
   filter !== undefined && Object.keys(BFO.properties).includes(filter.operatorKey);

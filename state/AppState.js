@@ -5,13 +5,12 @@ AppState.create = ({
   filters = [],
   tableColumns = [],
   tableRows = []
-} = {}) =>
-  Immutable({
-    filteredTableRows,
-    filters,
-    tableColumns,
-    tableRows
-  });
+} = {}) => ({
+  filteredTableRows,
+  filters,
+  tableColumns,
+  tableRows
+});
 
 Object.freeze(AppState);
 

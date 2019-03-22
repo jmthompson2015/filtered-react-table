@@ -5,7 +5,6 @@ module.exports = {
   extends: ["airbnb", "prettier"],
   globals: {
     FilteredReactTable: true,
-    Immutable: true,
     PropTypes: true,
     QUnit: true,
     R: true,
