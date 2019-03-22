@@ -10,7 +10,8 @@ const TableColumns = [
     cellFunction: row => {
       const color = { r: row.red, g: row.green, b: row.blue };
       return React.createElement(ColorSwatch, { color, width: 50 });
-    }
+    },
+    valueFunction: row => row.name
   },
   {
     key: "name",
