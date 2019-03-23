@@ -1,6 +1,7 @@
 import BFO from "../state/BooleanFilterOperator.js";
 import EU from "../state/EnumUtilities.js";
 import Filter from "../state/Filter.js";
+import FilterType from "../state/FilterType.js";
 import NFO from "../state/NumberFilterOperator.js";
 import SFO from "../state/StringFilterOperator.js";
 import TCU from "../state/TableColumnUtilities.js";
@@ -12,7 +13,9 @@ import StringInput from "./StringInput.js";
 
 const columnFor = (tableColumns, filter) => {
   const firstColumnKey = Object.values(tableColumns)[0].key;
+  console.log(`FilterRow.columnFor() filter.columnKey = ${filter.columnKey}`);
   const columnKey = filter ? filter.columnKey || firstColumnKey : firstColumnKey;
+  console.log(`FilterRow.columnFor() columnKey = ${columnKey}`);
 
   return TCU.tableColumn(tableColumns, columnKey);
 };
@@ -38,14 +41,18 @@ const operatorsFor = column => {
   let answer;
 
   switch (column.type) {
-    case "boolean":
+    case FilterType.BOOLEAN:
       answer = BFO;
       break;
-    case "number":
+    case FilterType.NUMBER:
       answer = NFO;
       break;
-    default:
+    case FilterType.STRING:
+    case undefined:
       answer = SFO;
+      break;
+    default:
+      throw new Error(`Unknown column.type: ${column.type}`);
   }
 
   return EU.values(answer);
@@ -62,49 +69,49 @@ const createOperatorSelect = (filter, index, column, handleChange) => {
   });
 };
 
-const createFilterUI = (filter, index, column, handleChange) => {
+const createBooleanFilterUI = index => {
+  return ReactUtils.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+};
+
+const createNumberFilterUI = (filter, index, handleChange) => {
   const idKey = `rhsField${index}`;
-
-  if (column.type === "boolean") {
-    return ReactUtils.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+  if (filter.operatorKey === NFO.IS_IN_THE_RANGE) {
+    return [
+      ReactUtils.createCell(
+        React.createElement(NumberInput, {
+          id: idKey,
+          className: "field",
+          initialValue: filter ? filter.rhs : undefined,
+          onBlur: handleChange
+        }),
+        `rhs1NumberField${index}`
+      ),
+      ReactUtils.createCell("to", "toField", "pl2 pr2"),
+      ReactUtils.createCell(
+        React.createElement(NumberInput, {
+          id: `rhs2Field${index}`,
+          className: "field",
+          initialValue: filter ? filter.rhs2 : undefined,
+          onBlur: handleChange
+        }),
+        `rhs2NumberField${index}`
+      )
+    ];
   }
 
-  if (column.type === "number") {
-    if (filter.operatorKey === NFO.IS_IN_THE_RANGE) {
-      return [
-        ReactUtils.createCell(
-          React.createElement(NumberInput, {
-            id: idKey,
-            className: "field",
-            initialValue: filter ? filter.rhs : undefined,
-            onBlur: handleChange
-          }),
-          `rhs1NumberField${index}`
-        ),
-        ReactUtils.createCell("to", "toField", "pl2 pr2"),
-        ReactUtils.createCell(
-          React.createElement(NumberInput, {
-            id: `rhs2Field${index}`,
-            className: "field",
-            initialValue: filter ? filter.rhs2 : undefined,
-            onBlur: handleChange
-          }),
-          `rhs2NumberField${index}`
-        )
-      ];
-    }
+  return ReactUtils.createCell(
+    React.createElement(NumberInput, {
+      id: idKey,
+      className: "field",
+      initialValue: filter ? filter.rhs : undefined,
+      onBlur: handleChange
+    }),
+    `rhsNumberField${index}`
+  );
+};
 
-    return ReactUtils.createCell(
-      React.createElement(NumberInput, {
-        id: idKey,
-        className: "field",
-        initialValue: filter ? filter.rhs : undefined,
-        onBlur: handleChange
-      }),
-      `rhsNumberField${index}`
-    );
-  }
-
+const createStringFilterUI = (filter, index, handleChange) => {
+  const idKey = `rhsField${index}`;
   return ReactUtils.createCell(
     React.createElement(StringInput, {
       id: idKey,
@@ -114,6 +121,28 @@ const createFilterUI = (filter, index, column, handleChange) => {
     }),
     `rhsStringField${index}`
   );
+};
+
+const createFilterUI = (filter, index, handleChange) => {
+  const typeKey = Filter.typeKey(filter);
+
+  let answer;
+
+  switch (typeKey) {
+    case FilterType.BOOLEAN:
+      answer = createBooleanFilterUI(index);
+      break;
+    case FilterType.NUMBER:
+      answer = createNumberFilterUI(filter, index, handleChange);
+      break;
+    case FilterType.STRING:
+      answer = createStringFilterUI(filter, index, handleChange);
+      break;
+    default:
+      throw new Error(`Unknown filter typeKey: ${typeKey}`);
+  }
+
+  return answer;
 };
 
 const createRemoveButton = (isRemoveHidden, handleOnClick) =>
@@ -163,27 +192,26 @@ class FilterRow extends React.Component {
 
     let newFilter;
 
-    if (column.type === "boolean") {
-      newFilter = Filter.create({
-        columnKey: column.key,
-        operatorKey
-      });
-    } else if (column.type === "number") {
-      newFilter = Filter.create({
-        columnKey: column.key,
-        operatorKey,
-        rhs: rhs ? parseInt(rhs, 10) : undefined,
-        rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
-      });
-    } else {
-      newFilter = Filter.create({
-        columnKey: column.key,
-        operatorKey,
-        rhs
-      });
+    switch (column.type) {
+      case FilterType.BOOLEAN:
+        newFilter = Filter.create({ columnKey: column.key, operatorKey });
+        break;
+      case FilterType.NUMBER:
+        newFilter = Filter.create({
+          columnKey: column.key,
+          operatorKey,
+          rhs: rhs ? parseInt(rhs, 10) : undefined,
+          rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
+        });
+        break;
+      case FilterType.STRING:
+      case undefined:
+        newFilter = Filter.create({ columnKey: column.key, operatorKey, rhs });
+        break;
+      default:
+        throw new Error(`Unknown column.type: ${column.type}`);
     }
 
-    // console.log(`FilterRow.handleChange() newFilter = ${JSON.stringify(newFilter)}`);
     onChange(newFilter, index);
   }
 
@@ -204,7 +232,7 @@ class FilterRow extends React.Component {
       createOperatorSelect(filter, index, column, this.handleChange),
       `${column.key}OperatorSelectCell${index}`
     );
-    const filterUI = createFilterUI(filter, index, column, this.handleChange);
+    const filterUI = createFilterUI(filter, index, this.handleChange);
     const removeButton = ReactUtils.createCell(
       createRemoveButton(isRemoveHidden, this.handleRemoveOnClick),
       `removeButtonCell${index}`

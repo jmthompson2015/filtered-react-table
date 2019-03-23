@@ -1,5 +1,6 @@
 import BFO from "../state/BooleanFilterOperator.js";
 import Filter from "../state/Filter.js";
+import FilterType from "../state/FilterType.js";
 import NFO from "../state/NumberFilterOperator.js";
 import SFO from "../state/StringFilterOperator.js";
 
@@ -50,26 +51,30 @@ class FilterUI extends React.Component {
       const firstColumn = tableColumns[0];
       let newFilter;
 
-      if (firstColumn.type === undefined || firstColumn.type === "string") {
-        const firstOpKey = Object.keys(SFO.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOpKey,
-          rhs: ""
-        });
-      } else if (firstColumn.type === "boolean") {
-        const firstOpKey = Object.keys(BFO.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOpKey
-        });
-      } else if (firstColumn.type === "number") {
-        const firstOpKey = Object.keys(NFO.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOpKey,
-          rhs: 0
-        });
+      switch (firstColumn.type) {
+        case FilterType.BOOLEAN:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(BFO.properties)[0]
+          });
+          break;
+        case FilterType.NUMBER:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(NFO.properties)[0],
+            rhs: 0
+          });
+          break;
+        case FilterType.STRING:
+        case undefined:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(SFO.properties)[0],
+            rhs: ""
+          });
+          break;
+        default:
+          throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
       }
 
       filters.push(newFilter);
@@ -99,26 +104,30 @@ class FilterUI extends React.Component {
     const firstColumn = tableColumns[0];
     let newFilter;
 
-    if (firstColumn.type === "boolean") {
-      const firstOperatorKey = Object.keys(BFO.properties)[0];
-      newFilter = Filter.create({
-        columnKey: firstColumn.key,
-        operatorKey: firstOperatorKey
-      });
-    } else if (firstColumn.type === "number") {
-      const firstOperatorKey = Object.keys(NFO.properties)[0];
-      newFilter = Filter.create({
-        columnKey: firstColumn.key,
-        operatorKey: firstOperatorKey,
-        rhs: 0
-      });
-    } else {
-      const firstOperatorKey = Object.keys(SFO.properties)[0];
-      newFilter = Filter.create({
-        columnKey: firstColumn.key,
-        operatorKey: firstOperatorKey,
-        rhs: ""
-      });
+    switch (firstColumn.type) {
+      case FilterType.BOOLEAN:
+        newFilter = Filter.create({
+          columnKey: firstColumn.key,
+          operatorKey: Object.keys(BFO.properties)[0]
+        });
+        break;
+      case FilterType.NUMBER:
+        newFilter = Filter.create({
+          columnKey: firstColumn.key,
+          operatorKey: Object.keys(NFO.properties)[0],
+          rhs: 0
+        });
+        break;
+      case FilterType.STRING:
+      case undefined:
+        newFilter = Filter.create({
+          columnKey: firstColumn.key,
+          operatorKey: Object.keys(SFO.properties)[0],
+          rhs: ""
+        });
+        break;
+      default:
+        throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
     }
 
     const newFilters = R.insert(index + 1, newFilter, filters);

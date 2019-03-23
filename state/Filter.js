@@ -1,4 +1,5 @@
 import BFO from "./BooleanFilterOperator.js";
+import FilterType from "./FilterType.js";
 import NFO from "./NumberFilterOperator.js";
 import SFO from "./StringFilterOperator.js";
 
@@ -62,6 +63,20 @@ Filter.toString = filter => {
 
   const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
   return `Filter (${filter.columnKey} ${operatorLabel} ${filter.rhs}${rhs2})`;
+};
+
+Filter.typeKey = filter => {
+  let answer;
+
+  if (Filter.isBooleanFilter(filter)) {
+    answer = FilterType.BOOLEAN;
+  } else if (Filter.isNumberFilter(filter)) {
+    answer = FilterType.NUMBER;
+  } else if (Filter.isStringFilter(filter)) {
+    answer = FilterType.STRING;
+  }
+
+  return answer;
 };
 
 Object.freeze(Filter);

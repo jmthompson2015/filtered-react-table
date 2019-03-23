@@ -1,5 +1,6 @@
 import BFO from "./BooleanFilterOperator.js";
 import Filter from "./Filter.js";
+import FilterType from "./FilterType.js";
 import NFO from "./NumberFilterOperator.js";
 import SFO from "./StringFilterOperator.js";
 
@@ -270,6 +271,50 @@ QUnit.test("toString() string", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result, 'Filter (name contains "ed")');
+});
+
+QUnit.test("typeKey() boolean", assert => {
+  // Setup.
+  const columnKey = "liked";
+  const operatorKey = BFO.IS_TRUE;
+  const filter = Filter.create({ columnKey, operatorKey });
+
+  // Run.
+  const result = Filter.typeKey(filter);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, FilterType.BOOLEAN);
+});
+
+QUnit.test("typeKey() number", assert => {
+  // Setup.
+  const columnKey = "red";
+  const operatorKey = NFO.IS_GREATER_THAN;
+  const rhs = 10;
+  const filter = Filter.create({ columnKey, operatorKey, rhs });
+
+  // Run.
+  const result = Filter.typeKey(filter);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, FilterType.NUMBER);
+});
+
+QUnit.test("typeKey() string", assert => {
+  // Setup.
+  const columnKey = "name";
+  const operatorKey = SFO.CONTAINS;
+  const rhs = "ed";
+  const filter = Filter.create({ columnKey, operatorKey, rhs });
+
+  // Run.
+  const result = Filter.typeKey(filter);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, FilterType.STRING);
 });
 
 const FilterTest = {};

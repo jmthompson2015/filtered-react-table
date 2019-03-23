@@ -76,6 +76,29 @@
 
   Object.freeze(BooleanFilterOperator);
 
+  const FilterType = {
+    BOOLEAN: "boolean",
+    NUMBER: "number",
+    STRING: "string"
+  };
+
+  FilterType.properties = {
+    boolean: {
+      name: "Boolean",
+      key: "boolean"
+    },
+    number: {
+      name: "Number",
+      key: "number"
+    },
+    string: {
+      name: "String",
+      key: "string"
+    }
+  };
+
+  Object.freeze(FilterType);
+
   const NumberFilterOperator = {
     IS: "nfoIs",
     IS_NOT: "nfoIsNot",
@@ -218,6 +241,20 @@
 
     const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
     return `Filter (${filter.columnKey} ${operatorLabel} ${filter.rhs}${rhs2})`;
+  };
+
+  Filter.typeKey = filter => {
+    let answer;
+
+    if (Filter.isBooleanFilter(filter)) {
+      answer = FilterType.BOOLEAN;
+    } else if (Filter.isNumberFilter(filter)) {
+      answer = FilterType.NUMBER;
+    } else if (Filter.isStringFilter(filter)) {
+      answer = FilterType.STRING;
+    }
+
+    return answer;
   };
 
   Object.freeze(Filter);
@@ -583,7 +620,9 @@
 
   const columnFor = (tableColumns, filter) => {
     const firstColumnKey = Object.values(tableColumns)[0].key;
+    console.log(`FilterRow.columnFor() filter.columnKey = ${filter.columnKey}`);
     const columnKey = filter ? filter.columnKey || firstColumnKey : firstColumnKey;
+    console.log(`FilterRow.columnFor() columnKey = ${columnKey}`);
 
     return TableColumnUtilities.tableColumn(tableColumns, columnKey);
   };
@@ -609,14 +648,18 @@
     let answer;
 
     switch (column.type) {
-      case "boolean":
+      case FilterType.BOOLEAN:
         answer = BooleanFilterOperator;
         break;
-      case "number":
+      case FilterType.NUMBER:
         answer = NumberFilterOperator;
         break;
-      default:
+      case FilterType.STRING:
+      case undefined:
         answer = StringFilterOperator;
+        break;
+      default:
+        throw new Error(`Unknown column.type: ${column.type}`);
     }
 
     return EnumUtilities.values(answer);
@@ -633,49 +676,49 @@
     });
   };
 
-  const createFilterUI = (filter, index, column, handleChange) => {
+  const createBooleanFilterUI = index => {
+    return ReactUtilities.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+  };
+
+  const createNumberFilterUI = (filter, index, handleChange) => {
     const idKey = `rhsField${index}`;
-
-    if (column.type === "boolean") {
-      return ReactUtilities.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
+    if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
+      return [
+        ReactUtilities.createCell(
+          React.createElement(NumberInput, {
+            id: idKey,
+            className: "field",
+            initialValue: filter ? filter.rhs : undefined,
+            onBlur: handleChange
+          }),
+          `rhs1NumberField${index}`
+        ),
+        ReactUtilities.createCell("to", "toField", "pl2 pr2"),
+        ReactUtilities.createCell(
+          React.createElement(NumberInput, {
+            id: `rhs2Field${index}`,
+            className: "field",
+            initialValue: filter ? filter.rhs2 : undefined,
+            onBlur: handleChange
+          }),
+          `rhs2NumberField${index}`
+        )
+      ];
     }
 
-    if (column.type === "number") {
-      if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
-        return [
-          ReactUtilities.createCell(
-            React.createElement(NumberInput, {
-              id: idKey,
-              className: "field",
-              initialValue: filter ? filter.rhs : undefined,
-              onBlur: handleChange
-            }),
-            `rhs1NumberField${index}`
-          ),
-          ReactUtilities.createCell("to", "toField", "pl2 pr2"),
-          ReactUtilities.createCell(
-            React.createElement(NumberInput, {
-              id: `rhs2Field${index}`,
-              className: "field",
-              initialValue: filter ? filter.rhs2 : undefined,
-              onBlur: handleChange
-            }),
-            `rhs2NumberField${index}`
-          )
-        ];
-      }
+    return ReactUtilities.createCell(
+      React.createElement(NumberInput, {
+        id: idKey,
+        className: "field",
+        initialValue: filter ? filter.rhs : undefined,
+        onBlur: handleChange
+      }),
+      `rhsNumberField${index}`
+    );
+  };
 
-      return ReactUtilities.createCell(
-        React.createElement(NumberInput, {
-          id: idKey,
-          className: "field",
-          initialValue: filter ? filter.rhs : undefined,
-          onBlur: handleChange
-        }),
-        `rhsNumberField${index}`
-      );
-    }
-
+  const createStringFilterUI = (filter, index, handleChange) => {
+    const idKey = `rhsField${index}`;
     return ReactUtilities.createCell(
       React.createElement(StringInput, {
         id: idKey,
@@ -685,6 +728,28 @@
       }),
       `rhsStringField${index}`
     );
+  };
+
+  const createFilterUI = (filter, index, handleChange) => {
+    const typeKey = Filter.typeKey(filter);
+
+    let answer;
+
+    switch (typeKey) {
+      case FilterType.BOOLEAN:
+        answer = createBooleanFilterUI(index);
+        break;
+      case FilterType.NUMBER:
+        answer = createNumberFilterUI(filter, index, handleChange);
+        break;
+      case FilterType.STRING:
+        answer = createStringFilterUI(filter, index, handleChange);
+        break;
+      default:
+        throw new Error(`Unknown filter typeKey: ${typeKey}`);
+    }
+
+    return answer;
   };
 
   const createRemoveButton = (isRemoveHidden, handleOnClick) =>
@@ -734,27 +799,26 @@
 
       let newFilter;
 
-      if (column.type === "boolean") {
-        newFilter = Filter.create({
-          columnKey: column.key,
-          operatorKey
-        });
-      } else if (column.type === "number") {
-        newFilter = Filter.create({
-          columnKey: column.key,
-          operatorKey,
-          rhs: rhs ? parseInt(rhs, 10) : undefined,
-          rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
-        });
-      } else {
-        newFilter = Filter.create({
-          columnKey: column.key,
-          operatorKey,
-          rhs
-        });
+      switch (column.type) {
+        case FilterType.BOOLEAN:
+          newFilter = Filter.create({ columnKey: column.key, operatorKey });
+          break;
+        case FilterType.NUMBER:
+          newFilter = Filter.create({
+            columnKey: column.key,
+            operatorKey,
+            rhs: rhs ? parseInt(rhs, 10) : undefined,
+            rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
+          });
+          break;
+        case FilterType.STRING:
+        case undefined:
+          newFilter = Filter.create({ columnKey: column.key, operatorKey, rhs });
+          break;
+        default:
+          throw new Error(`Unknown column.type: ${column.type}`);
       }
 
-      // console.log(`FilterRow.handleChange() newFilter = ${JSON.stringify(newFilter)}`);
       onChange(newFilter, index);
     }
 
@@ -775,7 +839,7 @@
         createOperatorSelect(filter, index, column, this.handleChange),
         `${column.key}OperatorSelectCell${index}`
       );
-      const filterUI = createFilterUI(filter, index, column, this.handleChange);
+      const filterUI = createFilterUI(filter, index, this.handleChange);
       const removeButton = ReactUtilities.createCell(
         createRemoveButton(isRemoveHidden, this.handleRemoveOnClick),
         `removeButtonCell${index}`
@@ -853,26 +917,30 @@
         const firstColumn = tableColumns[0];
         let newFilter;
 
-        if (firstColumn.type === undefined || firstColumn.type === "string") {
-          const firstOpKey = Object.keys(StringFilterOperator.properties)[0];
-          newFilter = Filter.create({
-            columnKey: firstColumn.key,
-            operatorKey: firstOpKey,
-            rhs: ""
-          });
-        } else if (firstColumn.type === "boolean") {
-          const firstOpKey = Object.keys(BooleanFilterOperator.properties)[0];
-          newFilter = Filter.create({
-            columnKey: firstColumn.key,
-            operatorKey: firstOpKey
-          });
-        } else if (firstColumn.type === "number") {
-          const firstOpKey = Object.keys(NumberFilterOperator.properties)[0];
-          newFilter = Filter.create({
-            columnKey: firstColumn.key,
-            operatorKey: firstOpKey,
-            rhs: 0
-          });
+        switch (firstColumn.type) {
+          case FilterType.BOOLEAN:
+            newFilter = Filter.create({
+              columnKey: firstColumn.key,
+              operatorKey: Object.keys(BooleanFilterOperator.properties)[0]
+            });
+            break;
+          case FilterType.NUMBER:
+            newFilter = Filter.create({
+              columnKey: firstColumn.key,
+              operatorKey: Object.keys(NumberFilterOperator.properties)[0],
+              rhs: 0
+            });
+            break;
+          case FilterType.STRING:
+          case undefined:
+            newFilter = Filter.create({
+              columnKey: firstColumn.key,
+              operatorKey: Object.keys(StringFilterOperator.properties)[0],
+              rhs: ""
+            });
+            break;
+          default:
+            throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
         }
 
         filters.push(newFilter);
@@ -902,26 +970,30 @@
       const firstColumn = tableColumns[0];
       let newFilter;
 
-      if (firstColumn.type === "boolean") {
-        const firstOperatorKey = Object.keys(BooleanFilterOperator.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOperatorKey
-        });
-      } else if (firstColumn.type === "number") {
-        const firstOperatorKey = Object.keys(NumberFilterOperator.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOperatorKey,
-          rhs: 0
-        });
-      } else {
-        const firstOperatorKey = Object.keys(StringFilterOperator.properties)[0];
-        newFilter = Filter.create({
-          columnKey: firstColumn.key,
-          operatorKey: firstOperatorKey,
-          rhs: ""
-        });
+      switch (firstColumn.type) {
+        case FilterType.BOOLEAN:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(BooleanFilterOperator.properties)[0]
+          });
+          break;
+        case FilterType.NUMBER:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(NumberFilterOperator.properties)[0],
+            rhs: 0
+          });
+          break;
+        case FilterType.STRING:
+        case undefined:
+          newFilter = Filter.create({
+            columnKey: firstColumn.key,
+            operatorKey: Object.keys(StringFilterOperator.properties)[0],
+            rhs: ""
+          });
+          break;
+        default:
+          throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
       }
 
       const newFilters = R.insert(index + 1, newFilter, filters);
