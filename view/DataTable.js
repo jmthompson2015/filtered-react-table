@@ -3,8 +3,14 @@ import ReactUtils from "./ReactUtilities.js";
 const determineCell = (column, row, value) =>
   column.cellFunction ? column.cellFunction(row) : value;
 
-const determineValue = (column, row) =>
-  column.valueFunction ? column.valueFunction(row) : row[column.key];
+const determineValue = (column, row) => {
+  if (column.type === "boolean") {
+    if (row[column.key] === true) return "true";
+    if (row[column.key] === false) return "false";
+    return undefined;
+  }
+  return column.valueFunction ? column.valueFunction(row) : row[column.key];
+};
 
 const filterTableColumns = tableColumns => {
   const reduceFunction1 = (accum1, column) => {
