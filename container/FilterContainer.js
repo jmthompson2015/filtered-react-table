@@ -3,17 +3,12 @@ import ActionCreator from "../state/ActionCreator.js";
 import FilterUI from "../view/FilterUI.js";
 
 const mapStateToProps = state => {
-  const { categoryMap, designerMap, filters, mechanicMap, tableColumns, userMap } = state;
+  const { filters, tableColumns } = state;
   const myTableColumns = R.filter(c => c.type !== "none", tableColumns);
 
   return {
     filters,
-    tableColumns: myTableColumns,
-
-    categoryMap,
-    designerMap,
-    mechanicMap,
-    userMap
+    tableColumns: myTableColumns
   };
 };
 
