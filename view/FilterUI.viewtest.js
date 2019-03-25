@@ -1,6 +1,8 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
+import BFO from "../state/BooleanFilterOperator.js";
 import Filter from "../state/Filter.js";
+import NFO from "../state/NumberFilterOperator.js";
 import SFO from "../state/StringFilterOperator.js";
 
 import FilterUI from "./FilterUI.js";
@@ -41,7 +43,16 @@ const clearCacheOnClick = () => console.log("clearCacheOnClick()");
 const removeOnClick = () => console.log("removeOnClick()");
 const restoreDefaultsOnClick = () => console.log("restoreDefaultsOnClick()");
 
-const filters = [Filter.create({ columnKey: "red", operatorKey: SFO.IS, rhs: 255 })];
+const filter1 = Filter.create({ columnKey: "name", operatorKey: SFO.CONTAINS, rhs: "ed" });
+const filter2 = Filter.create({ columnKey: "red", operatorKey: NFO.IS_GREATER_THAN, rhs: 100 });
+const filter3 = Filter.create({
+  columnKey: "green",
+  operatorKey: NFO.IS_IN_THE_RANGE,
+  rhs: 50,
+  rhs2: 255
+});
+const filter4 = Filter.create({ columnKey: "liked", operatorKey: BFO.IS_FALSE });
+const filters = [filter1, filter2, filter3, filter4];
 
 const onChange = newFilters => {
   console.log(`onChange() newFilters = ${JSON.stringify(newFilters)}`);

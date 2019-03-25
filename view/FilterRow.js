@@ -13,9 +13,7 @@ import StringInput from "./StringInput.js";
 
 const columnFor = (tableColumns, filter) => {
   const firstColumnKey = Object.values(tableColumns)[0].key;
-  console.log(`FilterRow.columnFor() filter.columnKey = ${filter.columnKey}`);
   const columnKey = filter ? filter.columnKey || firstColumnKey : firstColumnKey;
-  console.log(`FilterRow.columnFor() columnKey = ${columnKey}`);
 
   return TCU.tableColumn(tableColumns, columnKey);
 };
@@ -36,6 +34,8 @@ const createColumnSelect = (tableColumns, filter, index, column, handleChange) =
     initialValue: column.key,
     onChange: handleChange
   });
+
+const createEmptyCell = key => ReactUtils.createCell("", key);
 
 const operatorsFor = column => {
   let answer;
@@ -69,9 +69,11 @@ const createOperatorSelect = (filter, index, column, handleChange) => {
   });
 };
 
-const createBooleanFilterUI = index => {
-  return ReactUtils.createCell(ReactDOMFactories.span({}, ""), `rhsBooleanField${index}`);
-};
+const createBooleanFilterUI = index => [
+  createEmptyCell(`rhsBooleanField1${index}`),
+  createEmptyCell(`rhsBooleanField2${index}`),
+  createEmptyCell(`rhsBooleanField3${index}`)
+];
 
 const createNumberFilterUI = (filter, index, handleChange) => {
   const idKey = `rhsField${index}`;
@@ -84,9 +86,12 @@ const createNumberFilterUI = (filter, index, handleChange) => {
           initialValue: filter ? filter.rhs : undefined,
           onBlur: handleChange
         }),
-        `rhs1NumberField${index}`
+        `rhs1NumberField1${index}`
       ),
-      ReactUtils.createCell("to", "toField", "pl2 pr2"),
+      ReactUtils.createCell(
+        ReactDOMFactories.span({ style: { paddingLeft: 3, paddingRight: 3 } }, "to"),
+        `toField${index}`
+      ),
       ReactUtils.createCell(
         React.createElement(NumberInput, {
           id: `rhs2Field${index}`,
@@ -94,33 +99,41 @@ const createNumberFilterUI = (filter, index, handleChange) => {
           initialValue: filter ? filter.rhs2 : undefined,
           onBlur: handleChange
         }),
-        `rhs2NumberField${index}`
+        `rhs2NumberField3${index}`
       )
     ];
   }
 
-  return ReactUtils.createCell(
-    React.createElement(NumberInput, {
-      id: idKey,
-      className: "field",
-      initialValue: filter ? filter.rhs : undefined,
-      onBlur: handleChange
-    }),
-    `rhsNumberField${index}`
-  );
+  return [
+    ReactUtils.createCell(
+      React.createElement(NumberInput, {
+        id: idKey,
+        className: "field",
+        initialValue: filter ? filter.rhs : undefined,
+        onBlur: handleChange
+      }),
+      `rhsNumberField1${index}`
+    ),
+    createEmptyCell(`rhsNumberField2${index}`),
+    createEmptyCell(`rhsNumberField3${index}`)
+  ];
 };
 
 const createStringFilterUI = (filter, index, handleChange) => {
   const idKey = `rhsField${index}`;
-  return ReactUtils.createCell(
-    React.createElement(StringInput, {
-      id: idKey,
-      className: "field",
-      initialValue: filter ? filter.rhs : undefined,
-      onBlur: handleChange
-    }),
-    `rhsStringField${index}`
-  );
+  return [
+    ReactUtils.createCell(
+      React.createElement(StringInput, {
+        id: idKey,
+        className: "field",
+        initialValue: filter ? filter.rhs : undefined,
+        onBlur: handleChange
+      }),
+      `rhsStringField1${index}`
+    ),
+    createEmptyCell(`rhsStringField2${index}`),
+    createEmptyCell(`rhsStringField3${index}`)
+  ];
 };
 
 const createFilterUI = (filter, index, handleChange) => {
