@@ -43,6 +43,11 @@ const TableColumns = [
     convertFunction: row => (row.category ? firstCharUpper(row.category) : undefined)
   },
   {
+    key: "components",
+    label: "Components",
+    valueFunction: row => row.components.join(" ")
+  },
+  {
     key: "liked",
     label: "Liked",
     type: "boolean"

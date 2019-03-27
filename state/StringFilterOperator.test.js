@@ -30,6 +30,17 @@ QUnit.test("compareFunction() CONTAINS", assert => {
   assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
+QUnit.test("compareFunction() CONTAINS array", assert => {
+  // Setup.
+  const operatorKey = SFO.CONTAINS;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "th"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), false);
+});
+
 QUnit.test("compareFunction() DOES_NOT_CONTAIN", assert => {
   // Setup.
   const operatorKey = SFO.DOES_NOT_CONTAIN;
@@ -40,6 +51,17 @@ QUnit.test("compareFunction() DOES_NOT_CONTAIN", assert => {
   assert.equal(operator.compareFunction("test", "test"), false);
   assert.equal(operator.compareFunction("test", "vi"), true);
   assert.equal(operator.compareFunction(undefined, "vi"), false);
+});
+
+QUnit.test("compareFunction() DOES_NOT_CONTAIN array", assert => {
+  // Setup.
+  const operatorKey = SFO.DOES_NOT_CONTAIN;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "th"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), true);
 });
 
 QUnit.test("compareFunction() IS", assert => {
@@ -54,6 +76,20 @@ QUnit.test("compareFunction() IS", assert => {
   assert.equal(operator.compareFunction(undefined, "violet"), false);
 });
 
+QUnit.test("compareFunction() IS array", assert => {
+  // Setup.
+  const operatorKey = SFO.IS;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test something"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "test"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "something"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "te"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "ng"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), false);
+});
+
 QUnit.test("compareFunction() IS_NOT", assert => {
   // Setup.
   const operatorKey = SFO.IS_NOT;
@@ -64,6 +100,20 @@ QUnit.test("compareFunction() IS_NOT", assert => {
   assert.equal(operator.compareFunction("test", "test"), false);
   assert.equal(operator.compareFunction("test", "violet"), true);
   assert.equal(operator.compareFunction(undefined, "violet"), true);
+});
+
+QUnit.test("compareFunction() IS_NOT array", assert => {
+  // Setup.
+  const operatorKey = SFO.IS_NOT;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test something"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "test"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "something"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "te"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "ng"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), true);
 });
 
 QUnit.test("compareFunction() BEGINS_WITH", assert => {
@@ -78,6 +128,19 @@ QUnit.test("compareFunction() BEGINS_WITH", assert => {
   assert.equal(operator.compareFunction(undefined, "vi"), false);
 });
 
+QUnit.test("compareFunction() BEGINS_WITH array", assert => {
+  // Setup.
+  const operatorKey = SFO.BEGINS_WITH;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "something"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "te"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "ng"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), false);
+});
+
 QUnit.test("compareFunction() ENDS_WITH", assert => {
   // Setup.
   const operatorKey = SFO.ENDS_WITH;
@@ -88,6 +151,19 @@ QUnit.test("compareFunction() ENDS_WITH", assert => {
   assert.equal(operator.compareFunction("test", "test"), true);
   assert.equal(operator.compareFunction("test", "vi"), false);
   assert.equal(operator.compareFunction(undefined, "vi"), false);
+});
+
+QUnit.test("compareFunction() ENDS_WITH array", assert => {
+  // Setup.
+  const operatorKey = SFO.ENDS_WITH;
+  const operator = SFO.properties[operatorKey];
+
+  // Run / Verify.
+  assert.equal(operator.compareFunction(["test", "something"], "test"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "something"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "te"), false);
+  assert.equal(operator.compareFunction(["test", "something"], "ng"), true);
+  assert.equal(operator.compareFunction(["test", "something"], "vi"), false);
 });
 
 QUnit.test("keys and values", assert => {

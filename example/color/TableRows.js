@@ -5,6 +5,7 @@ const TableRows = [
     green: 0,
     blue: 0,
     category: "primary",
+    components: [255, 0, 0],
     liked: false
   },
   {
@@ -13,6 +14,7 @@ const TableRows = [
     green: 255,
     blue: 0,
     category: "primary",
+    components: [0, 255, 0],
     liked: true
   },
   {
@@ -20,14 +22,16 @@ const TableRows = [
     red: 0,
     green: 0,
     blue: 255,
-    category: "primary"
+    category: "primary",
+    components: [0, 0, 255]
   },
   {
     name: "Yellow",
     red: 255,
     green: 255,
     blue: 0,
-    category: "secondary"
+    category: "secondary",
+    components: [255, 255, 0]
   },
   {
     name: "Magenta",
@@ -35,6 +39,7 @@ const TableRows = [
     green: 0,
     blue: 255,
     category: "secondary",
+    components: [255, 0, 255],
     liked: false
   },
   {
@@ -42,14 +47,16 @@ const TableRows = [
     red: 0,
     green: 255,
     blue: 255,
-    category: "secondary"
+    category: "secondary",
+    components: [0, 255, 255]
   },
   {
     name: "Orange",
     red: 255,
     green: 127,
     blue: 0,
-    category: "tertiary"
+    category: "tertiary",
+    components: [255, 127, 0]
   },
   {
     name: "Rose",
@@ -57,6 +64,7 @@ const TableRows = [
     green: 0,
     blue: 127,
     category: "tertiary",
+    components: [255, 0, 127],
     liked: false
   },
   {
@@ -65,6 +73,7 @@ const TableRows = [
     green: 255,
     blue: 0,
     category: "tertiary",
+    components: [127, 255, 0],
     liked: true
   },
   {
@@ -73,6 +82,7 @@ const TableRows = [
     green: 255,
     blue: 127,
     category: "tertiary",
+    components: [0, 255, 127],
     liked: true
   },
   {
@@ -80,14 +90,16 @@ const TableRows = [
     red: 127,
     green: 0,
     blue: 255,
-    category: "tertiary"
+    category: "tertiary",
+    components: [127, 0, 255]
   },
   {
     name: "Azure",
     red: 0,
     green: 127,
     blue: 255,
-    category: "tertiary"
+    category: "tertiary",
+    components: [0, 127, 255]
   }
 ];
 

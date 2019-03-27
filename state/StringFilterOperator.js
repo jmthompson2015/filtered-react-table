@@ -10,32 +10,50 @@ const StringFilterOperator = {
 StringFilterOperator.properties = {
   sfoContains: {
     label: "contains",
-    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.includes(rhs)),
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value === undefined ? false : value.includes(rhs);
+    },
     key: "sfoContains"
   },
   sfoDoesNotContain: {
     label: "does not contain",
-    compareFunction: (lhs, rhs) => (lhs === undefined ? false : !lhs.includes(rhs)),
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value === undefined ? false : !value.includes(rhs);
+    },
     key: "sfoDoesNotContain"
   },
   sfoIs: {
     label: "is",
-    compareFunction: (lhs, rhs) => lhs === rhs,
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value === rhs;
+    },
     key: "sfoIs"
   },
   sfoIsNot: {
     label: "is not",
-    compareFunction: (lhs, rhs) => lhs !== rhs,
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value !== rhs;
+    },
     key: "sfoIsNot"
   },
   sfoBeginsWith: {
     label: "begins with",
-    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.startsWith(rhs)),
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value === undefined ? false : value.startsWith(rhs);
+    },
     key: "sfoBeginsWith"
   },
   sfoEndsWith: {
     label: "ends with",
-    compareFunction: (lhs, rhs) => (lhs === undefined ? false : lhs.endsWith(rhs)),
+    compareFunction: (lhs, rhs) => {
+      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+      return value === undefined ? false : value.endsWith(rhs);
+    },
     key: "sfoEndsWith"
   }
 };
