@@ -1,21 +1,24 @@
+import FilterType from "../state/FilterType.js";
+import TCU from "../state/TableColumnUtilities.js";
+
 import ReactUtils from "./ReactUtilities.js";
 
 const determineCell = (column, row, value) =>
   column.cellFunction ? column.cellFunction(row) : value;
 
 const determineValue = (column, row) => {
-  if (column.type === "boolean") {
+  if (column.type === FilterType.BOOLEAN) {
     if (row[column.key] === true) return "true";
     if (row[column.key] === false) return "false";
     return undefined;
   }
-  return column.valueFunction ? column.valueFunction(row) : row[column.key];
+  return TCU.determineValue(column, row);
 };
 
 const filterTableColumns = tableColumns => {
   const reduceFunction1 = (accum1, column) => {
     const reduceFunction0 = (accum0, key) => {
-      if (["cellFunction", "convertFunction", "defaultFilter", "valueFunction"].includes(key)) {
+      if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
         return accum0;
       }
       const value = column[key];

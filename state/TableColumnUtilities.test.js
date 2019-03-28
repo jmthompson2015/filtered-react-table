@@ -2,6 +2,19 @@ import TCU from "./TableColumnUtilities.js";
 
 QUnit.module("TableColumnUtilities");
 
+QUnit.test("determineValue()", assert => {
+  // Setup.
+  const column = { key: "red", label: "Red" };
+  const row = { red: 255, green: 0, blue: 0 };
+
+  // Run.
+  const result = TCU.determineValue(column, row);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, 255);
+});
+
 QUnit.test("tableColumn() bogus", assert => {
   // Setup.
   const tableColumns = [

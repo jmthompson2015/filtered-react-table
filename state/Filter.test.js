@@ -147,6 +147,7 @@ QUnit.test("isStringFilter() undefined", assert => {
 
 QUnit.test("passes() boolean", assert => {
   // Setup.
+  const tableColumns = [{ key: "liked", label: "Liked" }];
   const columnKey = "liked";
   const operatorKey = BFO.IS_TRUE;
   const filter1 = Filter.create({ columnKey, operatorKey });
@@ -155,13 +156,14 @@ QUnit.test("passes() boolean", assert => {
   const data = { liked: true };
 
   // Run / Verify.
-  assert.equal(Filter.passes(filter1, data), true, "filter1");
-  assert.equal(Filter.passes(filter2, data), false, "filter2");
-  assert.equal(Filter.passes(filter3, data), false, "filter3");
+  assert.equal(Filter.passes(tableColumns, filter1, data), true, "filter1");
+  assert.equal(Filter.passes(tableColumns, filter2, data), false, "filter2");
+  assert.equal(Filter.passes(tableColumns, filter3, data), false, "filter3");
 });
 
 QUnit.test("passes() number", assert => {
   // Setup.
+  const tableColumns = [{ key: "red", label: "Red" }];
   const columnKey = "red";
   const operatorKey = NFO.IS_GREATER_THAN;
   const rhs = 10;
@@ -178,15 +180,16 @@ QUnit.test("passes() number", assert => {
   const data = { red: 15 };
 
   // Run / Verify.
-  assert.equal(Filter.passes(filter1, data), true, "filter1");
-  assert.equal(Filter.passes(filter2, data), false, "filter2");
-  assert.equal(Filter.passes(filter3, data), false, "filter3");
-  assert.equal(Filter.passes(filter4, data), true, "filter4");
-  assert.equal(Filter.passes(filter5, data), true, "filter5");
+  assert.equal(Filter.passes(tableColumns, filter1, data), true, "filter1");
+  assert.equal(Filter.passes(tableColumns, filter2, data), false, "filter2");
+  assert.equal(Filter.passes(tableColumns, filter3, data), false, "filter3");
+  assert.equal(Filter.passes(tableColumns, filter4, data), true, "filter4");
+  assert.equal(Filter.passes(tableColumns, filter5, data), true, "filter5");
 });
 
 QUnit.test("passes() string", assert => {
   // Setup.
+  const tableColumns = [{ key: "name", label: "Name" }];
   const columnKey = "name";
   const operatorKey = SFO.CONTAINS;
   const rhs = "ed";
@@ -197,14 +200,21 @@ QUnit.test("passes() string", assert => {
   const data = { name: "Red" };
 
   // Run / Verify.
-  assert.equal(Filter.passes(filter1, data), true, "filter1");
-  assert.equal(Filter.passes(filter2, data), false, "filter2");
-  assert.equal(Filter.passes(filter3, data), false, "filter3");
-  assert.equal(Filter.passes(filter4, data), true, "filter4");
+  assert.equal(Filter.passes(tableColumns, filter1, data), true, "filter1");
+  assert.equal(Filter.passes(tableColumns, filter2, data), false, "filter2");
+  assert.equal(Filter.passes(tableColumns, filter3, data), false, "filter3");
+  assert.equal(Filter.passes(tableColumns, filter4, data), true, "filter4");
 });
 
 QUnit.test("passesAll()", assert => {
   // Setup.
+  const tableColumns = [
+    { key: "name", label: "Name" },
+    { key: "red", label: "Red", type: "number" },
+    { key: "green", label: "Green", type: "number" },
+    { key: "blue", label: "Blue", type: "number" },
+    { key: "category", label: "Category" }
+  ];
   const filter1 = Filter.create({
     columnKey: "red",
     operatorKey: NFO.IS_GREATER_THAN,
@@ -221,12 +231,12 @@ QUnit.test("passesAll()", assert => {
   const data6 = { name: "Cyan", red: 0, green: 255, blue: 255, category: "Secondary" };
 
   // Run / Verify.
-  assert.equal(Filter.passesAll(filters, data1), true);
-  assert.equal(Filter.passesAll(filters, data2), false);
-  assert.equal(Filter.passesAll(filters, data3), false);
-  assert.equal(Filter.passesAll(filters, data4), true);
-  assert.equal(Filter.passesAll(filters, data5), true);
-  assert.equal(Filter.passesAll(filters, data6), false);
+  assert.equal(Filter.passesAll(tableColumns, filters, data1), true);
+  assert.equal(Filter.passesAll(tableColumns, filters, data2), false);
+  assert.equal(Filter.passesAll(tableColumns, filters, data3), false);
+  assert.equal(Filter.passesAll(tableColumns, filters, data4), true);
+  assert.equal(Filter.passesAll(tableColumns, filters, data5), true);
+  assert.equal(Filter.passesAll(tableColumns, filters, data6), false);
 });
 
 QUnit.test("toString() boolean", assert => {

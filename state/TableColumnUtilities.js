@@ -1,5 +1,8 @@
 const TableColumnUtilities = {};
 
+TableColumnUtilities.determineValue = (column, row) =>
+  column.valueFunction ? column.valueFunction(row) : row[column.key];
+
 TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
   const columns = R.filter(c => c.key === columnKey, tableColumns);
 

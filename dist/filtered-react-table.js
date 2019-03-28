@@ -199,11 +199,25 @@
 
   Object.freeze(StringFilterOperator);
 
+  const TableColumnUtilities = {};
+
+  TableColumnUtilities.determineValue = (column, row) =>
+    column.valueFunction ? column.valueFunction(row) : row[column.key];
+
+  TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
+    const columns = R.filter(c => c.key === columnKey, tableColumns);
+
+    return columns.length > 0 ? columns[0] : undefined;
+  };
+
+  Object.freeze(TableColumnUtilities);
+
   const Filter = {};
 
-  const operator = opKey => BooleanFilterOperator.properties[opKey] || NumberFilterOperator.properties[opKey] || StringFilterOperator.properties[opKey];
+  const operator = operatorKey =>
+    BooleanFilterOperator.properties[operatorKey] || NumberFilterOperator.properties[operatorKey] || StringFilterOperator.properties[operatorKey];
 
-  const compareFunction = opKey => operator(opKey).compareFunction;
+  const compareFunction = operatorKey => operator(operatorKey).compareFunction;
 
   Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) => ({
     columnKey,
@@ -221,21 +235,30 @@
   Filter.isStringFilter = filter =>
     filter !== undefined && Object.keys(StringFilterOperator.properties).includes(filter.operatorKey);
 
-  Filter.passes = (filter, data) => {
-    const value = data[filter.columnKey];
-    const compare = compareFunction(filter.operatorKey);
+  Filter.passes = (tableColumns, filter, row) => {
+    const column = TableColumnUtilities.tableColumn(tableColumns, filter.columnKey);
+    if (column === undefined) {
+      // eslint-disable-next-line no-console
+      console.warn(`Unknown column for filter.columnKey: ${filter.columnKey}`);
+    }
 
-    return compare(value, filter.rhs, filter.rhs2);
+    if (column !== undefined) {
+      const value = TableColumnUtilities.determineValue(column, row);
+      const compare = compareFunction(filter.operatorKey);
+
+      return compare(value, filter.rhs, filter.rhs2);
+    }
+    return false;
   };
 
-  Filter.passesAll = (filters, data) => {
+  Filter.passesAll = (tableColumns, filters, row) => {
     let answer = true;
     const propertyNames = Object.keys(filters);
 
     for (let i = 0; i < propertyNames.length; i += 1) {
       const propertyName = propertyNames[i];
       const filter = filters[propertyName];
-      const passes = Filter.passes(filter, data);
+      const passes = Filter.passes(tableColumns, filter, row);
 
       if (!passes) {
         answer = false;
@@ -295,7 +318,11 @@
     switch (action.type) {
       case ActionType.APPLY_FILTERS:
         console.log(`Reducer APPLY_FILTERS`);
-        newFilteredTableRows = Reducer.filterTableRows(state.tableRows, state.filters);
+        newFilteredTableRows = Reducer.filterTableRows(
+          state.tableColumns,
+          state.tableRows,
+          state.filters
+        );
         Reducer.saveToLocalStorage(state.filters);
         return R.assoc("filteredTableRows", newFilteredTableRows, state);
       case ActionType.REMOVE_FILTERS:
@@ -327,8 +354,8 @@
     }
   };
 
-  Reducer.filterTableRows = (tableRows, filters) => {
-    const answer = R.filter(data => Filter.passesAll(filters, data), tableRows);
+  Reducer.filterTableRows = (tableColumns, tableRows, filters) => {
+    const answer = R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
 
     return Reducer.sortTableRows(answer);
   };
@@ -386,18 +413,18 @@
     column.cellFunction ? column.cellFunction(row) : value;
 
   const determineValue = (column, row) => {
-    if (column.type === "boolean") {
+    if (column.type === FilterType.BOOLEAN) {
       if (row[column.key] === true) return "true";
       if (row[column.key] === false) return "false";
       return undefined;
     }
-    return column.valueFunction ? column.valueFunction(row) : row[column.key];
+    return TableColumnUtilities.determineValue(column, row);
   };
 
   const filterTableColumns = tableColumns => {
     const reduceFunction1 = (accum1, column) => {
       const reduceFunction0 = (accum0, key) => {
-        if (["cellFunction", "convertFunction", "defaultFilter", "valueFunction"].includes(key)) {
+        if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
           return accum0;
         }
         const value = column[key];
@@ -487,16 +514,6 @@
   EnumUtilities.values = enumClass => Object.values(enumClass.properties);
 
   Object.freeze(EnumUtilities);
-
-  const TableColumnUtilities = {};
-
-  TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
-    const columns = R.filter(c => c.key === columnKey, tableColumns);
-
-    return columns.length > 0 ? columns[0] : undefined;
-  };
-
-  Object.freeze(TableColumnUtilities);
 
   class NumberInput extends React.Component {
     constructor(props) {

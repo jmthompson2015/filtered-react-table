@@ -20,7 +20,11 @@ Reducer.root = (state, action) => {
   switch (action.type) {
     case ActionType.APPLY_FILTERS:
       console.log(`Reducer APPLY_FILTERS`);
-      newFilteredTableRows = Reducer.filterTableRows(state.tableRows, state.filters);
+      newFilteredTableRows = Reducer.filterTableRows(
+        state.tableColumns,
+        state.tableRows,
+        state.filters
+      );
       Reducer.saveToLocalStorage(state.filters);
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
     case ActionType.REMOVE_FILTERS:
@@ -52,8 +56,8 @@ Reducer.root = (state, action) => {
   }
 };
 
-Reducer.filterTableRows = (tableRows, filters) => {
-  const answer = R.filter(data => Filter.passesAll(filters, data), tableRows);
+Reducer.filterTableRows = (tableColumns, tableRows, filters) => {
+  const answer = R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
 
   return Reducer.sortTableRows(answer);
 };

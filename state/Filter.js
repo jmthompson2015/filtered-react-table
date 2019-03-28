@@ -2,12 +2,14 @@ import BFO from "./BooleanFilterOperator.js";
 import FilterType from "./FilterType.js";
 import NFO from "./NumberFilterOperator.js";
 import SFO from "./StringFilterOperator.js";
+import TCU from "./TableColumnUtilities.js";
 
 const Filter = {};
 
-const operator = opKey => BFO.properties[opKey] || NFO.properties[opKey] || SFO.properties[opKey];
+const operator = operatorKey =>
+  BFO.properties[operatorKey] || NFO.properties[operatorKey] || SFO.properties[operatorKey];
 
-const compareFunction = opKey => operator(opKey).compareFunction;
+const compareFunction = operatorKey => operator(operatorKey).compareFunction;
 
 Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) => ({
   columnKey,
@@ -25,21 +27,30 @@ Filter.isNumberFilter = filter =>
 Filter.isStringFilter = filter =>
   filter !== undefined && Object.keys(SFO.properties).includes(filter.operatorKey);
 
-Filter.passes = (filter, data) => {
-  const value = data[filter.columnKey];
-  const compare = compareFunction(filter.operatorKey);
+Filter.passes = (tableColumns, filter, row) => {
+  const column = TCU.tableColumn(tableColumns, filter.columnKey);
+  if (column === undefined) {
+    // eslint-disable-next-line no-console
+    console.warn(`Unknown column for filter.columnKey: ${filter.columnKey}`);
+  }
 
-  return compare(value, filter.rhs, filter.rhs2);
+  if (column !== undefined) {
+    const value = TCU.determineValue(column, row);
+    const compare = compareFunction(filter.operatorKey);
+
+    return compare(value, filter.rhs, filter.rhs2);
+  }
+  return false;
 };
 
-Filter.passesAll = (filters, data) => {
+Filter.passesAll = (tableColumns, filters, row) => {
   let answer = true;
   const propertyNames = Object.keys(filters);
 
   for (let i = 0; i < propertyNames.length; i += 1) {
     const propertyName = propertyNames[i];
     const filter = filters[propertyName];
-    const passes = Filter.passes(filter, data);
+    const passes = Filter.passes(tableColumns, filter, row);
 
     if (!passes) {
       answer = false;
