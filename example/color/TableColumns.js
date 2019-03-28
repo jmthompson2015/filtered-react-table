@@ -14,6 +14,12 @@ const TableColumns = [
     valueFunction: row => row.name
   },
   {
+    key: "id",
+    label: "ID",
+    type: "number",
+    isHidden: true
+  },
+  {
     key: "name",
     label: "Name",
     className: "tl"

@@ -17,17 +17,20 @@ const determineValue = (column, row) => {
 
 const filterTableColumns = tableColumns => {
   const reduceFunction1 = (accum1, column) => {
-    const reduceFunction0 = (accum0, key) => {
-      if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
-        return accum0;
-      }
-      const value = column[key];
+    if (!column.isHidden) {
+      const reduceFunction0 = (accum0, key) => {
+        if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
+          return accum0;
+        }
+        const value = column[key];
 
-      return R.assoc(key, value, accum0);
-    };
-    const newColumn = R.reduce(reduceFunction0, {}, Object.keys(column));
+        return R.assoc(key, value, accum0);
+      };
+      const newColumn = R.reduce(reduceFunction0, {}, Object.keys(column));
 
-    return R.append(newColumn, accum1);
+      return R.append(newColumn, accum1);
+    }
+    return accum1;
   };
 
   return R.reduce(reduceFunction1, [], tableColumns);

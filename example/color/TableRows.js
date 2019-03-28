@@ -1,5 +1,6 @@
 const TableRows = [
   {
+    id: 1,
     name: "Red",
     red: 255,
     green: 0,
@@ -9,6 +10,7 @@ const TableRows = [
     liked: false
   },
   {
+    id: 2,
     name: "Green",
     red: 0,
     green: 255,
@@ -18,6 +20,7 @@ const TableRows = [
     liked: true
   },
   {
+    id: 3,
     name: "Blue",
     red: 0,
     green: 0,
@@ -26,6 +29,7 @@ const TableRows = [
     components: [0, 0, 255]
   },
   {
+    id: 4,
     name: "Yellow",
     red: 255,
     green: 255,
@@ -34,6 +38,7 @@ const TableRows = [
     components: [255, 255, 0]
   },
   {
+    id: 5,
     name: "Magenta",
     red: 255,
     green: 0,
@@ -43,6 +48,7 @@ const TableRows = [
     liked: false
   },
   {
+    id: 6,
     name: "Cyan",
     red: 0,
     green: 255,
@@ -51,6 +57,7 @@ const TableRows = [
     components: [0, 255, 255]
   },
   {
+    id: 7,
     name: "Orange",
     red: 255,
     green: 127,
@@ -59,6 +66,7 @@ const TableRows = [
     components: [255, 127, 0]
   },
   {
+    id: 8,
     name: "Rose",
     red: 255,
     green: 0,
@@ -68,6 +76,7 @@ const TableRows = [
     liked: false
   },
   {
+    id: 9,
     name: "Chartreuse",
     red: 127,
     green: 255,
@@ -77,6 +86,7 @@ const TableRows = [
     liked: true
   },
   {
+    id: 10,
     name: "Spring Green",
     red: 0,
     green: 255,
@@ -86,6 +96,7 @@ const TableRows = [
     liked: true
   },
   {
+    id: 11,
     name: "Violet",
     red: 127,
     green: 0,
@@ -94,6 +105,7 @@ const TableRows = [
     components: [127, 0, 255]
   },
   {
+    id: 12,
     name: "Azure",
     red: 0,
     green: 127,
