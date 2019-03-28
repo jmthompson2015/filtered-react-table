@@ -55,13 +55,21 @@ class FilteredReactTable {
   filterElement() {
     const container = React.createElement(FilterContainer);
 
-    return React.createElement(ReactRedux.Provider, { store: this.store }, container);
+    return React.createElement(
+      ReactRedux.Provider,
+      { key: "FRTFilterProvider", store: this.store },
+      container
+    );
   }
 
   tableElement() {
     const container = React.createElement(DataTableContainer);
 
-    return React.createElement(ReactRedux.Provider, { store: this.store }, container);
+    return React.createElement(
+      ReactRedux.Provider,
+      { key: "FRTTableProvider", store: this.store },
+      container
+    );
   }
 }
 
