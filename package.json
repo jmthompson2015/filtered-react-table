@@ -28,13 +28,13 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "qunit": "^2.9.2",
-    "rollup": "^1.7.3"
+    "rollup": "^1.7.4"
   },
   "dependencies": {
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-dom-factories": "^1.0.2",
     "react-redux": "^6.0.1",
     "reactable": "^1.1.0",
