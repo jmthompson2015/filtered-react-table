@@ -14,23 +14,18 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch /* , ownProps */) => ({
   applyOnClick: () => {
-    console.log("applyOnClick()");
     dispatch(ActionCreator.applyFilters());
   },
   clearCacheOnClick: () => {
-    console.log("clearCacheOnClick()");
     localStorage.removeItem("filters");
   },
   onChange: filters => {
-    console.log("FilterContainer onChange()");
     dispatch(ActionCreator.setFilters(filters));
   },
   removeOnClick: () => {
-    console.log("removeOnClick()");
     dispatch(ActionCreator.removeFilters());
   },
   restoreDefaultsOnClick: () => {
-    console.log("restoreDefaultsOnClick()");
     dispatch(ActionCreator.setDefaultFilters());
   }
 });
