@@ -1,5 +1,6 @@
 import ActionCreator from "./state/ActionCreator.js";
 import Reducer from "./state/Reducer.js";
+import Selector from "./state/Selector.js";
 
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
@@ -50,6 +51,10 @@ class FilteredReactTable {
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
     this.store.dispatch(ActionCreator.setTableRows(tableRows2));
     this.store.dispatch(ActionCreator.setDefaultFilters());
+  }
+
+  filteredTableRows() {
+    return Selector.filteredTableRows(this.store.getState());
   }
 
   filterElement() {

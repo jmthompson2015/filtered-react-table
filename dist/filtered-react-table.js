@@ -371,6 +371,18 @@
 
   Object.freeze(Reducer);
 
+  const Selector = {};
+
+  Selector.filteredTableRows = state => state.filteredTableRows;
+
+  Selector.filters = state => state.filters;
+
+  Selector.tableColumns = state => state.tableColumns;
+
+  Selector.tableRows = state => state.tableRows;
+
+  Object.freeze(Selector);
+
   const ReactUtilities = {};
 
   ReactUtilities.createCell = (element, key, className, props = {}) => {
@@ -1183,6 +1195,10 @@
       this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
       this.store.dispatch(ActionCreator.setTableRows(tableRows2));
       this.store.dispatch(ActionCreator.setDefaultFilters());
+    }
+
+    filteredTableRows() {
+      return Selector.filteredTableRows(this.store.getState());
     }
 
     filterElement() {
