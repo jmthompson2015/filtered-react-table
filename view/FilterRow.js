@@ -257,7 +257,7 @@ class FilterRow extends React.Component {
 
     const cells = [columnSelect, operatorSelect, filterUI, removeButton, addButton];
 
-    return ReactUtils.createRow(cells, `${column.key}FilterRow${index}`);
+    return ReactUtils.createRow(cells, `${column.key}FilterRow${index}`, "frt-filter-row");
   }
 }
 

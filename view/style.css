@@ -5,13 +5,15 @@ body {
 
 .frt-filter {
   background: #f0f0f0;
-  font-size: x-small;
+  font-size: small;
+}
+
+.frt-filter .button {
   padding: 2px;
 }
 
 .frt-filter .buttons {
   float: right;
-  font-size: small;
 }
 
 .frt-filter .button-panel {
@@ -28,6 +30,10 @@ body {
   font-weight: bold;
   padding: 2px;
   text-align: left;
+}
+
+.frt-filter-row div {
+  padding: 2px;
 }
 
 .frt-rowCount {

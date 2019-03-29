@@ -31,12 +31,12 @@ class FilterUI extends React.Component {
     const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
     const cells = [
-      ReactUtils.createCell(filterCacheButton, "filterCacheButton"),
-      ReactUtils.createCell(restoreButton, "restoreButton"),
-      ReactUtils.createCell(unfilterButton, "unfilterButton"),
-      ReactUtils.createCell(filterButton, "filterButton")
+      ReactUtils.createCell(filterCacheButton, "filterCacheButton", "button"),
+      ReactUtils.createCell(restoreButton, "restoreButton", "button"),
+      ReactUtils.createCell(unfilterButton, "unfilterButton", "button"),
+      ReactUtils.createCell(filterButton, "filterButton", "button")
     ];
-    const row = ReactUtils.createRow(cells);
+    const row = ReactUtils.createRow(cells, "button-row");
 
     return ReactUtils.createTable(row, "buttonTable", "buttons");
   }
@@ -149,11 +149,7 @@ class FilterUI extends React.Component {
   }
 
   render() {
-    const filterTable = ReactUtils.createCell(
-      this.createTable(),
-      "filterTable",
-      "frt-innerFilterTable"
-    );
+    const filterTable = ReactUtils.createCell(this.createTable(), "filterTable", "inner-table");
     const rows0 = ReactUtils.createRow(filterTable, "filterTableCells");
     const table0 = ReactUtils.createTable(rows0, "filterTableRow");
     const cell0 = ReactUtils.createCell("Filter", "filterTitle", "title");
