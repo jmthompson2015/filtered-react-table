@@ -920,7 +920,7 @@
 
       const cells = [columnSelect, operatorSelect, filterUI, removeButton, addButton];
 
-      return ReactUtilities.createRow(cells, `${column.key}FilterRow${index}`);
+      return ReactUtilities.createRow(cells, `${column.key}FilterRow${index}`, "frt-filter-row");
     }
   }
 
@@ -966,12 +966,12 @@
       const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
       const cells = [
-        ReactUtilities.createCell(filterCacheButton, "filterCacheButton"),
-        ReactUtilities.createCell(restoreButton, "restoreButton"),
-        ReactUtilities.createCell(unfilterButton, "unfilterButton"),
-        ReactUtilities.createCell(filterButton, "filterButton")
+        ReactUtilities.createCell(filterCacheButton, "filterCacheButton", "button"),
+        ReactUtilities.createCell(restoreButton, "restoreButton", "button"),
+        ReactUtilities.createCell(unfilterButton, "unfilterButton", "button"),
+        ReactUtilities.createCell(filterButton, "filterButton", "button")
       ];
-      const row = ReactUtilities.createRow(cells);
+      const row = ReactUtilities.createRow(cells, "button-row");
 
       return ReactUtilities.createTable(row, "buttonTable", "buttons");
     }
@@ -1084,11 +1084,7 @@
     }
 
     render() {
-      const filterTable = ReactUtilities.createCell(
-        this.createTable(),
-        "filterTable",
-        "frt-innerFilterTable"
-      );
+      const filterTable = ReactUtilities.createCell(this.createTable(), "filterTable", "inner-table");
       const rows0 = ReactUtilities.createRow(filterTable, "filterTableCells");
       const table0 = ReactUtilities.createTable(rows0, "filterTableRow");
       const cell0 = ReactUtilities.createCell("Filter", "filterTitle", "title");
