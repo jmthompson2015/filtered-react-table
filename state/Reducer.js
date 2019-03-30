@@ -14,7 +14,6 @@ Reducer.root = (state, action) => {
   }
 
   let newFilteredTableRows;
-  let newFilters;
   let newTableRows;
 
   switch (action.type) {
@@ -31,11 +30,6 @@ Reducer.root = (state, action) => {
       console.log("Reducer REMOVE_FILTERS");
       newFilteredTableRows = Reducer.sortTableRows(state.tableRows);
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
-    case ActionType.SET_DEFAULT_FILTERS:
-      console.log("Reducer SET_DEFAULT_FILTERS");
-      // newFilters = DefaultFilters.create(state.tableColumns);
-      newFilters = [];
-      return R.assoc("filters", newFilters, state);
     case ActionType.SET_FILTERS:
       console.log(`Reducer SET_FILTERS`);
       Reducer.saveToLocalStorage(action.filters);
@@ -45,7 +39,7 @@ Reducer.root = (state, action) => {
       return R.assoc("tableColumns", action.tableColumns, state);
     case ActionType.SET_TABLE_ROWS:
       console.log(`Reducer SET_TABLE_ROWS`);
-      newTableRows = R.concat(state.tableRows, action.tableData);
+      newTableRows = R.concat(state.tableRows, action.tableRows);
       return R.pipe(
         R.assoc("tableRows", newTableRows),
         R.assoc("filteredTableRows", newTableRows)

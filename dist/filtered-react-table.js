@@ -8,7 +8,6 @@
 
   ActionType.APPLY_FILTERS = "applyFilters";
   ActionType.REMOVE_FILTERS = "removeFilters";
-  ActionType.SET_DEFAULT_FILTERS = "setDefaultFilters";
   ActionType.SET_FILTERS = "setFilters";
   ActionType.SET_TABLE_COLUMNS = "setTableColumns";
   ActionType.SET_TABLE_ROWS = "setTableRows";
@@ -30,13 +29,11 @@
 
   ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
-  ActionCreator.setDefaultFilters = makeActionCreator(ActionType.SET_DEFAULT_FILTERS);
-
   ActionCreator.setFilters = makeActionCreator(ActionType.SET_FILTERS, "filters");
 
   ActionCreator.setTableColumns = makeActionCreator(ActionType.SET_TABLE_COLUMNS, "tableColumns");
 
-  ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableData");
+  ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableRows");
 
   Object.freeze(ActionCreator);
 
@@ -312,7 +309,6 @@
     }
 
     let newFilteredTableRows;
-    let newFilters;
     let newTableRows;
 
     switch (action.type) {
@@ -329,11 +325,6 @@
         console.log("Reducer REMOVE_FILTERS");
         newFilteredTableRows = Reducer.sortTableRows(state.tableRows);
         return R.assoc("filteredTableRows", newFilteredTableRows, state);
-      case ActionType.SET_DEFAULT_FILTERS:
-        console.log("Reducer SET_DEFAULT_FILTERS");
-        // newFilters = DefaultFilters.create(state.tableColumns);
-        newFilters = [];
-        return R.assoc("filters", newFilters, state);
       case ActionType.SET_FILTERS:
         console.log(`Reducer SET_FILTERS`);
         Reducer.saveToLocalStorage(action.filters);
@@ -343,7 +334,7 @@
         return R.assoc("tableColumns", action.tableColumns, state);
       case ActionType.SET_TABLE_ROWS:
         console.log(`Reducer SET_TABLE_ROWS`);
-        newTableRows = R.concat(state.tableRows, action.tableData);
+        newTableRows = R.concat(state.tableRows, action.tableRows);
         return R.pipe(
           R.assoc("tableRows", newTableRows),
           R.assoc("filteredTableRows", newTableRows)
@@ -1190,7 +1181,6 @@
 
       this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
       this.store.dispatch(ActionCreator.setTableRows(tableRows2));
-      this.store.dispatch(ActionCreator.setDefaultFilters());
     }
 
     filteredTableRows() {

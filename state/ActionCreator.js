@@ -15,13 +15,11 @@ ActionCreator.applyFilters = makeActionCreator(ActionType.APPLY_FILTERS);
 
 ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
-ActionCreator.setDefaultFilters = makeActionCreator(ActionType.SET_DEFAULT_FILTERS);
-
 ActionCreator.setFilters = makeActionCreator(ActionType.SET_FILTERS, "filters");
 
 ActionCreator.setTableColumns = makeActionCreator(ActionType.SET_TABLE_COLUMNS, "tableColumns");
 
-ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableData");
+ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableRows");
 
 Object.freeze(ActionCreator);
 

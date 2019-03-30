@@ -50,7 +50,6 @@ class FilteredReactTable {
 
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
     this.store.dispatch(ActionCreator.setTableRows(tableRows2));
-    this.store.dispatch(ActionCreator.setDefaultFilters());
   }
 
   filteredTableRows() {

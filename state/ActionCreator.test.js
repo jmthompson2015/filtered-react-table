@@ -6,7 +6,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", assert => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 6);
+  assert.equal(actionTypeKeys.length, 5);
 
   // Run / Verify.
   actionTypeKeys.forEach(key => {
@@ -25,17 +25,6 @@ QUnit.test("removeFilters()", assert => {
   assert.equal(result.type, ActionType.REMOVE_FILTERS);
 });
 
-QUnit.test("setDefaultFilters()", assert => {
-  // Setup.
-
-  // Run.
-  const result = ActionCreator.setDefaultFilters();
-
-  // Verify.
-  assert.ok(result);
-  assert.equal(result.type, ActionType.SET_DEFAULT_FILTERS);
-});
-
 QUnit.test("setFilters()", assert => {
   // Setup.
   const filters = 3;
@@ -47,6 +36,32 @@ QUnit.test("setFilters()", assert => {
   assert.ok(result);
   assert.equal(result.type, ActionType.SET_FILTERS);
   assert.equal(result.filters, filters);
+});
+
+QUnit.test("setTableColumns()", assert => {
+  // Setup.
+  const tableColumns = 3;
+
+  // Run.
+  const result = ActionCreator.setTableColumns(tableColumns);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_TABLE_COLUMNS);
+  assert.equal(result.tableColumns, tableColumns);
+});
+
+QUnit.test("setTableRows()", assert => {
+  // Setup.
+  const tableRows = 3;
+
+  // Run.
+  const result = ActionCreator.setTableRows(tableRows);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.SET_TABLE_ROWS);
+  assert.equal(result.tableRows, tableRows);
 });
 
 const ActionCreatorTest = {};
