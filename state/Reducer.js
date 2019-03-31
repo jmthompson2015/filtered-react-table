@@ -28,7 +28,7 @@ Reducer.root = (state, action) => {
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
     case ActionType.REMOVE_FILTERS:
       console.log("Reducer REMOVE_FILTERS");
-      newFilteredTableRows = Reducer.sortTableRows(state.tableRows);
+      newFilteredTableRows = state.tableRows;
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
     case ActionType.SET_FILTERS:
       console.log(`Reducer SET_FILTERS`);
@@ -50,11 +50,8 @@ Reducer.root = (state, action) => {
   }
 };
 
-Reducer.filterTableRows = (tableColumns, tableRows, filters) => {
-  const answer = R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
-
-  return Reducer.sortTableRows(answer);
-};
+Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
+  R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
 
 Reducer.loadFromLocalStorage = () =>
   localStorage.filters ? JSON.parse(localStorage.filters) : undefined;
@@ -62,8 +59,6 @@ Reducer.loadFromLocalStorage = () =>
 Reducer.saveToLocalStorage = filters => {
   localStorage.filters = JSON.stringify(filters);
 };
-
-Reducer.sortTableRows = tableRows => R.sort(R.ascend(R.prop("boardGameRank")), tableRows);
 
 Object.freeze(Reducer);
 
