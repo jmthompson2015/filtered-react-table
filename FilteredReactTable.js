@@ -1,4 +1,6 @@
 import ActionCreator from "./state/ActionCreator.js";
+import Observer from "./state/Observer.js";
+import Preferences from "./state/Preferences.js";
 import Reducer from "./state/Reducer.js";
 import Selector from "./state/Selector.js";
 
@@ -38,7 +40,7 @@ const verifyParameter = (name, value) => {
 };
 
 class FilteredReactTable {
-  constructor(tableColumns, tableRows) {
+  constructor(tableColumns, tableRows, appName, onColumnChange, onFilterChange, isVerbose) {
     verifyParameter("tableColumns", tableColumns);
     verifyParameter("tableRows", tableRows);
 
@@ -50,6 +52,21 @@ class FilteredReactTable {
 
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
     this.store.dispatch(ActionCreator.setTableRows(tableRows2));
+    this.store.dispatch(ActionCreator.setAppName(appName));
+    this.store.dispatch(ActionCreator.setVerbose(isVerbose));
+
+    const filters = Preferences.getFilters(appName);
+    this.store.dispatch(ActionCreator.setFilters(filters));
+
+    if (onColumnChange) {
+      const select = state => state.tableColumns;
+      Observer.observeStore(this.store, select, onColumnChange);
+    }
+
+    if (onFilterChange) {
+      const select = state => state.filteredTableRows;
+      Observer.observeStore(this.store, select, onFilterChange);
+    }
   }
 
   filteredTableRows() {

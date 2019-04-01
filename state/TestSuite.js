@@ -4,6 +4,7 @@ import BooleanFilterOperatorTest from "./BooleanFilterOperator.test.js";
 import FilterTest from "./Filter.test.js";
 import FilterTypeTest from "./FilterType.test.js";
 import NumberFilterOperatorTest from "./NumberFilterOperator.test.js";
+import PreferencesTest from "./Preferences.test.js";
 import ReducerTest from "./Reducer.test.js";
 import SelectorTest from "./Selector.test.js";
 import StringFilterOperatorTest from "./StringFilterOperator.test.js";

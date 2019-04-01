@@ -8,9 +8,11 @@
 
   ActionType.APPLY_FILTERS = "applyFilters";
   ActionType.REMOVE_FILTERS = "removeFilters";
+  ActionType.SET_APP_NAME = "setAppName";
   ActionType.SET_FILTERS = "setFilters";
   ActionType.SET_TABLE_COLUMNS = "setTableColumns";
   ActionType.SET_TABLE_ROWS = "setTableRows";
+  ActionType.SET_VERBOSE = "setVerbose";
 
   Object.freeze(ActionType);
 
@@ -29,24 +31,79 @@
 
   ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
+  ActionCreator.setAppName = makeActionCreator(ActionType.SET_APP_NAME, "appName");
+
   ActionCreator.setFilters = makeActionCreator(ActionType.SET_FILTERS, "filters");
 
   ActionCreator.setTableColumns = makeActionCreator(ActionType.SET_TABLE_COLUMNS, "tableColumns");
 
   ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableRows");
 
+  ActionCreator.setVerbose = makeActionCreator(ActionType.SET_VERBOSE, "isVerbose");
+
   Object.freeze(ActionCreator);
+
+  // see https://github.com/reactjs/redux/issues/303#issuecomment-125184409
+  const Observer = {};
+
+  Observer.observeStore = (store, select, onChange) => {
+    let currentState;
+
+    const handleChange = () => {
+      const nextState = select(store.getState());
+
+      if (nextState !== currentState) {
+        currentState = nextState;
+        onChange(nextState);
+      }
+    };
+
+    const unsubscribe = store.subscribe(handleChange);
+
+    handleChange();
+
+    return unsubscribe;
+  };
+
+  Object.freeze(Observer);
+
+  const Preferences = {};
+
+  const fetchItem = appName => {
+    const oldItemString = localStorage.getItem(appName);
+
+    return oldItemString !== undefined ? JSON.parse(oldItemString) || {} : {};
+  };
+
+  Preferences.getFilters = appName => {
+    const item = fetchItem(appName);
+
+    return item !== undefined ? item.filters || [] : [];
+  };
+
+  Preferences.setFilters = (appName, filters) => {
+    const oldItem = fetchItem(appName);
+    const newItem = R.merge(oldItem, { filters });
+
+    localStorage.setItem(appName, JSON.stringify(newItem));
+  };
+
+  Object.freeze(Preferences);
 
   const AppState = {};
 
   AppState.create = ({
+    appName = "FilteredReactTable",
     filteredTableRows = [],
     filters = [],
+    isVerbose = false,
     tableColumns = [],
     tableRows = []
   } = {}) => ({
+    appName,
     filteredTableRows,
     filters,
+    isVerbose,
     tableColumns,
     tableRows
   });
@@ -305,40 +362,54 @@
     // LOGGER.debug(`root() type = ${action.type}`);
 
     if (typeof state === "undefined") {
-      return AppState.create({ filters: Reducer.loadFromLocalStorage() });
+      return AppState.create();
     }
 
     let newFilteredTableRows;
-    let newTableRows;
 
     switch (action.type) {
       case ActionType.APPLY_FILTERS:
-        console.log(`Reducer APPLY_FILTERS`);
+        if (state.isVerbose) {
+          console.log(`Reducer APPLY_FILTERS`);
+        }
         newFilteredTableRows = Reducer.filterTableRows(
           state.tableColumns,
           state.tableRows,
           state.filters
         );
-        Reducer.saveToLocalStorage(state.filters);
         return R.assoc("filteredTableRows", newFilteredTableRows, state);
       case ActionType.REMOVE_FILTERS:
-        console.log("Reducer REMOVE_FILTERS");
-        newFilteredTableRows = state.tableRows;
-        return R.assoc("filteredTableRows", newFilteredTableRows, state);
+        if (state.isVerbose) {
+          console.log("Reducer REMOVE_FILTERS");
+        }
+        return R.assoc("filteredTableRows", state.tableRows, state);
+      case ActionType.SET_APP_NAME:
+        if (state.isVerbose) {
+          console.log(`Reducer SET_APP_NAME appName = ${action.appName}`);
+        }
+        return R.assoc("appName", action.appName, state);
       case ActionType.SET_FILTERS:
-        console.log(`Reducer SET_FILTERS`);
-        Reducer.saveToLocalStorage(action.filters);
+        if (state.isVerbose) {
+          console.log(`Reducer SET_FILTERS`);
+        }
+        Preferences.setFilters(state.appName, action.filters);
         return R.assoc("filters", action.filters, state);
       case ActionType.SET_TABLE_COLUMNS:
-        console.log(`Reducer SET_TABLE_COLUMNS`);
+        if (state.isVerbose) {
+          console.log(`Reducer SET_TABLE_COLUMNS`);
+        }
         return R.assoc("tableColumns", action.tableColumns, state);
       case ActionType.SET_TABLE_ROWS:
-        console.log(`Reducer SET_TABLE_ROWS`);
-        newTableRows = R.concat(state.tableRows, action.tableRows);
+        if (state.isVerbose) {
+          console.log(`Reducer SET_TABLE_ROWS`);
+        }
         return R.pipe(
-          R.assoc("tableRows", newTableRows),
-          R.assoc("filteredTableRows", newTableRows)
+          R.assoc("tableRows", action.tableRows),
+          R.assoc("filteredTableRows", action.tableRows)
         )(state);
+      case ActionType.SET_VERBOSE:
+        console.log(`Reducer SET_VERBOSE isVerbose ? ${action.isVerbose}`);
+        return R.assoc("isVerbose", action.isVerbose, state);
       default:
         console.warn(`Reducer.root: Unhandled action type: ${action.type}`);
         return state;
@@ -347,13 +418,6 @@
 
   Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
     R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
-
-  Reducer.loadFromLocalStorage = () =>
-    localStorage.filters ? JSON.parse(localStorage.filters) : undefined;
-
-  Reducer.saveToLocalStorage = filters => {
-    localStorage.filters = JSON.stringify(filters);
-  };
 
   Object.freeze(Reducer);
 
@@ -1164,7 +1228,7 @@
   };
 
   class FilteredReactTable {
-    constructor(tableColumns, tableRows) {
+    constructor(tableColumns, tableRows, appName, onColumnChange, onFilterChange, isVerbose) {
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
 
@@ -1176,6 +1240,21 @@
 
       this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
       this.store.dispatch(ActionCreator.setTableRows(tableRows2));
+      this.store.dispatch(ActionCreator.setAppName(appName));
+      this.store.dispatch(ActionCreator.setVerbose(isVerbose));
+
+      const filters = Preferences.getFilters(appName);
+      this.store.dispatch(ActionCreator.setFilters(filters));
+
+      if (onColumnChange) {
+        const select = state => state.tableColumns;
+        Observer.observeStore(this.store, select, onColumnChange);
+      }
+
+      if (onFilterChange) {
+        const select = state => state.filteredTableRows;
+        Observer.observeStore(this.store, select, onFilterChange);
+      }
     }
 
     filteredTableRows() {
