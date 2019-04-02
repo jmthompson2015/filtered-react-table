@@ -28,18 +28,27 @@ const TableColumns = [
     key: "red",
     label: "Red",
     type: "number",
+    min: 0,
+    max: 255,
+    step: 5,
     className: "tr"
   },
   {
     key: "green",
     label: "Green",
     type: "number",
+    min: 0,
+    max: 255,
+    step: 5,
     className: "tr"
   },
   {
     key: "blue",
     label: "Blue",
     type: "number",
+    min: 0,
+    max: 255,
+    step: 5,
     className: "tr"
   },
   {

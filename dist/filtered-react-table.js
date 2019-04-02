@@ -594,24 +594,29 @@
     handleBlurFunction() {
       const { onBlur } = this.props;
       const { value } = this.state;
+      const myValue = Number(value);
 
-      onBlur(value);
+      onBlur(myValue);
     }
 
     handleChangeFunction(event) {
       const { value } = event.target;
+      const myValue = Number(value);
 
-      this.setState({ value });
+      this.setState({ value: myValue });
     }
 
     render() {
-      const { className, id, initialValue } = this.props;
+      const { className, id, initialValue, max, min, step } = this.props;
 
       return ReactDOMFactories.input({
         id,
         type: "number",
         className,
         defaultValue: initialValue,
+        max,
+        min,
+        step,
         onBlur: this.handleBlur,
         onChange: this.handleChange
       });
@@ -623,13 +628,19 @@
 
     id: PropTypes.string,
     className: PropTypes.string,
-    initialValue: PropTypes.number
+    initialValue: PropTypes.number,
+    max: PropTypes.number,
+    min: PropTypes.number,
+    step: PropTypes.number
   };
 
   NumberInput.defaultProps = {
     id: "numberInput",
     className: undefined,
-    initialValue: 0
+    initialValue: 0,
+    max: undefined,
+    min: undefined,
+    step: undefined
   };
 
   const createOption = (key, label) => ReactDOMFactories.option({ key, value: key }, label);
@@ -788,7 +799,7 @@
     createEmptyCell(`rhsBooleanField3${index}`)
   ];
 
-  const createNumberFilterUI = (filter, index, handleChange) => {
+  const createNumberFilterUI = (filter, index, handleChange, min, max, step) => {
     const idKey = `rhsField${index}`;
     if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
       return [
@@ -797,6 +808,9 @@
             id: idKey,
             className: "field",
             initialValue: filter ? filter.rhs : undefined,
+            max,
+            min,
+            step,
             onBlur: handleChange
           }),
           `rhs1NumberField1${index}`
@@ -810,6 +824,9 @@
             id: `rhs2Field${index}`,
             className: "field",
             initialValue: filter ? filter.rhs2 : undefined,
+            max,
+            min,
+            step,
             onBlur: handleChange
           }),
           `rhs2NumberField3${index}`
@@ -823,6 +840,9 @@
           id: idKey,
           className: "field",
           initialValue: filter ? filter.rhs : undefined,
+          max,
+          min,
+          step,
           onBlur: handleChange
         }),
         `rhsNumberField1${index}`
@@ -849,7 +869,7 @@
     ];
   };
 
-  const createFilterUI = (filter, index, handleChange) => {
+  const createFilterUI = (filter, index, handleChange, min, max, step) => {
     const typeKey = Filter.typeKey(filter);
 
     let answer;
@@ -859,7 +879,7 @@
         answer = createBooleanFilterUI(index);
         break;
       case FilterType.NUMBER:
-        answer = createNumberFilterUI(filter, index, handleChange);
+        answer = createNumberFilterUI(filter, index, handleChange, min, max, step);
         break;
       case FilterType.STRING:
         answer = createStringFilterUI(filter, index, handleChange);
@@ -958,7 +978,14 @@
         createOperatorSelect(filter, index, column, this.handleChange),
         `${column.key}OperatorSelectCell${index}`
       );
-      const filterUI = createFilterUI(filter, index, this.handleChange);
+      const filterUI = createFilterUI(
+        filter,
+        index,
+        this.handleChange,
+        column.min,
+        column.max,
+        column.step
+      );
       const removeButton = ReactUtilities.createCell(
         createRemoveButton(isRemoveHidden, this.handleRemoveOnClick),
         `removeButtonCell${index}`

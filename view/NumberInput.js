@@ -12,24 +12,29 @@ class NumberInput extends React.Component {
   handleBlurFunction() {
     const { onBlur } = this.props;
     const { value } = this.state;
+    const myValue = Number(value);
 
-    onBlur(value);
+    onBlur(myValue);
   }
 
   handleChangeFunction(event) {
     const { value } = event.target;
+    const myValue = Number(value);
 
-    this.setState({ value });
+    this.setState({ value: myValue });
   }
 
   render() {
-    const { className, id, initialValue } = this.props;
+    const { className, id, initialValue, max, min, step } = this.props;
 
     return ReactDOMFactories.input({
       id,
       type: "number",
       className,
       defaultValue: initialValue,
+      max,
+      min,
+      step,
       onBlur: this.handleBlur,
       onChange: this.handleChange
     });
@@ -41,13 +46,19 @@ NumberInput.propTypes = {
 
   id: PropTypes.string,
   className: PropTypes.string,
-  initialValue: PropTypes.number
+  initialValue: PropTypes.number,
+  max: PropTypes.number,
+  min: PropTypes.number,
+  step: PropTypes.number
 };
 
 NumberInput.defaultProps = {
   id: "numberInput",
   className: undefined,
-  initialValue: 0
+  initialValue: 0,
+  max: undefined,
+  min: undefined,
+  step: undefined
 };
 
 export default NumberInput;

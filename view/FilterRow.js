@@ -75,7 +75,7 @@ const createBooleanFilterUI = index => [
   createEmptyCell(`rhsBooleanField3${index}`)
 ];
 
-const createNumberFilterUI = (filter, index, handleChange) => {
+const createNumberFilterUI = (filter, index, handleChange, min, max, step) => {
   const idKey = `rhsField${index}`;
   if (filter.operatorKey === NFO.IS_IN_THE_RANGE) {
     return [
@@ -84,6 +84,9 @@ const createNumberFilterUI = (filter, index, handleChange) => {
           id: idKey,
           className: "field",
           initialValue: filter ? filter.rhs : undefined,
+          max,
+          min,
+          step,
           onBlur: handleChange
         }),
         `rhs1NumberField1${index}`
@@ -97,6 +100,9 @@ const createNumberFilterUI = (filter, index, handleChange) => {
           id: `rhs2Field${index}`,
           className: "field",
           initialValue: filter ? filter.rhs2 : undefined,
+          max,
+          min,
+          step,
           onBlur: handleChange
         }),
         `rhs2NumberField3${index}`
@@ -110,6 +116,9 @@ const createNumberFilterUI = (filter, index, handleChange) => {
         id: idKey,
         className: "field",
         initialValue: filter ? filter.rhs : undefined,
+        max,
+        min,
+        step,
         onBlur: handleChange
       }),
       `rhsNumberField1${index}`
@@ -136,7 +145,7 @@ const createStringFilterUI = (filter, index, handleChange) => {
   ];
 };
 
-const createFilterUI = (filter, index, handleChange) => {
+const createFilterUI = (filter, index, handleChange, min, max, step) => {
   const typeKey = Filter.typeKey(filter);
 
   let answer;
@@ -146,7 +155,7 @@ const createFilterUI = (filter, index, handleChange) => {
       answer = createBooleanFilterUI(index);
       break;
     case FilterType.NUMBER:
-      answer = createNumberFilterUI(filter, index, handleChange);
+      answer = createNumberFilterUI(filter, index, handleChange, min, max, step);
       break;
     case FilterType.STRING:
       answer = createStringFilterUI(filter, index, handleChange);
@@ -245,7 +254,14 @@ class FilterRow extends React.Component {
       createOperatorSelect(filter, index, column, this.handleChange),
       `${column.key}OperatorSelectCell${index}`
     );
-    const filterUI = createFilterUI(filter, index, this.handleChange);
+    const filterUI = createFilterUI(
+      filter,
+      index,
+      this.handleChange,
+      column.min,
+      column.max,
+      column.step
+    );
     const removeButton = ReactUtils.createCell(
       createRemoveButton(isRemoveHidden, this.handleRemoveOnClick),
       `removeButtonCell${index}`
