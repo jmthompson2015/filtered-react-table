@@ -735,6 +735,13 @@
     initialValue: ""
   };
 
+  const asNumber = value => {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  };
+
   const columnFor = (tableColumns, filter) => {
     const firstColumnKey = Object.values(tableColumns)[0].key;
     const columnKey = filter ? filter.columnKey || firstColumnKey : firstColumnKey;
@@ -801,13 +808,15 @@
 
   const createNumberFilterUI = (filter, index, handleChange, min, max, step) => {
     const idKey = `rhsField${index}`;
+    const rhs = filter ? asNumber(filter.rhs) : undefined;
     if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
+      const rhs2 = filter ? asNumber(filter.rhs2) : undefined;
       return [
         ReactUtilities.createCell(
           React.createElement(NumberInput, {
             id: idKey,
             className: "field",
-            initialValue: filter ? filter.rhs : undefined,
+            initialValue: rhs,
             max,
             min,
             step,
@@ -823,7 +832,7 @@
           React.createElement(NumberInput, {
             id: `rhs2Field${index}`,
             className: "field",
-            initialValue: filter ? filter.rhs2 : undefined,
+            initialValue: rhs2,
             max,
             min,
             step,
@@ -839,7 +848,7 @@
         React.createElement(NumberInput, {
           id: idKey,
           className: "field",
-          initialValue: filter ? filter.rhs : undefined,
+          initialValue: rhs,
           max,
           min,
           step,
@@ -946,8 +955,8 @@
           newFilter = Filter.create({
             columnKey: column.key,
             operatorKey,
-            rhs: rhs ? parseInt(rhs, 10) : undefined,
-            rhs2: rhs2 ? parseInt(rhs2, 10) : undefined
+            rhs,
+            rhs2
           });
           break;
         case FilterType.STRING:
