@@ -1038,22 +1038,12 @@
     }
 
     createButtonTable() {
-      const { applyOnClick, clearCacheOnClick, removeOnClick, restoreDefaultsOnClick } = this.props;
+      const { applyOnClick, removeOnClick } = this.props;
 
-      const filterCacheButton = ReactDOMFactories.button(
-        { onClick: clearCacheOnClick },
-        "Clear Cache"
-      );
-      const restoreButton = ReactDOMFactories.button(
-        { onClick: restoreDefaultsOnClick },
-        "Restore Defaults"
-      );
       const unfilterButton = ReactDOMFactories.button({ onClick: removeOnClick }, "Remove");
       const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
       const cells = [
-        ReactUtilities.createCell(filterCacheButton, "filterCacheButton", "button"),
-        ReactUtilities.createCell(restoreButton, "restoreButton", "button"),
         ReactUtilities.createCell(unfilterButton, "unfilterButton", "button"),
         ReactUtilities.createCell(filterButton, "filterButton", "button")
       ];
@@ -1193,9 +1183,7 @@
     tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
     applyOnClick: PropTypes.func.isRequired,
-    clearCacheOnClick: PropTypes.func.isRequired,
-    removeOnClick: PropTypes.func.isRequired,
-    restoreDefaultsOnClick: PropTypes.func.isRequired
+    removeOnClick: PropTypes.func.isRequired
   };
 
   const mapStateToProps$1 = state => {
@@ -1212,17 +1200,11 @@
     applyOnClick: () => {
       dispatch(ActionCreator.applyFilters());
     },
-    clearCacheOnClick: () => {
-      localStorage.removeItem("filters");
-    },
     onChange: filters => {
       dispatch(ActionCreator.setFilters(filters));
     },
     removeOnClick: () => {
       dispatch(ActionCreator.removeFilters());
-    },
-    restoreDefaultsOnClick: () => {
-      dispatch(ActionCreator.setDefaultFilters());
     }
   });
 

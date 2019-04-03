@@ -17,22 +17,12 @@ class FilterUI extends React.Component {
   }
 
   createButtonTable() {
-    const { applyOnClick, clearCacheOnClick, removeOnClick, restoreDefaultsOnClick } = this.props;
+    const { applyOnClick, removeOnClick } = this.props;
 
-    const filterCacheButton = ReactDOMFactories.button(
-      { onClick: clearCacheOnClick },
-      "Clear Cache"
-    );
-    const restoreButton = ReactDOMFactories.button(
-      { onClick: restoreDefaultsOnClick },
-      "Restore Defaults"
-    );
     const unfilterButton = ReactDOMFactories.button({ onClick: removeOnClick }, "Remove");
     const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
 
     const cells = [
-      ReactUtils.createCell(filterCacheButton, "filterCacheButton", "button"),
-      ReactUtils.createCell(restoreButton, "restoreButton", "button"),
       ReactUtils.createCell(unfilterButton, "unfilterButton", "button"),
       ReactUtils.createCell(filterButton, "filterButton", "button")
     ];
@@ -172,9 +162,7 @@ FilterUI.propTypes = {
   tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   applyOnClick: PropTypes.func.isRequired,
-  clearCacheOnClick: PropTypes.func.isRequired,
-  removeOnClick: PropTypes.func.isRequired,
-  restoreDefaultsOnClick: PropTypes.func.isRequired
+  removeOnClick: PropTypes.func.isRequired
 };
 
 export default FilterUI;

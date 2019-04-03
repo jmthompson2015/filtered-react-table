@@ -16,17 +16,11 @@ const mapDispatchToProps = (dispatch /* , ownProps */) => ({
   applyOnClick: () => {
     dispatch(ActionCreator.applyFilters());
   },
-  clearCacheOnClick: () => {
-    localStorage.removeItem("filters");
-  },
   onChange: filters => {
     dispatch(ActionCreator.setFilters(filters));
   },
   removeOnClick: () => {
     dispatch(ActionCreator.removeFilters());
-  },
-  restoreDefaultsOnClick: () => {
-    dispatch(ActionCreator.setDefaultFilters());
   }
 });
 
