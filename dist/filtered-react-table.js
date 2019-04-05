@@ -72,13 +72,13 @@
   const fetchItem = appName => {
     const oldItemString = localStorage.getItem(appName);
 
-    return oldItemString !== undefined ? JSON.parse(oldItemString) || {} : {};
+    return oldItemString !== undefined ? JSON.parse(oldItemString) : {};
   };
 
   Preferences.getFilters = appName => {
     const item = fetchItem(appName);
 
-    return item !== undefined ? item.filters || [] : [];
+    return item !== undefined && item.filters !== undefined ? Immutable(item.filters) : Immutable([]);
   };
 
   Preferences.setFilters = (appName, filters) => {
@@ -99,14 +99,15 @@
     isVerbose = false,
     tableColumns = [],
     tableRows = []
-  } = {}) => ({
-    appName,
-    filteredTableRows,
-    filters,
-    isVerbose,
-    tableColumns,
-    tableRows
-  });
+  } = {}) =>
+    Immutable({
+      appName,
+      filteredTableRows,
+      filters,
+      isVerbose,
+      tableColumns,
+      tableRows
+    });
 
   Object.freeze(AppState);
 
@@ -273,12 +274,13 @@
 
   const compareFunction = operatorKey => operator(operatorKey).compareFunction;
 
-  Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) => ({
-    columnKey,
-    operatorKey,
-    rhs,
-    rhs2
-  });
+  Filter.create = ({ columnKey, operatorKey, rhs, rhs2 }) =>
+    Immutable({
+      columnKey,
+      operatorKey,
+      rhs,
+      rhs2
+    });
 
   Filter.isBooleanFilter = filter =>
     filter !== undefined && Object.keys(BooleanFilterOperator.properties).includes(filter.operatorKey);
@@ -392,20 +394,20 @@
         if (state.isVerbose) {
           console.log(`Reducer SET_FILTERS`);
         }
-        Preferences.setFilters(state.appName, action.filters);
+        Preferences.setFilters(state.appName, Immutable(action.filters));
         return R.assoc("filters", action.filters, state);
       case ActionType.SET_TABLE_COLUMNS:
         if (state.isVerbose) {
           console.log(`Reducer SET_TABLE_COLUMNS`);
         }
-        return R.assoc("tableColumns", action.tableColumns, state);
+        return R.assoc("tableColumns", Immutable(action.tableColumns), state);
       case ActionType.SET_TABLE_ROWS:
         if (state.isVerbose) {
           console.log(`Reducer SET_TABLE_ROWS`);
         }
         return R.pipe(
-          R.assoc("tableRows", action.tableRows),
-          R.assoc("filteredTableRows", action.tableRows)
+          R.assoc("tableRows", Immutable(action.tableRows)),
+          R.assoc("filteredTableRows", Immutable(action.tableRows))
         )(state);
       case ActionType.SET_VERBOSE:
         console.log(`Reducer SET_VERBOSE isVerbose ? ${action.isVerbose}`);
@@ -417,7 +419,7 @@
   };
 
   Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
-    R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
+    Immutable(R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows));
 
   Object.freeze(Reducer);
 

@@ -3,13 +3,13 @@ const Preferences = {};
 const fetchItem = appName => {
   const oldItemString = localStorage.getItem(appName);
 
-  return oldItemString !== undefined ? JSON.parse(oldItemString) || {} : {};
+  return oldItemString !== undefined ? JSON.parse(oldItemString) : {};
 };
 
 Preferences.getFilters = appName => {
   const item = fetchItem(appName);
 
-  return item !== undefined ? item.filters || [] : [];
+  return item !== undefined && item.filters !== undefined ? Immutable(item.filters) : Immutable([]);
 };
 
 Preferences.setFilters = (appName, filters) => {

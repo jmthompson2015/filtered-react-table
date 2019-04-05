@@ -7,14 +7,15 @@ AppState.create = ({
   isVerbose = false,
   tableColumns = [],
   tableRows = []
-} = {}) => ({
-  appName,
-  filteredTableRows,
-  filters,
-  isVerbose,
-  tableColumns,
-  tableRows
-});
+} = {}) =>
+  Immutable({
+    appName,
+    filteredTableRows,
+    filters,
+    isVerbose,
+    tableColumns,
+    tableRows
+  });
 
 Object.freeze(AppState);
 

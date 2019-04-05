@@ -41,20 +41,20 @@ Reducer.root = (state, action) => {
       if (state.isVerbose) {
         console.log(`Reducer SET_FILTERS`);
       }
-      Preferences.setFilters(state.appName, action.filters);
+      Preferences.setFilters(state.appName, Immutable(action.filters));
       return R.assoc("filters", action.filters, state);
     case ActionType.SET_TABLE_COLUMNS:
       if (state.isVerbose) {
         console.log(`Reducer SET_TABLE_COLUMNS`);
       }
-      return R.assoc("tableColumns", action.tableColumns, state);
+      return R.assoc("tableColumns", Immutable(action.tableColumns), state);
     case ActionType.SET_TABLE_ROWS:
       if (state.isVerbose) {
         console.log(`Reducer SET_TABLE_ROWS`);
       }
       return R.pipe(
-        R.assoc("tableRows", action.tableRows),
-        R.assoc("filteredTableRows", action.tableRows)
+        R.assoc("tableRows", Immutable(action.tableRows)),
+        R.assoc("filteredTableRows", Immutable(action.tableRows))
       )(state);
     case ActionType.SET_VERBOSE:
       console.log(`Reducer SET_VERBOSE isVerbose ? ${action.isVerbose}`);
@@ -66,7 +66,7 @@ Reducer.root = (state, action) => {
 };
 
 Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
-  R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows);
+  Immutable(R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows));
 
 Object.freeze(Reducer);
 

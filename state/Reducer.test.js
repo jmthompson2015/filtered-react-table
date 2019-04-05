@@ -45,7 +45,7 @@ QUnit.test("setTableColumns()", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.tableColumns, tableColumns);
+  assert.equal(result.tableColumns.join(), tableColumns.join());
 });
 
 QUnit.test("setTableRows()", assert => {
@@ -59,7 +59,7 @@ QUnit.test("setTableRows()", assert => {
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.tableRows, tableRows);
+  assert.equal(result.tableRows.join(), tableRows.join());
 });
 
 QUnit.test("setVerbose()", assert => {
