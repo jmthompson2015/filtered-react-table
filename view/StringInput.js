@@ -1,4 +1,4 @@
-class StringInput extends React.Component {
+class StringInput extends React.PureComponent {
   constructor(props) {
     super(props);
 

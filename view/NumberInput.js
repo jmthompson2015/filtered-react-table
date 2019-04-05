@@ -1,4 +1,4 @@
-class NumberInput extends React.Component {
+class NumberInput extends React.PureComponent {
   constructor(props) {
     super(props);
 

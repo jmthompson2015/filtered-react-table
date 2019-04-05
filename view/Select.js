@@ -1,6 +1,6 @@
 const createOption = (key, label) => ReactDOMFactories.option({ key, value: key }, label);
 
-class Select extends React.Component {
+class Select extends React.PureComponent {
   constructor(props) {
     super(props);
 

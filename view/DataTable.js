@@ -36,7 +36,7 @@ const filterTableColumns = tableColumns => {
   return R.reduce(reduceFunction1, [], tableColumns);
 };
 
-class DataTable extends React.Component {
+class DataTable extends React.PureComponent {
   constructor(props) {
     super(props);
 

@@ -504,7 +504,7 @@
     return R.reduce(reduceFunction1, [], tableColumns);
   };
 
-  class DataTable extends React.Component {
+  class DataTable extends React.PureComponent {
     constructor(props) {
       super(props);
 
@@ -580,7 +580,7 @@
 
   Object.freeze(EnumUtilities);
 
-  class NumberInput extends React.Component {
+  class NumberInput extends React.PureComponent {
     constructor(props) {
       super(props);
 
@@ -645,7 +645,7 @@
 
   const createOption = (key, label) => ReactDOMFactories.option({ key, value: key }, label);
 
-  class Select extends React.Component {
+  class Select extends React.PureComponent {
     constructor(props) {
       super(props);
 
@@ -683,7 +683,7 @@
     initialValue: undefined
   };
 
-  class StringInput extends React.Component {
+  class StringInput extends React.PureComponent {
     constructor(props) {
       super(props);
 
@@ -924,7 +924,7 @@
     return element ? element.value : undefined;
   };
 
-  class FilterRow extends React.Component {
+  class FilterRow extends React.PureComponent {
     constructor(props) {
       super(props);
 
@@ -1028,7 +1028,7 @@
     isRemoveHidden: false
   };
 
-  class FilterUI extends React.Component {
+  class FilterUI extends React.PureComponent {
     constructor(props) {
       super(props);
 

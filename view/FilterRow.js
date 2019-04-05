@@ -200,7 +200,7 @@ const rhs2FromDocument = index => {
   return element ? element.value : undefined;
 };
 
-class FilterRow extends React.Component {
+class FilterRow extends React.PureComponent {
   constructor(props) {
     super(props);
 

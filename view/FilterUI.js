@@ -7,7 +7,7 @@ import SFO from "../state/StringFilterOperator.js";
 import FilterRow from "./FilterRow.js";
 import ReactUtils from "./ReactUtilities.js";
 
-class FilterUI extends React.Component {
+class FilterUI extends React.PureComponent {
   constructor(props) {
     super(props);
 

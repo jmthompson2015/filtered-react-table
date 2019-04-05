@@ -3,7 +3,7 @@ import RU from "../../view/ReactUtilities.js";
 const toString = ({ r, g, b }) => `rgb(${r},${g},${b})`;
 const toStyle = ({ r, g, b }) => `rgb(${r},${g},${b})`;
 
-class ColorSwatch extends React.Component {
+class ColorSwatch extends React.PureComponent {
   render() {
     const { color, height, showDescription, showTitle, width } = this.props;
 
