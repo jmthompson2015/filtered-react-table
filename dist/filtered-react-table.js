@@ -957,8 +957,8 @@
           newFilter = Filter.create({
             columnKey: column.key,
             operatorKey,
-            rhs,
-            rhs2
+            rhs: asNumber(rhs),
+            rhs2: asNumber(rhs2)
           });
           break;
         case FilterType.STRING:
