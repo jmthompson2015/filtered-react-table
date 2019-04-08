@@ -3,9 +3,6 @@ import TCU from "../state/TableColumnUtilities.js";
 
 import ReactUtils from "./ReactUtilities.js";
 
-const determineCell = (column, row, value) =>
-  column.cellFunction ? column.cellFunction(row) : value;
-
 const determineValue = (column, row) => {
   if (column.type === FilterType.BOOLEAN) {
     if (row[column.key] === true) return "true";
@@ -50,7 +47,7 @@ class DataTable extends React.PureComponent {
     const { tableColumns } = this.props;
     const mapFunction = column => {
       const value = determineValue(column, data);
-      const cell = determineCell(column, data, value);
+      const cell = TCU.determineCell(column, data);
       return this.Td(
         { key: column.key + data.id, className: column.className, column: column.key, value },
         cell === undefined ? "" : cell

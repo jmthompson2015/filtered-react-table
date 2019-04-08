@@ -256,8 +256,11 @@
 
   const TableColumnUtilities = {};
 
+  TableColumnUtilities.determineCell = (column, row) =>
+    row[`frt-cell-${column.key}`] || TableColumnUtilities.determineValue(column, row);
+
   TableColumnUtilities.determineValue = (column, row) =>
-    column.valueFunction ? column.valueFunction(row) : row[column.key];
+    row[`frt-value-${column.key}`] || row[column.key];
 
   TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
     const columns = R.filter(c => c.key === columnKey, tableColumns);
@@ -473,9 +476,6 @@
     return ReactDOMFactories.div(newProps, rows);
   };
 
-  const determineCell = (column, row, value) =>
-    column.cellFunction ? column.cellFunction(row) : value;
-
   const determineValue = (column, row) => {
     if (column.type === FilterType.BOOLEAN) {
       if (row[column.key] === true) return "true";
@@ -520,7 +520,7 @@
       const { tableColumns } = this.props;
       const mapFunction = column => {
         const value = determineValue(column, data);
-        const cell = determineCell(column, data, value);
+        const cell = TableColumnUtilities.determineCell(column, data);
         return this.Td(
           { key: column.key + data.id, className: column.className, column: column.key, value },
           cell === undefined ? "" : cell
@@ -1215,7 +1215,7 @@
     mapDispatchToProps
   )(FilterUI);
 
-  const convert = (tableColumns, tableRows) => {
+  const convert = tableColumns => tableRows => {
     const mapFunction = row => {
       const reduceFunction = (accum, column) => {
         const value = column.convertFunction ? column.convertFunction(row) : row[column.key];
@@ -1229,12 +1229,38 @@
     return R.map(mapFunction, tableRows);
   };
 
-  const hasConvertFunctions = tableColumns => {
-    const reduceFunction = (accum, column) =>
-      column.convertFunction ? R.append(column.convertFunction, accum) : accum;
-    const convertFunctions = R.reduce(reduceFunction, [], tableColumns);
+  const determineCell = tableColumns => tableRows => {
+    const mapFunction = row => {
+      const reduceFunction = (accum, column) => {
+        if (column.cellFunction) {
+          const cell = column.cellFunction(row);
 
-    return convertFunctions.length > 0;
+          return R.assoc(`frt-cell-${column.key}`, cell, accum);
+        }
+        return accum;
+      };
+
+      return R.reduce(reduceFunction, row, tableColumns);
+    };
+
+    return R.map(mapFunction, tableRows);
+  };
+
+  const determineValue$1 = tableColumns => tableRows => {
+    const mapFunction = row => {
+      const reduceFunction = (accum, column) => {
+        if (column.valueFunction) {
+          const value = column.valueFunction(row);
+
+          return R.assoc(`frt-value-${column.key}`, value, accum);
+        }
+        return accum;
+      };
+
+      return R.reduce(reduceFunction, row, tableColumns);
+    };
+
+    return R.map(mapFunction, tableRows);
   };
 
   const verifyParameter = (name, value) => {
@@ -1252,9 +1278,11 @@
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
 
-      const tableRows2 = hasConvertFunctions(tableColumns)
-        ? convert(tableColumns, tableRows)
-        : tableRows;
+      const tableRows2 = R.pipe(
+        convert(tableColumns),
+        determineValue$1(tableColumns),
+        determineCell(tableColumns)
+      )(tableRows);
 
       this.store = Redux.createStore(Reducer.root);
 

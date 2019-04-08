@@ -1,7 +1,10 @@
 const TableColumnUtilities = {};
 
+TableColumnUtilities.determineCell = (column, row) =>
+  row[`frt-cell-${column.key}`] || TableColumnUtilities.determineValue(column, row);
+
 TableColumnUtilities.determineValue = (column, row) =>
-  column.valueFunction ? column.valueFunction(row) : row[column.key];
+  row[`frt-value-${column.key}`] || row[column.key];
 
 TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
   const columns = R.filter(c => c.key === columnKey, tableColumns);
