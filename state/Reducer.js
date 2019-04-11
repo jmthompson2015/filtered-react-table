@@ -27,6 +27,13 @@ Reducer.root = (state, action) => {
         state.filters
       );
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
+    case ActionType.APPLY_SHOW_COLUMNS:
+      if (state.isVerbose) {
+        console.log(
+          `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(action.columnToChecked)}`
+        );
+      }
+      return R.assoc("columnToChecked", action.columnToChecked, state);
     case ActionType.REMOVE_FILTERS:
       if (state.isVerbose) {
         console.log("Reducer REMOVE_FILTERS");

@@ -12,11 +12,11 @@ const determineValue = (column, row) => {
   return TCU.determineValue(column, row);
 };
 
-const filterTableColumns = tableColumns => {
+const filterTableColumns = (columnToChecked, tableColumns) => {
   const reduceFunction1 = (accum1, column) => {
-    if (!column.isHidden) {
+    if (columnToChecked[column.key]) {
       const reduceFunction0 = (accum0, key) => {
-        if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
+        if (["cellFunction", "convertFunction", "isShown", "valueFunction"].includes(key)) {
           return accum0;
         }
         const value = column[key];
@@ -59,9 +59,9 @@ class DataTable extends React.PureComponent {
   }
 
   createTable(rowData) {
-    const { tableColumns } = this.props;
+    const { columnToChecked, tableColumns } = this.props;
 
-    const myTableColumns = filterTableColumns(tableColumns);
+    const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
     const mapFunction = data => this.createRow(data, data.id || data.name);
     const rows = R.map(mapFunction, rowData);
 
@@ -85,6 +85,7 @@ class DataTable extends React.PureComponent {
 }
 
 DataTable.propTypes = {
+  columnToChecked: PropTypes.shape().isRequired,
   rowData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired
 };

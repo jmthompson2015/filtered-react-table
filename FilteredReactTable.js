@@ -6,6 +6,7 @@ import Selector from "./state/Selector.js";
 
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
+import ShowColumnsContainer from "./container/ShowColumnsContainer.js";
 
 const convert = tableColumns => tableRows => {
   const mapFunction = row => {
@@ -66,9 +67,15 @@ const verifyParameter = (name, value) => {
 };
 
 class FilteredReactTable {
-  constructor(tableColumns, tableRows, appName, onColumnChange, onFilterChange, isVerbose) {
+  constructor(tableColumns, tableRows, appName, onFilterChange, onShowColumnChange, isVerbose) {
     verifyParameter("tableColumns", tableColumns);
     verifyParameter("tableRows", tableRows);
+
+    const reduceFunction = (accum, column) => {
+      const isChecked = column.isShown !== undefined ? column.isShown : true;
+      return R.assoc(column.key, isChecked, accum);
+    };
+    const columnToChecked = R.reduce(reduceFunction, {}, tableColumns);
 
     const tableRows2 = R.pipe(
       convert(tableColumns),
@@ -79,6 +86,7 @@ class FilteredReactTable {
     this.store = Redux.createStore(Reducer.root);
 
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
+    this.store.dispatch(ActionCreator.applyShowColumns(columnToChecked));
     this.store.dispatch(ActionCreator.setTableRows(tableRows2));
     this.store.dispatch(ActionCreator.setAppName(appName));
     this.store.dispatch(ActionCreator.setVerbose(isVerbose));
@@ -86,14 +94,14 @@ class FilteredReactTable {
     const filters = Preferences.getFilters(appName);
     this.store.dispatch(ActionCreator.setFilters(filters));
 
-    if (onColumnChange) {
-      const select = state => state.tableColumns;
-      Observer.observeStore(this.store, select, onColumnChange);
-    }
-
     if (onFilterChange) {
       const select = state => state.filteredTableRows;
       Observer.observeStore(this.store, select, onFilterChange);
+    }
+
+    if (onShowColumnChange) {
+      const select = state => state.columnToChecked;
+      Observer.observeStore(this.store, select, onShowColumnChange);
     }
   }
 
@@ -107,6 +115,16 @@ class FilteredReactTable {
     return React.createElement(
       ReactRedux.Provider,
       { key: "FRTFilterProvider", store: this.store },
+      container
+    );
+  }
+
+  showColumnsElement() {
+    const container = React.createElement(ShowColumnsContainer);
+
+    return React.createElement(
+      ReactRedux.Provider,
+      { key: "FRTShowColumnsProvider", store: this.store },
       container
     );
   }

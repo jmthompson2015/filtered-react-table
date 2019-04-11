@@ -2,6 +2,7 @@ const AppState = {};
 
 AppState.create = ({
   appName = "FilteredReactTable",
+  columnToChecked = {},
   filteredTableRows = [],
   filters = [],
   isVerbose = false,
@@ -10,6 +11,7 @@ AppState.create = ({
 } = {}) =>
   Immutable({
     appName,
+    columnToChecked,
     filteredTableRows,
     filters,
     isVerbose,

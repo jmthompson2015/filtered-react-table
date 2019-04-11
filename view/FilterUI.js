@@ -142,14 +142,12 @@ class FilterUI extends React.PureComponent {
     const filterTable = ReactUtils.createCell(this.createTable(), "filterTable", "inner-table");
     const rows0 = ReactUtils.createRow(filterTable, "filterTableCells");
     const table0 = ReactUtils.createTable(rows0, "filterTableRow");
-    const cell0 = ReactUtils.createCell("Filter", "filterTitle", "title");
-    const cell1 = ReactUtils.createCell(table0, "filterTable");
-    const cell2 = ReactUtils.createCell(this.createButtonTable(), "buttonTable", "button-panel");
+    const cell0 = ReactUtils.createCell(table0, "filterTable");
+    const cell1 = ReactUtils.createCell(this.createButtonTable(), "buttonTable", "button-panel");
 
     const rows = [
-      ReactUtils.createRow(cell0, "filterTitleRow"),
-      ReactUtils.createRow(cell1, "filterTablesRow"),
-      ReactUtils.createRow(cell2, "buttonRow")
+      ReactUtils.createRow(cell0, "filterTablesRow"),
+      ReactUtils.createRow(cell1, "buttonRow")
     ];
 
     return ReactUtils.createTable(rows, "filterTable", "frt-filter");

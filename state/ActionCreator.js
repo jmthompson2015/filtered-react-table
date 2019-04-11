@@ -13,6 +13,11 @@ const makeActionCreator = (type, ...argNames) => (...args) => {
 
 ActionCreator.applyFilters = makeActionCreator(ActionType.APPLY_FILTERS);
 
+ActionCreator.applyShowColumns = makeActionCreator(
+  ActionType.APPLY_SHOW_COLUMNS,
+  "columnToChecked"
+);
+
 ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
 ActionCreator.setAppName = makeActionCreator(ActionType.SET_APP_NAME, "appName");

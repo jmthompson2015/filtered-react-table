@@ -25,13 +25,6 @@ body {
   width: 100px;
 }
 
-.frt-filter .title {
-  font-size: large;
-  font-weight: bold;
-  padding: 2px;
-  text-align: left;
-}
-
 .frt-filter-row div {
   padding: 2px;
 }
@@ -40,6 +33,21 @@ body {
   font-size: small;
   padding-top: 10px;
   text-align: left;
+}
+
+.frt-show-columns {
+  background: #f0f0f0;
+  font-size: small;
+  padding: 2px;
+}
+
+.frt-show-columns .buttons {
+  float: right;
+}
+
+.frt-show-columns .button-panel {
+  padding: 2px;
+  text-align: center;
 }
 
 .frt-table {
@@ -64,4 +72,12 @@ body {
 
 .frt-table tbody tr:nth-child(2n + 1) td {
   background: White;
+}
+
+.frt-tl {
+  text-align: left;
+}
+
+.frt-tr {
+  text-align: right;
 }

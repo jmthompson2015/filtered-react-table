@@ -6,7 +6,7 @@ QUnit.module("ActionCreator");
 QUnit.test("all action types", assert => {
   // Setup.
   const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-  assert.equal(actionTypeKeys.length, 7);
+  assert.equal(actionTypeKeys.length, 8);
 
   // Run / Verify.
   actionTypeKeys.forEach(key => {
@@ -23,6 +23,19 @@ QUnit.test("applyFilters()", assert => {
   // Verify.
   assert.ok(result);
   assert.equal(result.type, ActionType.APPLY_FILTERS);
+});
+
+QUnit.test("applyShowColumns()", assert => {
+  // Setup.
+  const columnToChecked = 3;
+
+  // Run.
+  const result = ActionCreator.applyShowColumns(columnToChecked);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, ActionType.APPLY_SHOW_COLUMNS);
+  assert.equal(result.columnToChecked, columnToChecked);
 });
 
 QUnit.test("removeFilters()", assert => {

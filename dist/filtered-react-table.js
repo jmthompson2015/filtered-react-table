@@ -7,6 +7,7 @@
   const ActionType = {};
 
   ActionType.APPLY_FILTERS = "applyFilters";
+  ActionType.APPLY_SHOW_COLUMNS = "applyShowColumns";
   ActionType.REMOVE_FILTERS = "removeFilters";
   ActionType.SET_APP_NAME = "setAppName";
   ActionType.SET_FILTERS = "setFilters";
@@ -28,6 +29,11 @@
   };
 
   ActionCreator.applyFilters = makeActionCreator(ActionType.APPLY_FILTERS);
+
+  ActionCreator.applyShowColumns = makeActionCreator(
+    ActionType.APPLY_SHOW_COLUMNS,
+    "columnToChecked"
+  );
 
   ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
@@ -94,6 +100,7 @@
 
   AppState.create = ({
     appName = "FilteredReactTable",
+    columnToChecked = {},
     filteredTableRows = [],
     filters = [],
     isVerbose = false,
@@ -102,6 +109,7 @@
   } = {}) =>
     Immutable({
       appName,
+      columnToChecked,
       filteredTableRows,
       filters,
       isVerbose,
@@ -383,6 +391,13 @@
           state.filters
         );
         return R.assoc("filteredTableRows", newFilteredTableRows, state);
+      case ActionType.APPLY_SHOW_COLUMNS:
+        if (state.isVerbose) {
+          console.log(
+            `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(action.columnToChecked)}`
+          );
+        }
+        return R.assoc("columnToChecked", action.columnToChecked, state);
       case ActionType.REMOVE_FILTERS:
         if (state.isVerbose) {
           console.log("Reducer REMOVE_FILTERS");
@@ -485,11 +500,11 @@
     return TableColumnUtilities.determineValue(column, row);
   };
 
-  const filterTableColumns = tableColumns => {
+  const filterTableColumns = (columnToChecked, tableColumns) => {
     const reduceFunction1 = (accum1, column) => {
-      if (!column.isHidden) {
+      if (columnToChecked[column.key]) {
         const reduceFunction0 = (accum0, key) => {
-          if (["cellFunction", "convertFunction", "valueFunction"].includes(key)) {
+          if (["cellFunction", "convertFunction", "isShown", "valueFunction"].includes(key)) {
             return accum0;
           }
           const value = column[key];
@@ -532,9 +547,9 @@
     }
 
     createTable(rowData) {
-      const { tableColumns } = this.props;
+      const { columnToChecked, tableColumns } = this.props;
 
-      const myTableColumns = filterTableColumns(tableColumns);
+      const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
       const mapFunction = data => this.createRow(data, data.id || data.name);
       const rows = R.map(mapFunction, rowData);
 
@@ -558,11 +573,13 @@
   }
 
   DataTable.propTypes = {
+    columnToChecked: PropTypes.shape().isRequired,
     rowData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired
   };
 
   const mapStateToProps = state => ({
+    columnToChecked: state.columnToChecked,
     rowData: state.filteredTableRows,
     tableColumns: state.tableColumns
   });
@@ -1165,14 +1182,12 @@
       const filterTable = ReactUtilities.createCell(this.createTable(), "filterTable", "inner-table");
       const rows0 = ReactUtilities.createRow(filterTable, "filterTableCells");
       const table0 = ReactUtilities.createTable(rows0, "filterTableRow");
-      const cell0 = ReactUtilities.createCell("Filter", "filterTitle", "title");
-      const cell1 = ReactUtilities.createCell(table0, "filterTable");
-      const cell2 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "button-panel");
+      const cell0 = ReactUtilities.createCell(table0, "filterTable");
+      const cell1 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "button-panel");
 
       const rows = [
-        ReactUtilities.createRow(cell0, "filterTitleRow"),
-        ReactUtilities.createRow(cell1, "filterTablesRow"),
-        ReactUtilities.createRow(cell2, "buttonRow")
+        ReactUtilities.createRow(cell0, "filterTablesRow"),
+        ReactUtilities.createRow(cell1, "buttonRow")
       ];
 
       return ReactUtilities.createTable(rows, "filterTable", "frt-filter");
@@ -1214,6 +1229,140 @@
     mapStateToProps$1,
     mapDispatchToProps
   )(FilterUI);
+
+  class ColumnCheckbox extends React.PureComponent {
+    constructor(props) {
+      super(props);
+
+      this.handleChange = this.handleChangeFunction.bind(this);
+    }
+
+    handleChangeFunction(event) {
+      const { column, onChange } = this.props;
+      const { checked } = event.target;
+
+      onChange(column.key, checked);
+    }
+
+    render() {
+      const { column, isChecked } = this.props;
+
+      const input = ReactDOMFactories.input({
+        key: `${column.key}${isChecked}`,
+        type: "checkbox",
+        checked: isChecked,
+        onChange: this.handleChange,
+        style: { verticalAlign: "middle" }
+      });
+      const labelElement = ReactDOMFactories.span(
+        { style: { verticalAlign: "middle" } },
+        column.label
+      );
+
+      return ReactDOMFactories.label(
+        { style: { display: "block", verticalAlign: "middle" } },
+        input,
+        labelElement
+      );
+    }
+  }
+
+  ColumnCheckbox.propTypes = {
+    column: PropTypes.shape().isRequired,
+    onChange: PropTypes.func.isRequired,
+
+    isChecked: PropTypes.bool
+  };
+
+  ColumnCheckbox.defaultProps = {
+    isChecked: false
+  };
+
+  class ShowColumnsUI extends React.PureComponent {
+    constructor(props) {
+      super(props);
+
+      const { columnToChecked } = this.props;
+      this.state = { columnToChecked };
+      this.handleApply = this.handleApplyFunction.bind(this);
+      this.handleChange = this.handleChangeFunction.bind(this);
+    }
+
+    createButtonTable() {
+      const applyButton = ReactDOMFactories.button({ onClick: this.handleApply }, "Apply");
+      const cell = ReactUtilities.createCell(applyButton, "applyButton", "button");
+      const row = ReactUtilities.createRow(cell, "button-row");
+
+      return ReactUtilities.createTable(row, "buttonTable", "buttons");
+    }
+
+    handleApplyFunction() {
+      const { applyOnClick } = this.props;
+      const { columnToChecked } = this.state;
+
+      applyOnClick(columnToChecked);
+    }
+
+    handleChangeFunction(columnKey, isChecked) {
+      const { columnToChecked } = this.state;
+      const newColumnToChecked = R.assoc(columnKey, isChecked, columnToChecked);
+
+      this.setState({ columnToChecked: newColumnToChecked });
+    }
+
+    render() {
+      const { tableColumns } = this.props;
+      const { columnToChecked } = this.state;
+
+      const mapFunction = column => {
+        const isChecked = columnToChecked[column.key];
+        const checkbox = React.createElement(ColumnCheckbox, {
+          column,
+          isChecked,
+          onChange: this.handleChange
+        });
+        const cell = ReactUtilities.createCell(checkbox);
+        return ReactUtilities.createRow(cell, column.key);
+      };
+      const checkboxes = R.map(mapFunction, tableColumns);
+
+      const cell0 = ReactUtilities.createTable(checkboxes, "checkboxTable", "checkbox-panel");
+      const cell1 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "button-panel");
+
+      const rows = [
+        ReactUtilities.createRow(cell0, "checkboxTableRow"),
+        ReactUtilities.createRow(cell1, "buttonRow")
+      ];
+
+      return ReactUtilities.createTable(rows, "showColumnsTable", "frt-show-columns");
+    }
+  }
+
+  ShowColumnsUI.propTypes = {
+    columnToChecked: PropTypes.shape().isRequired,
+    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    applyOnClick: PropTypes.func.isRequired
+  };
+
+  const mapStateToProps$2 = state => {
+    const { columnToChecked, tableColumns } = state;
+
+    return {
+      columnToChecked,
+      tableColumns
+    };
+  };
+
+  const mapDispatchToProps$1 = dispatch => ({
+    applyOnClick: columnToChecked => {
+      dispatch(ActionCreator.applyShowColumns(columnToChecked));
+    }
+  });
+
+  var ShowColumnsContainer = ReactRedux.connect(
+    mapStateToProps$2,
+    mapDispatchToProps$1
+  )(ShowColumnsUI);
 
   const convert = tableColumns => tableRows => {
     const mapFunction = row => {
@@ -1274,9 +1423,15 @@
   };
 
   class FilteredReactTable {
-    constructor(tableColumns, tableRows, appName, onColumnChange, onFilterChange, isVerbose) {
+    constructor(tableColumns, tableRows, appName, onFilterChange, onShowColumnChange, isVerbose) {
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
+
+      const reduceFunction = (accum, column) => {
+        const isChecked = column.isShown !== undefined ? column.isShown : true;
+        return R.assoc(column.key, isChecked, accum);
+      };
+      const columnToChecked = R.reduce(reduceFunction, {}, tableColumns);
 
       const tableRows2 = R.pipe(
         convert(tableColumns),
@@ -1287,6 +1442,7 @@
       this.store = Redux.createStore(Reducer.root);
 
       this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
+      this.store.dispatch(ActionCreator.applyShowColumns(columnToChecked));
       this.store.dispatch(ActionCreator.setTableRows(tableRows2));
       this.store.dispatch(ActionCreator.setAppName(appName));
       this.store.dispatch(ActionCreator.setVerbose(isVerbose));
@@ -1294,14 +1450,14 @@
       const filters = Preferences.getFilters(appName);
       this.store.dispatch(ActionCreator.setFilters(filters));
 
-      if (onColumnChange) {
-        const select = state => state.tableColumns;
-        Observer.observeStore(this.store, select, onColumnChange);
-      }
-
       if (onFilterChange) {
         const select = state => state.filteredTableRows;
         Observer.observeStore(this.store, select, onFilterChange);
+      }
+
+      if (onShowColumnChange) {
+        const select = state => state.columnToChecked;
+        Observer.observeStore(this.store, select, onShowColumnChange);
       }
     }
 
@@ -1315,6 +1471,16 @@
       return React.createElement(
         ReactRedux.Provider,
         { key: "FRTFilterProvider", store: this.store },
+        container
+      );
+    }
+
+    showColumnsElement() {
+      const container = React.createElement(ShowColumnsContainer);
+
+      return React.createElement(
+        ReactRedux.Provider,
+        { key: "FRTShowColumnsProvider", store: this.store },
         container
       );
     }

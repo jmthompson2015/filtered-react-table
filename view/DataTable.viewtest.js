@@ -13,5 +13,16 @@ const TableColumns = [
   { key: "blue", label: "Blue", type: "number" }
 ];
 
-const element = React.createElement(DataTable, { rowData, tableColumns: TableColumns });
+const columnToChecked = {
+  name: true,
+  red: true,
+  green: true,
+  blue: true
+};
+
+const element = React.createElement(DataTable, {
+  columnToChecked,
+  rowData,
+  tableColumns: TableColumns
+});
 ReactDOM.render(element, document.getElementById("panel"));
