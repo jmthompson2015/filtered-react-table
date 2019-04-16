@@ -4,6 +4,8 @@ import Preferences from "./state/Preferences.js";
 import Reducer from "./state/Reducer.js";
 import Selector from "./state/Selector.js";
 
+import CollapsiblePanel from "./view/CollapsiblePanel.js";
+
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
 import ShowColumnsContainer from "./container/ShowColumnsContainer.js";
@@ -119,6 +121,12 @@ class FilteredReactTable {
     );
   }
 
+  filterPanel(title = "Filters") {
+    const filter = this.filterElement();
+
+    return React.createElement(CollapsiblePanel, { title, child: filter });
+  }
+
   showColumnsElement() {
     const container = React.createElement(ShowColumnsContainer);
 
@@ -127,6 +135,12 @@ class FilteredReactTable {
       { key: "FRTShowColumnsProvider", store: this.store },
       container
     );
+  }
+
+  showColumnsPanel(title = "Columns") {
+    const showColumns = this.showColumnsElement();
+
+    return React.createElement(CollapsiblePanel, { title, child: showColumns });
   }
 
   tableElement() {

@@ -3,6 +3,11 @@ body {
   font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
 }
 
+.frt-collapsible-panel .label {
+  font-weight: bold;
+  padding-left: 5px;
+}
+
 .frt-filter {
   background: #f0f0f0;
   font-size: small;

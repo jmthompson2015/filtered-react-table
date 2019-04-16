@@ -491,6 +491,65 @@
     return ReactDOMFactories.div(newProps, rows);
   };
 
+  const CLOSED = "\u25B6";
+  const OPEN = "\u25BC";
+
+  const createControl = (image, onClick) =>
+    ReactDOMFactories.span({ key: "control", className: "control", onClick }, image);
+
+  const createLabel = title => ReactDOMFactories.span({ key: "label", className: "label" }, title);
+
+  const createPanel = child =>
+    ReactDOMFactories.div({ key: "childPanel", className: "child-panel" }, child);
+
+  class CollapsiblePanel extends React.PureComponent {
+    constructor(props) {
+      super(props);
+
+      this.state = { isCollapsed: true };
+
+      this.handleChange = this.handleChangeFunction.bind(this);
+    }
+
+    handleChangeFunction() {
+      const { isCollapsed } = this.state;
+
+      this.setState({ isCollapsed: !isCollapsed });
+    }
+
+    render() {
+      const { isCollapsed } = this.state;
+      const { child, title } = this.props;
+
+      const image = isCollapsed ? CLOSED : OPEN;
+      const control = createControl(image, this.handleChange);
+      const label = createLabel(title);
+
+      const cell0 = ReactUtilities.createCell([control, label], "titleCell", "title-cell");
+      let answer;
+
+      if (isCollapsed) {
+        const row = ReactUtilities.createRow(cell0, "titleRow");
+        answer = ReactUtilities.createTable(row, "collapsiblePanel", "frt-collapsible-panel");
+      } else {
+        const panel = createPanel(child);
+        const cell1 = ReactUtilities.createCell(panel, "childCell", "child-cell");
+        const rows = [
+          ReactUtilities.createRow(cell0, "titleRow"),
+          ReactUtilities.createRow(cell1, "childRow")
+        ];
+        answer = ReactUtilities.createTable(rows, "collapsiblePanel", "frt-collapsible-panel");
+      }
+
+      return answer;
+    }
+  }
+
+  CollapsiblePanel.propTypes = {
+    title: PropTypes.string.isRequired,
+    child: PropTypes.shape().isRequired
+  };
+
   const determineValue = (column, row) => {
     if (column.type === FilterType.BOOLEAN) {
       if (row[column.key] === true) return "true";
@@ -1475,6 +1534,12 @@
       );
     }
 
+    filterPanel(title = "Filters") {
+      const filter = this.filterElement();
+
+      return React.createElement(CollapsiblePanel, { title, child: filter });
+    }
+
     showColumnsElement() {
       const container = React.createElement(ShowColumnsContainer);
 
@@ -1483,6 +1548,12 @@
         { key: "FRTShowColumnsProvider", store: this.store },
         container
       );
+    }
+
+    showColumnsPanel(title = "Columns") {
+      const showColumns = this.showColumnsElement();
+
+      return React.createElement(CollapsiblePanel, { title, child: showColumns });
     }
 
     tableElement() {

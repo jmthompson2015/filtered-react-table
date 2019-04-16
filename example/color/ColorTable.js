@@ -22,10 +22,10 @@ const frt = new FilteredReactTable(
   isVerbose
 );
 
-const filter = frt.filterElement();
+const filter = frt.filterPanel();
 ReactDOM.render(filter, document.getElementById("filter"));
 
-const showColumns = frt.showColumnsElement();
+const showColumns = frt.showColumnsPanel();
 ReactDOM.render(showColumns, document.getElementById("showColumns"));
 
 const table = frt.tableElement();
