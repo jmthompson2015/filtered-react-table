@@ -84,7 +84,7 @@
   Preferences.getFilters = appName => {
     const item = fetchItem(appName);
 
-    return item !== undefined && item.filters !== undefined ? Immutable(item.filters) : Immutable([]);
+    return item && item.filters ? Immutable(item.filters) : Immutable([]);
   };
 
   Preferences.setFilters = (appName, filters) => {
@@ -1135,8 +1135,9 @@
 
       const { filters, tableColumns } = this.props;
       const { handleAddOnClick, handleChange, handleRemoveOnClick } = this;
+      const filters2 = R.concat([], filters);
 
-      if (filters.length === 0) {
+      if (filters2.length === 0) {
         const firstColumn = tableColumns[0];
         let newFilter;
 
@@ -1166,12 +1167,12 @@
             throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
         }
 
-        filters.push(newFilter);
+        filters2.push(newFilter);
       }
 
-      for (let i = 0; i < filters.length; i += 1) {
-        const filter = filters[i];
-        const isRemoveHidden = filters.length === 1 && i === 0;
+      for (let i = 0; i < filters2.length; i += 1) {
+        const filter = filters2[i];
+        const isRemoveHidden = filters2.length === 1 && i === 0;
         const row = React.createElement(FilterRow, {
           key: `filterRow${i}`,
           filter,

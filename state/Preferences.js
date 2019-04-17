@@ -9,7 +9,7 @@ const fetchItem = appName => {
 Preferences.getFilters = appName => {
   const item = fetchItem(appName);
 
-  return item !== undefined && item.filters !== undefined ? Immutable(item.filters) : Immutable([]);
+  return item && item.filters ? Immutable(item.filters) : Immutable([]);
 };
 
 Preferences.setFilters = (appName, filters) => {
