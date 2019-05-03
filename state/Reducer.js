@@ -33,6 +33,7 @@ Reducer.root = (state, action) => {
           `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(action.columnToChecked)}`
         );
       }
+      Preferences.setColumnToChecked(state.appName, Immutable(action.columnToChecked));
       return R.assoc("columnToChecked", action.columnToChecked, state);
     case ActionType.REMOVE_FILTERS:
       if (state.isVerbose) {

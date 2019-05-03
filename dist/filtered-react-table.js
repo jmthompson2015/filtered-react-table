@@ -81,6 +81,19 @@
     return oldItemString !== undefined ? JSON.parse(oldItemString) : {};
   };
 
+  Preferences.getColumnToChecked = appName => {
+    const item = fetchItem(appName);
+
+    return item && item.columnToChecked ? Immutable(item.columnToChecked) : Immutable({});
+  };
+
+  Preferences.setColumnToChecked = (appName, columnToChecked) => {
+    const oldItem = fetchItem(appName);
+    const newItem = R.merge(oldItem, { columnToChecked });
+
+    localStorage.setItem(appName, JSON.stringify(newItem));
+  };
+
   Preferences.getFilters = appName => {
     const item = fetchItem(appName);
 
@@ -398,6 +411,7 @@
             `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(action.columnToChecked)}`
           );
         }
+        Preferences.setColumnToChecked(state.appName, Immutable(action.columnToChecked));
         return R.assoc("columnToChecked", action.columnToChecked, state);
       case ActionType.REMOVE_FILTERS:
         if (state.isVerbose) {
@@ -1439,6 +1453,15 @@
     return R.map(mapFunction, tableRows);
   };
 
+  const defaultColumnToChecked = tableColumns => {
+    const reduceFunction = (accum, column) => {
+      const isChecked = column.isShown !== undefined ? column.isShown : true;
+      return R.assoc(column.key, isChecked, accum);
+    };
+
+    return R.reduce(reduceFunction, {}, tableColumns);
+  };
+
   const determineCell = tableColumns => tableRows => {
     const mapFunction = row => {
       const reduceFunction = (accum, column) => {
@@ -1488,11 +1511,11 @@
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
 
-      const reduceFunction = (accum, column) => {
-        const isChecked = column.isShown !== undefined ? column.isShown : true;
-        return R.assoc(column.key, isChecked, accum);
-      };
-      const columnToChecked = R.reduce(reduceFunction, {}, tableColumns);
+      let columnToChecked = Preferences.getColumnToChecked(appName);
+
+      if (Object.keys(columnToChecked).length === 0) {
+        columnToChecked = defaultColumnToChecked(tableColumns);
+      }
 
       const tableRows2 = R.pipe(
         convert(tableColumns),

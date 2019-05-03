@@ -4,6 +4,15 @@ import Preferences from "./Preferences.js";
 
 QUnit.module("Preferences");
 
+const createColumnToChecked1 = () => ({
+  red: true,
+  green: false
+});
+
+const createColumnToChecked2 = () => ({
+  blue: true
+});
+
 const createFilters1 = () => [
   Filter.create({ columnKey: "red", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 }),
   Filter.create({ columnKey: "green", operatorKey: NFO.IS_LESS_THAN, rhs: 128 })
@@ -13,6 +22,49 @@ const createFilters2 = () => [
   Filter.create({ columnKey: "blue", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 })
 ];
 
+QUnit.test("getColumnToChecked()", assert => {
+  // Setup.
+  const appName = "testAppName";
+  const columnToChecked = createColumnToChecked1();
+  localStorage.removeItem(appName);
+  Preferences.setColumnToChecked(appName, columnToChecked);
+
+  // Run.
+  const result = Preferences.getColumnToChecked(appName);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(JSON.stringify(result), JSON.stringify(columnToChecked));
+});
+
+QUnit.test("setColumnToChecked()", assert => {
+  // Setup.
+  const appName = "testAppName";
+  const columnToChecked1 = createColumnToChecked1();
+  localStorage.removeItem(appName);
+
+  // Run.
+  Preferences.setColumnToChecked(appName, columnToChecked1);
+  const result1 = localStorage.getItem(appName);
+
+  // Verify.
+  assert.ok(result1);
+  const newItem1 = JSON.parse(result1);
+  assert.equal(JSON.stringify(newItem1.columnToChecked), JSON.stringify(columnToChecked1));
+
+  // Setup.
+  const columnToChecked2 = createColumnToChecked2();
+
+  // Run.
+  Preferences.setColumnToChecked(appName, columnToChecked2);
+  const result2 = localStorage.getItem(appName);
+
+  // Verify.
+  assert.ok(result2);
+  const newItem2 = JSON.parse(result2);
+  assert.equal(JSON.stringify(newItem2.columnToChecked), JSON.stringify(columnToChecked2));
+});
+
 QUnit.test("getFilters()", assert => {
   // Setup.
   const appName = "testAppName";
@@ -21,7 +73,7 @@ QUnit.test("getFilters()", assert => {
   Preferences.setFilters(appName, filters);
 
   // Run.
-  const result = Preferences.getFilters(appName, filters);
+  const result = Preferences.getFilters(appName);
 
   // Verify.
   assert.ok(result);
