@@ -7,53 +7,54 @@ const StringFilterOperator = {
   ENDS_WITH: "sfoEndsWith"
 };
 
+const myCompareFunction = (lhs, rhs, myFunction) => {
+  if (lhs === undefined || rhs === undefined) return false;
+
+  const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
+
+  if (rhs.includes("|")) {
+    const parts = rhs.split("|");
+    const reduceFunction = (accum, r) => myFunction(value, r.trim()) || accum;
+    return R.reduce(reduceFunction, false, parts);
+  }
+
+  return myFunction(value, rhs);
+};
+
+const containsCompareFunction = (lhs, rhs) =>
+  myCompareFunction(lhs, rhs, (value, r) => value.includes(r));
+
+const isCompareFunction = (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value === r);
+
 StringFilterOperator.properties = {
   sfoContains: {
     label: "contains",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value === undefined ? false : value.includes(rhs);
-    },
+    compareFunction: containsCompareFunction,
     key: "sfoContains"
   },
   sfoDoesNotContain: {
     label: "does not contain",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value === undefined ? false : !value.includes(rhs);
-    },
+    compareFunction: (lhs, rhs) => !containsCompareFunction(lhs, rhs),
     key: "sfoDoesNotContain"
   },
   sfoIs: {
     label: "is",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value === rhs;
-    },
+    compareFunction: isCompareFunction,
     key: "sfoIs"
   },
   sfoIsNot: {
     label: "is not",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value !== rhs;
-    },
+    compareFunction: (lhs, rhs) => !isCompareFunction(lhs, rhs),
     key: "sfoIsNot"
   },
   sfoBeginsWith: {
     label: "begins with",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value === undefined ? false : value.startsWith(rhs);
-    },
+    compareFunction: (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value.startsWith(r)),
     key: "sfoBeginsWith"
   },
   sfoEndsWith: {
     label: "ends with",
-    compareFunction: (lhs, rhs) => {
-      const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-      return value === undefined ? false : value.endsWith(rhs);
-    },
+    compareFunction: (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value.endsWith(r)),
     key: "sfoEndsWith"
   }
 };
