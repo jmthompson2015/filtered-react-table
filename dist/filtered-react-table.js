@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.FilteredReactTable = factory());
-}(this, function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.FilteredReactTable = factory());
+}(this, (function () { 'use strict';
 
   const ActionType = {};
 
@@ -565,7 +565,7 @@
     child: PropTypes.shape().isRequired
   };
 
-  const determineValue = (column, row) => {
+  const determineValue$1 = (column, row) => {
     if (column.type === FilterType.BOOLEAN) {
       if (row[column.key] === true) return "true";
       if (row[column.key] === false) return "false";
@@ -608,7 +608,7 @@
     createRow(data, key) {
       const { tableColumns } = this.props;
       const mapFunction = column => {
-        const value = determineValue(column, data);
+        const value = determineValue$1(column, data);
         const cell = TableColumnUtilities.determineCell(column, data);
         return this.Td(
           { key: column.key + data.id, className: column.className, column: column.key, value },
@@ -652,13 +652,13 @@
     tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired
   };
 
-  const mapStateToProps = state => ({
+  const mapStateToProps$2 = state => ({
     columnToChecked: state.columnToChecked,
     rowData: state.filteredTableRows,
     tableColumns: state.tableColumns
   });
 
-  var DataTableContainer = ReactRedux.connect(mapStateToProps)(DataTable);
+  var DataTableContainer = ReactRedux.connect(mapStateToProps$2)(DataTable);
 
   const EnumUtilities = {};
 
@@ -1288,7 +1288,7 @@
     };
   };
 
-  const mapDispatchToProps = (dispatch /* , ownProps */) => ({
+  const mapDispatchToProps$1 = (dispatch /* , ownProps */) => ({
     applyOnClick: () => {
       dispatch(ActionCreator.applyFilters());
     },
@@ -1302,7 +1302,7 @@
 
   var FilterContainer = ReactRedux.connect(
     mapStateToProps$1,
-    mapDispatchToProps
+    mapDispatchToProps$1
   )(FilterUI);
 
   class ColumnCheckbox extends React.PureComponent {
@@ -1419,7 +1419,7 @@
     applyOnClick: PropTypes.func.isRequired
   };
 
-  const mapStateToProps$2 = state => {
+  const mapStateToProps = state => {
     const { columnToChecked, tableColumns } = state;
 
     return {
@@ -1428,15 +1428,15 @@
     };
   };
 
-  const mapDispatchToProps$1 = dispatch => ({
+  const mapDispatchToProps = dispatch => ({
     applyOnClick: columnToChecked => {
       dispatch(ActionCreator.applyShowColumns(columnToChecked));
     }
   });
 
   var ShowColumnsContainer = ReactRedux.connect(
-    mapStateToProps$2,
-    mapDispatchToProps$1
+    mapStateToProps,
+    mapDispatchToProps
   )(ShowColumnsUI);
 
   const convert = tableColumns => tableRows => {
@@ -1479,7 +1479,7 @@
     return R.map(mapFunction, tableRows);
   };
 
-  const determineValue$1 = tableColumns => tableRows => {
+  const determineValue = tableColumns => tableRows => {
     const mapFunction = row => {
       const reduceFunction = (accum, column) => {
         if (column.valueFunction) {
@@ -1519,7 +1519,7 @@
 
       const tableRows2 = R.pipe(
         convert(tableColumns),
-        determineValue$1(tableColumns),
+        determineValue(tableColumns),
         determineCell(tableColumns)
       )(tableRows);
 
@@ -1594,4 +1594,4 @@
 
   return FilteredReactTable;
 
-}));
+})));
