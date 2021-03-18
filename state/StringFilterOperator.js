@@ -4,11 +4,11 @@ const StringFilterOperator = {
   IS: "sfoIs",
   IS_NOT: "sfoIsNot",
   BEGINS_WITH: "sfoBeginsWith",
-  ENDS_WITH: "sfoEndsWith"
+  ENDS_WITH: "sfoEndsWith",
 };
 
 const myCompareFunction = (lhs, rhs, myFunction) => {
-  if (lhs === undefined || rhs === undefined) return false;
+  if (R.isNil(lhs) || R.isNil(rhs)) return false;
 
   const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
 
@@ -22,41 +22,46 @@ const myCompareFunction = (lhs, rhs, myFunction) => {
 };
 
 const containsCompareFunction = (lhs, rhs) =>
-  myCompareFunction(lhs, rhs, (value, r) => value.includes(r));
+  myCompareFunction(lhs, rhs, (value, r) =>
+    R.toLower(value).includes(R.toLower(r))
+  );
 
-const isCompareFunction = (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value === r);
+const isCompareFunction = (lhs, rhs) =>
+  myCompareFunction(lhs, rhs, (value, r) => value === r);
 
 StringFilterOperator.properties = {
   sfoContains: {
     label: "contains",
     compareFunction: containsCompareFunction,
-    key: "sfoContains"
+    key: "sfoContains",
   },
   sfoDoesNotContain: {
     label: "does not contain",
     compareFunction: (lhs, rhs) => !containsCompareFunction(lhs, rhs),
-    key: "sfoDoesNotContain"
+    key: "sfoDoesNotContain",
   },
   sfoIs: {
     label: "is",
     compareFunction: isCompareFunction,
-    key: "sfoIs"
+    key: "sfoIs",
   },
   sfoIsNot: {
     label: "is not",
     compareFunction: (lhs, rhs) => !isCompareFunction(lhs, rhs),
-    key: "sfoIsNot"
+    key: "sfoIsNot",
   },
   sfoBeginsWith: {
     label: "begins with",
-    compareFunction: (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value.startsWith(r)),
-    key: "sfoBeginsWith"
+    compareFunction: (lhs, rhs) =>
+      myCompareFunction(lhs, rhs, (value, r) => value.startsWith(r)),
+    key: "sfoBeginsWith",
   },
   sfoEndsWith: {
     label: "ends with",
-    compareFunction: (lhs, rhs) => myCompareFunction(lhs, rhs, (value, r) => value.endsWith(r)),
-    key: "sfoEndsWith"
-  }
+    compareFunction: (lhs, rhs) =>
+      myCompareFunction(lhs, rhs, (value, r) => value.endsWith(r)),
+    key: "sfoEndsWith",
+  },
 };
 
 Object.freeze(StringFilterOperator);
