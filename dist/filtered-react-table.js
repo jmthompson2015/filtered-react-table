@@ -1444,21 +1444,30 @@
     mapDispatchToProps
   )(ShowColumnsUI);
 
-  const convert = tableColumns => tableRows => {
-    const mapFunction = row => {
-      const reduceFunction = (accum, column) => {
-        const value = column.convertFunction ? column.convertFunction(row) : row[column.key];
+  const convert = (tableColumns) => (tableRows) => {
+    const reduceFunction1 = (accum, column) => R.assoc(column.key, column, accum);
+    const columnMap = R.reduce(reduceFunction1, {}, tableColumns);
 
-        return R.assoc(column.key, value, accum);
+    const mapFunction = (row) => {
+      const reduceFunction2 = (accum, key) => {
+        let newValue = row[key];
+        const column = columnMap[key];
+
+        if (column && column.convertFunction) {
+          newValue = column.convertFunction(row);
+        }
+
+        return R.assoc(key, newValue, accum);
       };
+      const keys = Object.keys(row);
 
-      return R.reduce(reduceFunction, {}, tableColumns);
+      return R.reduce(reduceFunction2, {}, keys);
     };
 
     return R.map(mapFunction, tableRows);
   };
 
-  const defaultColumnToChecked = tableColumns => {
+  const defaultColumnToChecked = (tableColumns) => {
     const reduceFunction = (accum, column) => {
       const isChecked = column.isShown !== undefined ? column.isShown : true;
       return R.assoc(column.key, isChecked, accum);
@@ -1467,8 +1476,8 @@
     return R.reduce(reduceFunction, {}, tableColumns);
   };
 
-  const determineCell = tableColumns => tableRows => {
-    const mapFunction = row => {
+  const determineCell = (tableColumns) => (tableRows) => {
+    const mapFunction = (row) => {
       const reduceFunction = (accum, column) => {
         if (column.cellFunction) {
           const cell = column.cellFunction(row);
@@ -1484,8 +1493,8 @@
     return R.map(mapFunction, tableRows);
   };
 
-  const determineValue = tableColumns => tableRows => {
-    const mapFunction = row => {
+  const determineValue = (tableColumns) => (tableRows) => {
+    const mapFunction = (row) => {
       const reduceFunction = (accum, column) => {
         if (column.valueFunction) {
           const value = column.valueFunction(row);
@@ -1512,7 +1521,14 @@
   };
 
   class FilteredReactTable {
-    constructor(tableColumns, tableRows, appName, onFilterChange, onShowColumnChange, isVerbose) {
+    constructor(
+      tableColumns,
+      tableRows,
+      appName,
+      onFilterChange,
+      onShowColumnChange,
+      isVerbose
+    ) {
       verifyParameter("tableColumns", tableColumns);
       verifyParameter("tableRows", tableRows);
 
@@ -1540,12 +1556,12 @@
       this.store.dispatch(ActionCreator.setFilters(filters));
 
       if (onFilterChange) {
-        const select = state => state.filteredTableRows;
+        const select = (state) => state.filteredTableRows;
         Observer.observeStore(this.store, select, onFilterChange);
       }
 
       if (onShowColumnChange) {
-        const select = state => state.columnToChecked;
+        const select = (state) => state.columnToChecked;
         Observer.observeStore(this.store, select, onShowColumnChange);
       }
     }
