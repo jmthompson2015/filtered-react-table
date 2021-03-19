@@ -583,7 +583,14 @@
     const reduceFunction1 = (accum1, column) => {
       if (columnToChecked[column.key]) {
         const reduceFunction0 = (accum0, key) => {
-          if (["cellFunction", "convertFunction", "isShown", "valueFunction"].includes(key)) {
+          if (
+            [
+              "cellFunction",
+              "convertFunction",
+              "isShown",
+              "valueFunction",
+            ].includes(key)
+          ) {
             return accum0;
           }
           const value = column[key];
@@ -601,38 +608,39 @@
   };
 
   class DataTable extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      // Factories.
-      this.Table = React.createFactory(Reactable.Table);
-      this.Tr = React.createFactory(Reactable.Tr);
-      this.Td = React.createFactory(Reactable.Td);
-    }
-
     createRow(data, key) {
       const { tableColumns } = this.props;
-      const mapFunction = column => {
+      const mapFunction = (column) => {
         const value = determineValue$1(column, data);
         const cell = TableColumnUtilities.determineCell(column, data);
-        return this.Td(
-          { key: column.key + data.id, className: column.className, column: column.key, value },
+        return React.createElement(
+          Reactable.Td,
+          {
+            key: column.key + data.id,
+            className: column.className,
+            column: column.key,
+            value,
+          },
           cell === undefined ? "" : cell
         );
       };
       const cells = R.map(mapFunction, tableColumns);
 
-      return this.Tr({ key }, cells);
+      return React.createElement(Reactable.Tr, { key }, cells);
     }
 
     createTable(rowData) {
       const { columnToChecked, tableColumns } = this.props;
 
       const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
-      const mapFunction = data => this.createRow(data, data.id || data.name);
+      const mapFunction = (data) => this.createRow(data, data.id || data.name);
       const rows = R.map(mapFunction, rowData);
 
-      return this.Table({ className: "frt-table", columns: myTableColumns, sortable: true }, rows);
+      return React.createElement(
+        Reactable.Table,
+        { className: "frt-table", columns: myTableColumns, sortable: true },
+        rows
+      );
     }
 
     render() {
@@ -642,9 +650,15 @@
       const table = this.createTable(rowData);
 
       const rows = [
-        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
+        ReactUtilities.createRow(
+          ReactUtilities.createCell(rowCount, "top", "frt-rowCount"),
+          "topRow"
+        ),
         ReactUtilities.createRow(ReactUtilities.createCell(table), "tableRow"),
-        ReactUtilities.createRow(ReactUtilities.createCell(rowCount, "bottom", "frt-rowCount"), "bottomRow")
+        ReactUtilities.createRow(
+          ReactUtilities.createCell(rowCount, "bottom", "frt-rowCount"),
+          "bottomRow"
+        ),
       ];
 
       return ReactUtilities.createTable(rows);
@@ -654,7 +668,7 @@
   DataTable.propTypes = {
     columnToChecked: PropTypes.shape().isRequired,
     rowData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired
+    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   const mapStateToProps$2 = state => ({
