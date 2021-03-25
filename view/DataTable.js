@@ -1,10 +1,10 @@
-import FilterType from "../state/FilterType.js";
+import FilterClauseType from "../state/FilterClauseType.js";
 import TCU from "../state/TableColumnUtilities.js";
 
 import ReactUtils from "./ReactUtilities.js";
 
 const determineValue = (column, row) => {
-  if (column.type === FilterType.BOOLEAN) {
+  if (column.type === FilterClauseType.BOOLEAN) {
     if (row[column.key] === true) return "true";
     if (row[column.key] === false) return "false";
     return undefined;

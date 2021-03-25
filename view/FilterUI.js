@@ -1,13 +1,13 @@
 import BFO from "../state/BooleanFilterOperator.js";
-import Filter from "../state/Filter.js";
-import FilterType from "../state/FilterType.js";
+import FilterClause from "../state/FilterClause.js";
+import FilterClauseType from "../state/FilterClauseType.js";
 import NFO from "../state/NumberFilterOperator.js";
 import SFO from "../state/StringFilterOperator.js";
 
 import FilterRow from "./FilterRow.js";
 import ReactUtils from "./ReactUtilities.js";
 
-class FilterUI extends React.PureComponent {
+class FilterClauseUI extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -19,12 +19,18 @@ class FilterUI extends React.PureComponent {
   createButtonTable() {
     const { applyOnClick, removeOnClick } = this.props;
 
-    const unfilterButton = ReactDOMFactories.button({ onClick: removeOnClick }, "Remove");
-    const filterButton = ReactDOMFactories.button({ onClick: applyOnClick }, "Apply");
+    const unfilterButton = ReactDOMFactories.button(
+      { onClick: removeOnClick },
+      "Remove"
+    );
+    const filterButton = ReactDOMFactories.button(
+      { onClick: applyOnClick },
+      "Apply"
+    );
 
     const cells = [
       ReactUtils.createCell(unfilterButton, "unfilterButton", "button"),
-      ReactUtils.createCell(filterButton, "filterButton", "button")
+      ReactUtils.createCell(filterButton, "filterButton", "button"),
     ];
     const row = ReactUtils.createRow(cells, "button-row");
 
@@ -40,35 +46,35 @@ class FilterUI extends React.PureComponent {
 
     if (filters2.length === 0) {
       const firstColumn = tableColumns[0];
-      let newFilter;
+      let newFilterClause;
 
       switch (firstColumn.type) {
-        case FilterType.BOOLEAN:
-          newFilter = Filter.create({
+        case FilterClauseType.BOOLEAN:
+          newFilterClause = FilterClause.create({
             columnKey: firstColumn.key,
-            operatorKey: Object.keys(BFO.properties)[0]
+            operatorKey: Object.keys(BFO.properties)[0],
           });
           break;
-        case FilterType.NUMBER:
-          newFilter = Filter.create({
+        case FilterClauseType.NUMBER:
+          newFilterClause = FilterClause.create({
             columnKey: firstColumn.key,
             operatorKey: Object.keys(NFO.properties)[0],
-            rhs: 0
+            rhs: 0,
           });
           break;
-        case FilterType.STRING:
+        case FilterClauseType.STRING:
         case undefined:
-          newFilter = Filter.create({
+          newFilterClause = FilterClause.create({
             columnKey: firstColumn.key,
             operatorKey: Object.keys(SFO.properties)[0],
-            rhs: ""
+            rhs: "",
           });
           break;
         default:
           throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
       }
 
-      filters2.push(newFilter);
+      filters2.push(newFilterClause);
     }
 
     for (let i = 0; i < filters2.length; i += 1) {
@@ -82,7 +88,7 @@ class FilterUI extends React.PureComponent {
         tableColumns,
         onChange: handleChange,
         addOnClick: handleAddOnClick,
-        removeOnClick: handleRemoveOnClick
+        removeOnClick: handleRemoveOnClick,
       });
       rows.push(row);
     }
@@ -93,75 +99,83 @@ class FilterUI extends React.PureComponent {
   handleAddOnClickFunction(index) {
     const { filters, onChange, tableColumns } = this.props;
     const firstColumn = tableColumns[0];
-    let newFilter;
+    let newFilterClause;
 
     switch (firstColumn.type) {
-      case FilterType.BOOLEAN:
-        newFilter = Filter.create({
+      case FilterClauseType.BOOLEAN:
+        newFilterClause = FilterClause.create({
           columnKey: firstColumn.key,
-          operatorKey: Object.keys(BFO.properties)[0]
+          operatorKey: Object.keys(BFO.properties)[0],
         });
         break;
-      case FilterType.NUMBER:
-        newFilter = Filter.create({
+      case FilterClauseType.NUMBER:
+        newFilterClause = FilterClause.create({
           columnKey: firstColumn.key,
           operatorKey: Object.keys(NFO.properties)[0],
-          rhs: 0
+          rhs: 0,
         });
         break;
-      case FilterType.STRING:
+      case FilterClauseType.STRING:
       case undefined:
-        newFilter = Filter.create({
+        newFilterClause = FilterClause.create({
           columnKey: firstColumn.key,
           operatorKey: Object.keys(SFO.properties)[0],
-          rhs: ""
+          rhs: "",
         });
         break;
       default:
         throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
     }
 
-    const newFilters = R.insert(index + 1, newFilter, filters);
-    onChange(newFilters);
+    const newFilterClauses = R.insert(index + 1, newFilterClause, filters);
+    onChange(newFilterClauses);
   }
 
   handleChangeFunction(filter, index) {
     const { filters, onChange } = this.props;
-    const newFilters = R.update(index, filter, filters);
+    const newFilterClauses = R.update(index, filter, filters);
 
-    onChange(newFilters);
+    onChange(newFilterClauses);
   }
 
   handleRemoveOnClickFunction(index) {
     const { filters, onChange } = this.props;
-    const newFilters = R.remove(index, 1, filters);
+    const newFilterClauses = R.remove(index, 1, filters);
 
-    onChange(newFilters);
+    onChange(newFilterClauses);
   }
 
   render() {
-    const filterTable = ReactUtils.createCell(this.createTable(), "filterTable", "inner-table");
+    const filterTable = ReactUtils.createCell(
+      this.createTable(),
+      "filterTable",
+      "inner-table"
+    );
     const rows0 = ReactUtils.createRow(filterTable, "filterTableCells");
     const table0 = ReactUtils.createTable(rows0, "filterTableRow");
     const cell0 = ReactUtils.createCell(table0, "filterTable");
-    const cell1 = ReactUtils.createCell(this.createButtonTable(), "buttonTable", "button-panel");
+    const cell1 = ReactUtils.createCell(
+      this.createButtonTable(),
+      "buttonTable",
+      "button-panel"
+    );
 
     const rows = [
       ReactUtils.createRow(cell0, "filterTablesRow"),
-      ReactUtils.createRow(cell1, "buttonRow")
+      ReactUtils.createRow(cell1, "buttonRow"),
     ];
 
     return ReactUtils.createTable(rows, "filterTable", "frt-filter");
   }
 }
 
-FilterUI.propTypes = {
+FilterClauseUI.propTypes = {
   filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   onChange: PropTypes.func.isRequired,
   tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   applyOnClick: PropTypes.func.isRequired,
-  removeOnClick: PropTypes.func.isRequired
+  removeOnClick: PropTypes.func.isRequired,
 };
 
-export default FilterUI;
+export default FilterClauseUI;

@@ -2,7 +2,7 @@
 
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
-import Filter from "./Filter.js";
+import Filter from "./FilterClause.js";
 import Preferences from "./Preferences.js";
 
 const Reducer = {};
@@ -30,10 +30,15 @@ Reducer.root = (state, action) => {
     case ActionType.APPLY_SHOW_COLUMNS:
       if (state.isVerbose) {
         console.log(
-          `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(action.columnToChecked)}`
+          `Reducer APPLY_SHOW_COLUMNS columnToChecked = ${JSON.stringify(
+            action.columnToChecked
+          )}`
         );
       }
-      Preferences.setColumnToChecked(state.appName, Immutable(action.columnToChecked));
+      Preferences.setColumnToChecked(
+        state.appName,
+        Immutable(action.columnToChecked)
+      );
       return R.assoc("columnToChecked", action.columnToChecked, state);
     case ActionType.REMOVE_FILTERS:
       if (state.isVerbose) {
@@ -74,7 +79,9 @@ Reducer.root = (state, action) => {
 };
 
 Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
-  Immutable(R.filter(data => Filter.passesAll(tableColumns, filters, data), tableRows));
+  Immutable(
+    R.filter((data) => Filter.passesAll(tableColumns, filters, data), tableRows)
+  );
 
 Object.freeze(Reducer);
 

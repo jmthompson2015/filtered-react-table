@@ -1,4 +1,4 @@
-import Filter from "./Filter.js";
+import Filter from "./FilterClause.js";
 import NFO from "./NumberFilterOperator.js";
 import Preferences from "./Preferences.js";
 
@@ -6,23 +6,31 @@ QUnit.module("Preferences");
 
 const createColumnToChecked1 = () => ({
   red: true,
-  green: false
+  green: false,
 });
 
 const createColumnToChecked2 = () => ({
-  blue: true
+  blue: true,
 });
 
 const createFilters1 = () => [
   Filter.create({ columnKey: "red", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 }),
-  Filter.create({ columnKey: "green", operatorKey: NFO.IS_LESS_THAN, rhs: 128 })
+  Filter.create({
+    columnKey: "green",
+    operatorKey: NFO.IS_LESS_THAN,
+    rhs: 128,
+  }),
 ];
 
 const createFilters2 = () => [
-  Filter.create({ columnKey: "blue", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 })
+  Filter.create({
+    columnKey: "blue",
+    operatorKey: NFO.IS_GREATER_THAN,
+    rhs: 0,
+  }),
 ];
 
-QUnit.test("getColumnToChecked()", assert => {
+QUnit.test("getColumnToChecked()", (assert) => {
   // Setup.
   const appName = "testAppName";
   const columnToChecked = createColumnToChecked1();
@@ -37,7 +45,7 @@ QUnit.test("getColumnToChecked()", assert => {
   assert.equal(JSON.stringify(result), JSON.stringify(columnToChecked));
 });
 
-QUnit.test("setColumnToChecked()", assert => {
+QUnit.test("setColumnToChecked()", (assert) => {
   // Setup.
   const appName = "testAppName";
   const columnToChecked1 = createColumnToChecked1();
@@ -50,7 +58,10 @@ QUnit.test("setColumnToChecked()", assert => {
   // Verify.
   assert.ok(result1);
   const newItem1 = JSON.parse(result1);
-  assert.equal(JSON.stringify(newItem1.columnToChecked), JSON.stringify(columnToChecked1));
+  assert.equal(
+    JSON.stringify(newItem1.columnToChecked),
+    JSON.stringify(columnToChecked1)
+  );
 
   // Setup.
   const columnToChecked2 = createColumnToChecked2();
@@ -62,10 +73,13 @@ QUnit.test("setColumnToChecked()", assert => {
   // Verify.
   assert.ok(result2);
   const newItem2 = JSON.parse(result2);
-  assert.equal(JSON.stringify(newItem2.columnToChecked), JSON.stringify(columnToChecked2));
+  assert.equal(
+    JSON.stringify(newItem2.columnToChecked),
+    JSON.stringify(columnToChecked2)
+  );
 });
 
-QUnit.test("getFilters()", assert => {
+QUnit.test("getFilters()", (assert) => {
   // Setup.
   const appName = "testAppName";
   const filters = createFilters1();
@@ -81,7 +95,7 @@ QUnit.test("getFilters()", assert => {
   assert.equal(result.join(), filters.join());
 });
 
-QUnit.test("setFilters()", assert => {
+QUnit.test("setFilters()", (assert) => {
   // Setup.
   const appName = "testAppName";
   const filters1 = createFilters1();
@@ -94,7 +108,11 @@ QUnit.test("setFilters()", assert => {
   // Verify.
   assert.ok(result1);
   const newItem1 = JSON.parse(result1);
-  assert.equal(Array.isArray(newItem1.filters), true, "newItem1.filters is an Array");
+  assert.equal(
+    Array.isArray(newItem1.filters),
+    true,
+    "newItem1.filters is an Array"
+  );
   assert.equal(JSON.stringify(newItem1.filters), JSON.stringify(filters1));
 
   // Setup.
@@ -107,7 +125,11 @@ QUnit.test("setFilters()", assert => {
   // Verify.
   assert.ok(result2);
   const newItem2 = JSON.parse(result2);
-  assert.equal(Array.isArray(newItem2.filters), true, "newItem2.filters is an Array");
+  assert.equal(
+    Array.isArray(newItem2.filters),
+    true,
+    "newItem2.filters is an Array"
+  );
   assert.equal(JSON.stringify(newItem2.filters), JSON.stringify(filters2));
 });
 

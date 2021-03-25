@@ -1,12 +1,12 @@
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import Filter from "./Filter.js";
+import Filter from "./FilterClause.js";
 import NFO from "./NumberFilterOperator.js";
 import Reducer from "./Reducer.js";
 
 QUnit.module("Reducer");
 
-QUnit.test("setAppName()", assert => {
+QUnit.test("setAppName()", (assert) => {
   // Setup.
   const state = AppState.create();
   const appName = "mySillyName";
@@ -20,10 +20,16 @@ QUnit.test("setAppName()", assert => {
   assert.equal(result.appName, appName);
 });
 
-QUnit.test("setFilters()", assert => {
+QUnit.test("setFilters()", (assert) => {
   // Setup.
   const state = AppState.create();
-  const filters = [Filter.create({ columnKey: "red", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 })];
+  const filters = [
+    Filter.create({
+      columnKey: "red",
+      operatorKey: NFO.IS_GREATER_THAN,
+      rhs: 0,
+    }),
+  ];
   const action = ActionCreator.setFilters(filters);
 
   // Run.
@@ -34,7 +40,7 @@ QUnit.test("setFilters()", assert => {
   assert.equal(result.filters, filters);
 });
 
-QUnit.test("setTableColumns()", assert => {
+QUnit.test("setTableColumns()", (assert) => {
   // Setup.
   const state = AppState.create();
   const tableColumns = [];
@@ -48,7 +54,7 @@ QUnit.test("setTableColumns()", assert => {
   assert.equal(result.tableColumns.join(), tableColumns.join());
 });
 
-QUnit.test("setTableRows()", assert => {
+QUnit.test("setTableRows()", (assert) => {
   // Setup.
   const state = AppState.create();
   const tableRows = [];
@@ -62,7 +68,7 @@ QUnit.test("setTableRows()", assert => {
   assert.equal(result.tableRows.join(), tableRows.join());
 });
 
-QUnit.test("setVerbose()", assert => {
+QUnit.test("setVerbose()", (assert) => {
   // Setup.
   const state = AppState.create();
   const isVerbose = true;

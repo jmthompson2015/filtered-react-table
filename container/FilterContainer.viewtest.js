@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["log"] }] */
 
 import ActionCreator from "../state/ActionCreator.js";
-import Filter from "../state/Filter.js";
+import FilterClause from "../state/FilterClause.js";
 import Reducer from "../state/Reducer.js";
 import SFO from "../state/StringFilterOperator.js";
 
@@ -10,31 +10,33 @@ import FilterContainer from "./FilterContainer.js";
 const TableColumns = [
   {
     key: "name",
-    label: "Name"
+    label: "Name",
   },
   {
     key: "red",
     label: "Red",
-    type: "number"
+    type: "number",
   },
   {
     key: "green",
     label: "Green",
-    type: "number"
+    type: "number",
   },
   {
     key: "blue",
     label: "Blue",
-    type: "number"
+    type: "number",
   },
   {
     key: "liked",
     label: "Liked",
-    type: "boolean"
-  }
+    type: "boolean",
+  },
 ];
 
-const filters = [Filter.create({ columnKey: "red", operatorKey: SFO.IS, rhs: 255 })];
+const filters = [
+  FilterClause.create({ columnKey: "red", operatorKey: SFO.IS, rhs: 255 }),
+];
 
 const store = Redux.createStore(Reducer.root);
 store.dispatch(ActionCreator.setTableColumns(TableColumns));
