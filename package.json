@@ -41,6 +41,7 @@
     "react-redux": "^7.2.2",
     "reactable": "^1.1.0",
     "redux": "^4.0.5",
-    "seamless-immutable": "^7.1.4"
+    "seamless-immutable": "^7.1.4",
+    "tachyons": "^4.12.0"
   }
 }
