@@ -3,6 +3,10 @@ body {
   font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
 }
 
+.fjs-filters-ui {
+  background: #f0f0f0;
+}
+
 .frt-collapsible-panel .label {
   font-weight: bold;
   padding-left: 5px;

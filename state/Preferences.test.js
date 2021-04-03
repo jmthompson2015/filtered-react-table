@@ -1,6 +1,7 @@
-import Filter from "./FilterClause.js";
 import NFO from "./NumberFilterOperator.js";
 import Preferences from "./Preferences.js";
+
+const { Clause, Filter, FilterGroup } = FilterJS;
 
 QUnit.module("Preferences");
 
@@ -13,22 +14,36 @@ const createColumnToChecked2 = () => ({
   blue: true,
 });
 
-const createFilters1 = () => [
-  Filter.create({ columnKey: "red", operatorKey: NFO.IS_GREATER_THAN, rhs: 0 }),
-  Filter.create({
-    columnKey: "green",
-    operatorKey: NFO.IS_LESS_THAN,
-    rhs: 128,
-  }),
-];
+const createFilters1 = () => {
+  const clauses = [
+    Clause.create({
+      columnKey: "red",
+      operatorKey: NFO.IS_GREATER_THAN,
+      rhs: 0,
+    }),
+    Clause.create({
+      columnKey: "green",
+      operatorKey: NFO.IS_LESS_THAN,
+      rhs: 128,
+    }),
+  ];
+  const filter = Filter.create({ name: "Filter 23", clauses });
 
-const createFilters2 = () => [
-  Filter.create({
-    columnKey: "blue",
-    operatorKey: NFO.IS_GREATER_THAN,
-    rhs: 0,
-  }),
-];
+  return FilterGroup.create({ filters: [filter] });
+};
+
+const createFilters2 = () => {
+  const clauses = [
+    Clause.create({
+      columnKey: "blue",
+      operatorKey: NFO.IS_GREATER_THAN,
+      rhs: 0,
+    }),
+  ];
+  const filter = Filter.create({ name: "Filter 34", clauses });
+
+  return FilterGroup.create({ filters: [filter] });
+};
 
 QUnit.test("getColumnToChecked()", (assert) => {
   // Setup.
@@ -79,58 +94,65 @@ QUnit.test("setColumnToChecked()", (assert) => {
   );
 });
 
-QUnit.test("getFilters()", (assert) => {
+QUnit.test("getFilterGroup()", (assert) => {
   // Setup.
   const appName = "testAppName";
-  const filters = createFilters1();
+  const filterGroup = createFilters1();
   localStorage.removeItem(appName);
-  Preferences.setFilters(appName, filters);
+  Preferences.setFilterGroup(appName, filterGroup);
 
   // Run.
-  const result = Preferences.getFilters(appName);
+  const result = Preferences.getFilterGroup(appName);
 
   // Verify.
   assert.ok(result);
-  assert.equal(Array.isArray(result), true, "result.filters is Array");
-  assert.equal(result.join(), filters.join());
+  assert.equal(Array.isArray(result.filters), true, "result.filters is Array");
+  assert.equal(result.selectedIndex, filterGroup.selectedIndex);
+  assert.equal(result.filters.join(), filterGroup.filters.join());
 });
 
-QUnit.test("setFilters()", (assert) => {
+QUnit.test("setFilterGroup()", (assert) => {
   // Setup.
   const appName = "testAppName";
-  const filters1 = createFilters1();
+  const filterGroup1 = createFilters1();
   localStorage.removeItem(appName);
 
   // Run.
-  Preferences.setFilters(appName, filters1);
+  Preferences.setFilterGroup(appName, filterGroup1);
   const result1 = localStorage.getItem(appName);
 
   // Verify.
   assert.ok(result1);
-  const newItem1 = JSON.parse(result1);
+  const newItem1 = JSON.parse(result1).filterGroup;
   assert.equal(
     Array.isArray(newItem1.filters),
     true,
     "newItem1.filters is an Array"
   );
-  assert.equal(JSON.stringify(newItem1.filters), JSON.stringify(filters1));
+  assert.equal(
+    JSON.stringify(newItem1.filters),
+    JSON.stringify(filterGroup1.filters)
+  );
 
   // Setup.
-  const filters2 = createFilters2();
+  const filterGroup2 = createFilters2();
 
   // Run.
-  Preferences.setFilters(appName, filters2);
+  Preferences.setFilterGroup(appName, filterGroup2);
   const result2 = localStorage.getItem(appName);
 
   // Verify.
   assert.ok(result2);
-  const newItem2 = JSON.parse(result2);
+  const newItem2 = JSON.parse(result2).filterGroup;
   assert.equal(
     Array.isArray(newItem2.filters),
     true,
     "newItem2.filters is an Array"
   );
-  assert.equal(JSON.stringify(newItem2.filters), JSON.stringify(filters2));
+  assert.equal(
+    JSON.stringify(newItem2.filters),
+    JSON.stringify(filterGroup2.filters)
+  );
 });
 
 const PreferencesTest = {};

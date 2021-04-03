@@ -10,7 +10,7 @@
   ActionType.APPLY_SHOW_COLUMNS = "applyShowColumns";
   ActionType.REMOVE_FILTERS = "removeFilters";
   ActionType.SET_APP_NAME = "setAppName";
-  ActionType.SET_FILTERS = "setFilters";
+  ActionType.SET_FILTER_GROUP = "setFilterGroup";
   ActionType.SET_TABLE_COLUMNS = "setTableColumns";
   ActionType.SET_TABLE_ROWS = "setTableRows";
   ActionType.SET_VERBOSE = "setVerbose";
@@ -37,15 +37,30 @@
 
   ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
-  ActionCreator.setAppName = makeActionCreator(ActionType.SET_APP_NAME, "appName");
+  ActionCreator.setAppName = makeActionCreator(
+    ActionType.SET_APP_NAME,
+    "appName"
+  );
 
-  ActionCreator.setFilters = makeActionCreator(ActionType.SET_FILTERS, "filters");
+  ActionCreator.setFilterGroup = makeActionCreator(
+    ActionType.SET_FILTER_GROUP,
+    "filterGroup"
+  );
 
-  ActionCreator.setTableColumns = makeActionCreator(ActionType.SET_TABLE_COLUMNS, "tableColumns");
+  ActionCreator.setTableColumns = makeActionCreator(
+    ActionType.SET_TABLE_COLUMNS,
+    "tableColumns"
+  );
 
-  ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableRows");
+  ActionCreator.setTableRows = makeActionCreator(
+    ActionType.SET_TABLE_ROWS,
+    "tableRows"
+  );
 
-  ActionCreator.setVerbose = makeActionCreator(ActionType.SET_VERBOSE, "isVerbose");
+  ActionCreator.setVerbose = makeActionCreator(
+    ActionType.SET_VERBOSE,
+    "isVerbose"
+  );
 
   Object.freeze(ActionCreator);
 
@@ -75,16 +90,18 @@
 
   const Preferences = {};
 
-  const fetchItem = appName => {
+  const fetchItem = (appName) => {
     const oldItemString = localStorage.getItem(appName);
 
     return oldItemString !== undefined ? JSON.parse(oldItemString) : {};
   };
 
-  Preferences.getColumnToChecked = appName => {
+  Preferences.getColumnToChecked = (appName) => {
     const item = fetchItem(appName);
 
-    return item && item.columnToChecked ? Immutable(item.columnToChecked) : Immutable({});
+    return item && item.columnToChecked
+      ? Immutable(item.columnToChecked)
+      : Immutable({});
   };
 
   Preferences.setColumnToChecked = (appName, columnToChecked) => {
@@ -94,15 +111,15 @@
     localStorage.setItem(appName, JSON.stringify(newItem));
   };
 
-  Preferences.getFilters = appName => {
+  Preferences.getFilterGroup = (appName) => {
     const item = fetchItem(appName);
 
-    return item && item.filters ? Immutable(item.filters) : Immutable([]);
+    return item && item.filterGroup ? Immutable(item.filterGroup) : Immutable([]);
   };
 
-  Preferences.setFilters = (appName, filters) => {
+  Preferences.setFilterGroup = (appName, filterGroup) => {
     const oldItem = fetchItem(appName);
-    const newItem = R.merge(oldItem, { filters });
+    const newItem = R.merge(oldItem, { filterGroup });
 
     localStorage.setItem(appName, JSON.stringify(newItem));
   };
@@ -115,285 +132,26 @@
     appName = "FilteredReactTable",
     columnToChecked = {},
     filteredTableRows = [],
-    filters = [],
+    filterGroup = undefined,
     isVerbose = false,
     tableColumns = [],
-    tableRows = []
+    tableRows = [],
   } = {}) =>
     Immutable({
       appName,
       columnToChecked,
       filteredTableRows,
-      filters,
+      filterGroup,
       isVerbose,
       tableColumns,
-      tableRows
+      tableRows,
     });
 
   Object.freeze(AppState);
 
-  const BooleanFilterOperator = {
-    IS_TRUE: "bfoIsTrue",
-    IS_FALSE: "bfoIsFalse"
-  };
-
-  BooleanFilterOperator.properties = {
-    bfoIsTrue: {
-      label: "is true",
-      compareFunction: lhs => lhs === true,
-      key: "bfoIsTrue"
-    },
-    bfoIsFalse: {
-      label: "is false",
-      compareFunction: lhs => lhs === false,
-      key: "bfoIsFalse"
-    }
-  };
-
-  Object.freeze(BooleanFilterOperator);
-
-  const FilterClauseType = {
-    BOOLEAN: "boolean",
-    NUMBER: "number",
-    STRING: "string",
-  };
-
-  FilterClauseType.properties = {
-    boolean: {
-      name: "Boolean",
-      key: "boolean",
-    },
-    number: {
-      name: "Number",
-      key: "number",
-    },
-    string: {
-      name: "String",
-      key: "string",
-    },
-  };
-
-  Object.freeze(FilterClauseType);
-
-  const NumberFilterOperator = {
-    IS: "nfoIs",
-    IS_NOT: "nfoIsNot",
-    IS_GREATER_THAN: "nfoIsGreaterThan",
-    IS_LESS_THAN: "nfoIsLessThan",
-    IS_IN_THE_RANGE: "nfoIsInTheRange"
-  };
-
-  NumberFilterOperator.properties = {
-    nfoIs: {
-      label: "is",
-      compareFunction: (lhs, rhs) => lhs === rhs,
-      key: "nfoIs"
-    },
-    nfoIsNot: {
-      label: "is not",
-      compareFunction: (lhs, rhs) => lhs !== rhs,
-      key: "nfoIsNot"
-    },
-    nfoIsGreaterThan: {
-      label: "is greater than",
-      compareFunction: (lhs, rhs) => lhs > rhs,
-      key: "nfoIsGreaterThan"
-    },
-    nfoIsLessThan: {
-      label: "is less than",
-      compareFunction: (lhs, rhs) => lhs < rhs,
-      key: "nfoIsLessThan"
-    },
-    nfoIsInTheRange: {
-      label: "is in the range",
-      compareFunction: (lhs, min, max) => min <= lhs && lhs <= max,
-      key: "nfoIsInTheRange"
-    }
-  };
-
-  Object.freeze(NumberFilterOperator);
-
-  const StringFilterOperator = {
-    CONTAINS: "sfoContains",
-    DOES_NOT_CONTAIN: "sfoDoesNotContain",
-    IS: "sfoIs",
-    IS_NOT: "sfoIsNot",
-    BEGINS_WITH: "sfoBeginsWith",
-    ENDS_WITH: "sfoEndsWith",
-  };
-
-  const myCompareFunction = (lhs, rhs, myFunction) => {
-    if (R.isNil(lhs) || R.isNil(rhs)) return false;
-
-    const value = Array.isArray(lhs) ? lhs.join(" ") : lhs;
-
-    if (rhs.includes("|")) {
-      const parts = rhs.split("|");
-      const reduceFunction = (accum, r) => myFunction(value, r.trim()) || accum;
-      return R.reduce(reduceFunction, false, parts);
-    }
-
-    return myFunction(value, rhs);
-  };
-
-  const containsCompareFunction = (lhs, rhs) =>
-    myCompareFunction(lhs, rhs, (value, r) =>
-      R.toLower(value).includes(R.toLower(r))
-    );
-
-  const isCompareFunction = (lhs, rhs) =>
-    myCompareFunction(lhs, rhs, (value, r) => value === r);
-
-  StringFilterOperator.properties = {
-    sfoContains: {
-      label: "contains",
-      compareFunction: containsCompareFunction,
-      key: "sfoContains",
-    },
-    sfoDoesNotContain: {
-      label: "does not contain",
-      compareFunction: (lhs, rhs) => !containsCompareFunction(lhs, rhs),
-      key: "sfoDoesNotContain",
-    },
-    sfoIs: {
-      label: "is",
-      compareFunction: isCompareFunction,
-      key: "sfoIs",
-    },
-    sfoIsNot: {
-      label: "is not",
-      compareFunction: (lhs, rhs) => !isCompareFunction(lhs, rhs),
-      key: "sfoIsNot",
-    },
-    sfoBeginsWith: {
-      label: "begins with",
-      compareFunction: (lhs, rhs) =>
-        myCompareFunction(lhs, rhs, (value, r) => value.startsWith(r)),
-      key: "sfoBeginsWith",
-    },
-    sfoEndsWith: {
-      label: "ends with",
-      compareFunction: (lhs, rhs) =>
-        myCompareFunction(lhs, rhs, (value, r) => value.endsWith(r)),
-      key: "sfoEndsWith",
-    },
-  };
-
-  Object.freeze(StringFilterOperator);
-
-  const TableColumnUtilities = {};
-
-  TableColumnUtilities.determineCell = (column, row) =>
-    row[`frt-cell-${column.key}`] || TableColumnUtilities.determineValue(column, row);
-
-  TableColumnUtilities.determineValue = (column, row) =>
-    row[`frt-value-${column.key}`] || row[column.key];
-
-  TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
-    const columns = R.filter(c => c.key === columnKey, tableColumns);
-
-    return columns.length > 0 ? columns[0] : undefined;
-  };
-
-  Object.freeze(TableColumnUtilities);
-
-  const FilterClause = {};
-
-  const operator = (operatorKey) =>
-    BooleanFilterOperator.properties[operatorKey] ||
-    NumberFilterOperator.properties[operatorKey] ||
-    StringFilterOperator.properties[operatorKey];
-
-  const compareFunction = (operatorKey) => operator(operatorKey).compareFunction;
-
-  FilterClause.create = ({ columnKey, operatorKey, rhs, rhs2 }) =>
-    Immutable({
-      columnKey,
-      operatorKey,
-      rhs,
-      rhs2,
-    });
-
-  FilterClause.isBooleanFilterClause = (filterClause) =>
-    filterClause !== undefined &&
-    Object.keys(BooleanFilterOperator.properties).includes(filterClause.operatorKey);
-
-  FilterClause.isNumberFilterClause = (filterClause) =>
-    filterClause !== undefined &&
-    Object.keys(NumberFilterOperator.properties).includes(filterClause.operatorKey);
-
-  FilterClause.isStringFilterClause = (filterClause) =>
-    filterClause !== undefined &&
-    Object.keys(StringFilterOperator.properties).includes(filterClause.operatorKey);
-
-  FilterClause.passes = (tableColumns, filterClause, row) => {
-    const column = TableColumnUtilities.tableColumn(tableColumns, filterClause.columnKey);
-    if (column === undefined) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `Unknown column for filterClause.columnKey: ${filterClause.columnKey}`
-      );
-    }
-
-    if (column !== undefined) {
-      const value = TableColumnUtilities.determineValue(column, row);
-      const compare = compareFunction(filterClause.operatorKey);
-
-      return compare(value, filterClause.rhs, filterClause.rhs2);
-    }
-    return false;
-  };
-
-  FilterClause.passesAll = (tableColumns, filters, row) => {
-    let answer = true;
-    const propertyNames = Object.keys(filters);
-
-    for (let i = 0; i < propertyNames.length; i += 1) {
-      const propertyName = propertyNames[i];
-      const filter = filters[propertyName];
-      const passes = FilterClause.passes(tableColumns, filter, row);
-
-      if (!passes) {
-        answer = false;
-        break;
-      }
-    }
-
-    return answer;
-  };
-
-  FilterClause.toString = (filter) => {
-    const operatorLabel = operator(filter.operatorKey).label;
-
-    if (FilterClause.isBooleanFilterClause(filter)) {
-      return `FilterClause (${filter.columnKey} ${operatorLabel})`;
-    }
-
-    if (FilterClause.isStringFilterClause(filter)) {
-      return `FilterClause (${filter.columnKey} ${operatorLabel} "${filter.rhs}")`;
-    }
-
-    const rhs2 = filter.rhs2 ? ` ${filter.rhs}` : "";
-    return `FilterClause (${filter.columnKey} ${operatorLabel} ${filter.rhs}${rhs2})`;
-  };
-
-  FilterClause.typeKey = (filter) => {
-    let answer;
-
-    if (FilterClause.isBooleanFilterClause(filter)) {
-      answer = FilterClauseType.BOOLEAN;
-    } else if (FilterClause.isNumberFilterClause(filter)) {
-      answer = FilterClauseType.NUMBER;
-    } else if (FilterClause.isStringFilterClause(filter)) {
-      answer = FilterClauseType.STRING;
-    }
-
-    return answer;
-  };
-
-  Object.freeze(FilterClause);
-
   /* eslint no-console: ["error", { allow: ["log", "warn"] }] */
+
+  const { Filter, FilterGroup: FilterGroup$1 } = FilterJS;
 
   const Reducer = {};
 
@@ -412,9 +170,8 @@
           console.log(`Reducer APPLY_FILTERS`);
         }
         newFilteredTableRows = Reducer.filterTableRows(
-          state.tableColumns,
           state.tableRows,
-          state.filters
+          state.filterGroup
         );
         return R.assoc("filteredTableRows", newFilteredTableRows, state);
       case ActionType.APPLY_SHOW_COLUMNS:
@@ -440,12 +197,16 @@
           console.log(`Reducer SET_APP_NAME appName = ${action.appName}`);
         }
         return R.assoc("appName", action.appName, state);
-      case ActionType.SET_FILTERS:
+      case ActionType.SET_FILTER_GROUP:
         if (state.isVerbose) {
-          console.log(`Reducer SET_FILTERS`);
+          console.log(
+            `Reducer SET_FILTER_GROUP filterGroup = ${JSON.stringify(
+            action.filterGroup
+          )}`
+          );
         }
-        Preferences.setFilters(state.appName, Immutable(action.filters));
-        return R.assoc("filters", action.filters, state);
+        Preferences.setFilterGroup(state.appName, Immutable(action.filterGroup));
+        return R.assoc("filterGroup", action.filterGroup, state);
       case ActionType.SET_TABLE_COLUMNS:
         if (state.isVerbose) {
           console.log(`Reducer SET_TABLE_COLUMNS`);
@@ -468,22 +229,24 @@
     }
   };
 
-  Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
-    Immutable(
-      R.filter((data) => FilterClause.passesAll(tableColumns, filters, data), tableRows)
-    );
+  Reducer.filterTableRows = (tableRows, filterGroup) => {
+    const filter = FilterGroup$1.selectedFilter(filterGroup);
+    const filterFunction = (data) => Filter.passes(filter)(data);
+
+    return Immutable(R.filter(filterFunction, tableRows));
+  };
 
   Object.freeze(Reducer);
 
   const Selector = {};
 
-  Selector.filteredTableRows = state => state.filteredTableRows;
+  Selector.filteredTableRows = (state) => state.filteredTableRows;
 
-  Selector.filters = state => state.filters;
+  Selector.filterGroup = (state) => state.filterGroup;
 
-  Selector.tableColumns = state => state.tableColumns;
+  Selector.tableColumns = (state) => state.tableColumns;
 
-  Selector.tableRows = state => state.tableRows;
+  Selector.tableRows = (state) => state.tableRows;
 
   Object.freeze(Selector);
 
@@ -583,6 +346,45 @@
     title: PropTypes.string.isRequired,
     child: PropTypes.shape().isRequired
   };
+
+  const FilterClauseType = {
+    BOOLEAN: "boolean",
+    NUMBER: "number",
+    STRING: "string",
+  };
+
+  FilterClauseType.properties = {
+    boolean: {
+      name: "Boolean",
+      key: "boolean",
+    },
+    number: {
+      name: "Number",
+      key: "number",
+    },
+    string: {
+      name: "String",
+      key: "string",
+    },
+  };
+
+  Object.freeze(FilterClauseType);
+
+  const TableColumnUtilities = {};
+
+  TableColumnUtilities.determineCell = (column, row) =>
+    row[`frt-cell-${column.key}`] || TableColumnUtilities.determineValue(column, row);
+
+  TableColumnUtilities.determineValue = (column, row) =>
+    row[`frt-value-${column.key}`] || row[column.key];
+
+  TableColumnUtilities.tableColumn = (tableColumns, columnKey) => {
+    const columns = R.filter(c => c.key === columnKey, tableColumns);
+
+    return columns.length > 0 ? columns[0] : undefined;
+  };
+
+  Object.freeze(TableColumnUtilities);
 
   const determineValue$1 = (column, row) => {
     if (column.type === FilterClauseType.BOOLEAN) {
@@ -693,716 +495,43 @@
 
   var DataTableContainer = ReactRedux.connect(mapStateToProps$2)(DataTable);
 
-  const EnumUtilities = {};
+  const { FilterGroup, FilterGroupUI } = FilterJS;
 
-  EnumUtilities.findByName = (name, enumClass) => EnumUtilities.findByProp("name", name, enumClass);
+  const mapStateToProps$1 = (state) => {
+    const { filterGroup, tableColumns } = state;
+    let myFilterGroup;
 
-  EnumUtilities.findByProp = (propertyName, propertyValue, enumClass) =>
-    R.find(R.propEq(propertyName, propertyValue), EnumUtilities.values(enumClass));
-
-  EnumUtilities.keys = enumClass => Object.keys(enumClass.properties);
-
-  EnumUtilities.values = enumClass => Object.values(enumClass.properties);
-
-  Object.freeze(EnumUtilities);
-
-  class NumberInput extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      const { initialValue } = this.props;
-      this.state = { value: initialValue };
-
-      this.handleBlur = this.handleBlurFunction.bind(this);
-      this.handleChange = this.handleChangeFunction.bind(this);
+    if (filterGroup && !Array.isArray(filterGroup)) {
+      myFilterGroup = filterGroup;
+    } else {
+      myFilterGroup = FilterGroup.default(tableColumns);
     }
 
-    handleBlurFunction() {
-      const { onBlur } = this.props;
-      const { value } = this.state;
-      const myValue = Number(value);
-
-      onBlur(myValue);
-    }
-
-    handleChangeFunction(event) {
-      const { value } = event.target;
-      const myValue = Number(value);
-
-      this.setState({ value: myValue });
-    }
-
-    render() {
-      const { className, id, initialValue, max, min, step } = this.props;
-
-      return ReactDOMFactories.input({
-        id,
-        type: "number",
-        className,
-        defaultValue: initialValue,
-        max,
-        min,
-        step,
-        onBlur: this.handleBlur,
-        onChange: this.handleChange
-      });
-    }
-  }
-
-  NumberInput.propTypes = {
-    onBlur: PropTypes.func.isRequired,
-
-    id: PropTypes.string,
-    className: PropTypes.string,
-    initialValue: PropTypes.number,
-    max: PropTypes.number,
-    min: PropTypes.number,
-    step: PropTypes.number
-  };
-
-  NumberInput.defaultProps = {
-    id: "numberInput",
-    className: undefined,
-    initialValue: 0,
-    max: undefined,
-    min: undefined,
-    step: undefined
-  };
-
-  const createOption = (key, label) => ReactDOMFactories.option({ key, value: key }, label);
-
-  class Select extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      this.handleChange = this.handleChangeFunction.bind(this);
-    }
-
-    handleChangeFunction() {
-      const { id, onChange } = this.props;
-      const valueSelect = document.getElementById(id);
-      const selected = valueSelect.options[valueSelect.selectedIndex].value;
-      onChange(selected);
-    }
-
-    render() {
-      const { id, values, initialValue } = this.props;
-      const options = R.map(value => createOption(value.key, value.label), values);
-
-      return ReactDOMFactories.select(
-        { id, defaultValue: initialValue, onChange: this.handleChange },
-        options
-      );
-    }
-  }
-
-  Select.propTypes = {
-    values: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    onChange: PropTypes.func.isRequired,
-
-    id: PropTypes.string,
-    initialValue: PropTypes.string
-  };
-
-  Select.defaultProps = {
-    id: "select",
-    initialValue: undefined
-  };
-
-  class StringInput extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      const { initialValue } = this.props;
-      this.state = { value: initialValue };
-
-      this.handleBlur = this.handleBlurFunction.bind(this);
-      this.handleChange = this.handleChangeFunction.bind(this);
-    }
-
-    handleBlurFunction() {
-      const { onBlur } = this.props;
-      const { value } = this.state;
-
-      onBlur(value);
-    }
-
-    handleChangeFunction(event) {
-      const { value } = event.target;
-
-      this.setState({ value });
-    }
-
-    render() {
-      const { className, id, initialValue } = this.props;
-
-      return ReactDOMFactories.input({
-        id,
-        type: "text",
-        className,
-        defaultValue: initialValue,
-        onBlur: this.handleBlur,
-        onChange: this.handleChange
-      });
-    }
-  }
-
-  StringInput.propTypes = {
-    onBlur: PropTypes.func.isRequired,
-
-    id: PropTypes.string,
-    className: PropTypes.string,
-    initialValue: PropTypes.string
-  };
-
-  StringInput.defaultProps = {
-    id: "stringInput",
-    className: undefined,
-    initialValue: ""
-  };
-
-  const asNumber = (value) => {
-    if (typeof value === "string") {
-      return Number(value);
-    }
-    return value;
-  };
-
-  const columnFor = (tableColumns, filter) => {
-    const firstColumnKey = Object.values(tableColumns)[0].key;
-    const columnKey = filter
-      ? filter.columnKey || firstColumnKey
-      : firstColumnKey;
-
-    return TableColumnUtilities.tableColumn(tableColumns, columnKey);
-  };
-
-  const columnFromDocument = (tableColumns, index) => {
-    const element = document.getElementById(`columnSelect${index}`);
-    const columnKey = element.value;
-
-    return TableColumnUtilities.tableColumn(tableColumns, columnKey);
-  };
-
-  const createAddButton = (handleOnClick) =>
-    ReactDOMFactories.button({ onClick: handleOnClick }, "+");
-
-  const createColumnSelect = (
-    tableColumns,
-    filter,
-    index,
-    column,
-    handleChange
-  ) =>
-    React.createElement(Select, {
-      id: `columnSelect${index}`,
-      values: tableColumns,
-      initialValue: column.key,
-      onChange: handleChange,
-    });
-
-  const createEmptyCell = (key) => ReactUtilities.createCell("", key);
-
-  const operatorsFor = (column) => {
-    let answer;
-
-    switch (column.type) {
-      case FilterClauseType.BOOLEAN:
-        answer = BooleanFilterOperator;
-        break;
-      case FilterClauseType.NUMBER:
-        answer = NumberFilterOperator;
-        break;
-      case FilterClauseType.STRING:
-      case undefined:
-        answer = StringFilterOperator;
-        break;
-      default:
-        throw new Error(`Unknown column.type: ${column.type}`);
-    }
-
-    return EnumUtilities.values(answer);
-  };
-
-  const createOperatorSelect = (filter, index, column, handleChange) => {
-    const operators = operatorsFor(column);
-
-    return React.createElement(Select, {
-      id: `operatorSelect${index}`,
-      values: operators,
-      initialValue: filter ? filter.operatorKey : undefined,
-      onChange: handleChange,
-    });
-  };
-
-  const createBooleanFilterClauseUI = (index) => [
-    createEmptyCell(`rhsBooleanField1${index}`),
-    createEmptyCell(`rhsBooleanField2${index}`),
-    createEmptyCell(`rhsBooleanField3${index}`),
-  ];
-
-  const createNumberFilterClauseUI = (
-    filter,
-    index,
-    handleChange,
-    min,
-    max,
-    step
-  ) => {
-    const idKey = `rhsField${index}`;
-    const rhs = filter ? asNumber(filter.rhs) : undefined;
-    if (filter.operatorKey === NumberFilterOperator.IS_IN_THE_RANGE) {
-      const rhs2 = filter ? asNumber(filter.rhs2) : undefined;
-      return [
-        ReactUtilities.createCell(
-          React.createElement(NumberInput, {
-            id: idKey,
-            className: "field",
-            initialValue: rhs,
-            max,
-            min,
-            step,
-            onBlur: handleChange,
-          }),
-          `rhs1NumberField1${index}`
-        ),
-        ReactUtilities.createCell(
-          ReactDOMFactories.span(
-            { style: { paddingLeft: 3, paddingRight: 3 } },
-            "to"
-          ),
-          `toField${index}`
-        ),
-        ReactUtilities.createCell(
-          React.createElement(NumberInput, {
-            id: `rhs2Field${index}`,
-            className: "field",
-            initialValue: rhs2,
-            max,
-            min,
-            step,
-            onBlur: handleChange,
-          }),
-          `rhs2NumberField3${index}`
-        ),
-      ];
-    }
-
-    return [
-      ReactUtilities.createCell(
-        React.createElement(NumberInput, {
-          id: idKey,
-          className: "field",
-          initialValue: rhs,
-          max,
-          min,
-          step,
-          onBlur: handleChange,
-        }),
-        `rhsNumberField1${index}`
-      ),
-      createEmptyCell(`rhsNumberField2${index}`),
-      createEmptyCell(`rhsNumberField3${index}`),
-    ];
-  };
-
-  const createStringFilterClauseUI = (filter, index, handleChange) => {
-    const idKey = `rhsField${index}`;
-    return [
-      ReactUtilities.createCell(
-        React.createElement(StringInput, {
-          id: idKey,
-          className: "field",
-          initialValue: filter ? filter.rhs : undefined,
-          onBlur: handleChange,
-        }),
-        `rhsStringField1${index}`
-      ),
-      createEmptyCell(`rhsStringField2${index}`),
-      createEmptyCell(`rhsStringField3${index}`),
-    ];
-  };
-
-  const createFilterClauseUI = (filter, index, handleChange, min, max, step) => {
-    const typeKey = FilterClause.typeKey(filter);
-
-    let answer;
-
-    switch (typeKey) {
-      case FilterClauseType.BOOLEAN:
-        answer = createBooleanFilterClauseUI(index);
-        break;
-      case FilterClauseType.NUMBER:
-        answer = createNumberFilterClauseUI(
-          filter,
-          index,
-          handleChange,
-          min,
-          max,
-          step
-        );
-        break;
-      case FilterClauseType.STRING:
-        answer = createStringFilterClauseUI(filter, index, handleChange);
-        break;
-      default:
-        throw new Error(`Unknown filter typeKey: ${typeKey}`);
-    }
-
-    return answer;
-  };
-
-  const createRemoveButton = (isRemoveHidden, handleOnClick) =>
-    ReactDOMFactories.button(
-      { hidden: isRemoveHidden, onClick: handleOnClick },
-      "-"
-    );
-
-  const operatorKeyFromDocument = (column, index) => {
-    const element = document.getElementById(`operatorSelect${index}`);
-    const operatorKey = element.value;
-    const operators = operatorsFor(column);
-    const operatorKeys = R.map((op) => op.key, operators);
-
-    return operatorKeys.includes(operatorKey) ? operatorKey : operators[0].key;
-  };
-
-  const rhsFromDocument = (index) => {
-    const element = document.getElementById(`rhsField${index}`);
-
-    return element ? element.value : undefined;
-  };
-
-  const rhs2FromDocument = (index) => {
-    const element = document.getElementById(`rhs2Field${index}`);
-
-    return element ? element.value : undefined;
-  };
-
-  class FilterClauseRow extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      this.handleAddOnClick = this.handleAddOnClickFunction.bind(this);
-      this.handleChange = this.handleChangeFunction.bind(this);
-      this.handleRemoveOnClick = this.handleRemoveOnClickFunction.bind(this);
-    }
-
-    handleAddOnClickFunction() {
-      const { addOnClick, index } = this.props;
-      addOnClick(index);
-    }
-
-    handleChangeFunction() {
-      const { index, onChange, tableColumns } = this.props;
-      const column = columnFromDocument(tableColumns, index);
-      const operatorKey = operatorKeyFromDocument(column, index);
-      const rhs = rhsFromDocument(index);
-      const rhs2 = rhs2FromDocument(index);
-
-      let newFilterClause;
-
-      switch (column.type) {
-        case FilterClauseType.BOOLEAN:
-          newFilterClause = FilterClause.create({
-            columnKey: column.key,
-            operatorKey,
-          });
-          break;
-        case FilterClauseType.NUMBER:
-          newFilterClause = FilterClause.create({
-            columnKey: column.key,
-            operatorKey,
-            rhs: asNumber(rhs),
-            rhs2: asNumber(rhs2),
-          });
-          break;
-        case FilterClauseType.STRING:
-        case undefined:
-          newFilterClause = FilterClause.create({
-            columnKey: column.key,
-            operatorKey,
-            rhs,
-          });
-          break;
-        default:
-          throw new Error(`Unknown column.type: ${column.type}`);
-      }
-
-      onChange(newFilterClause, index);
-    }
-
-    handleRemoveOnClickFunction() {
-      const { removeOnClick, index } = this.props;
-      removeOnClick(index);
-    }
-
-    render() {
-      const { filter, index, isRemoveHidden, tableColumns } = this.props;
-      const column = columnFor(tableColumns, filter);
-
-      const columnSelect = ReactUtilities.createCell(
-        createColumnSelect(
-          tableColumns,
-          filter,
-          index,
-          column,
-          this.handleChange
-        ),
-        `${column.key}ColumnSelectCell${index}`
-      );
-      const operatorSelect = ReactUtilities.createCell(
-        createOperatorSelect(filter, index, column, this.handleChange),
-        `${column.key}OperatorSelectCell${index}`
-      );
-      const filterUI = createFilterClauseUI(
-        filter,
-        index,
-        this.handleChange,
-        column.min,
-        column.max,
-        column.step
-      );
-      const removeButton = ReactUtilities.createCell(
-        createRemoveButton(isRemoveHidden, this.handleRemoveOnClick),
-        `removeButtonCell${index}`
-      );
-      const addButton = ReactUtilities.createCell(
-        createAddButton(this.handleAddOnClick),
-        `addButtonCell${index}`
-      );
-
-      const cells = [
-        columnSelect,
-        operatorSelect,
-        filterUI,
-        removeButton,
-        addButton,
-      ];
-
-      return ReactUtilities.createRow(
-        cells,
-        `${column.key}FilterClauseRow${index}`,
-        "frt-filter-row"
-      );
-    }
-  }
-
-  FilterClauseRow.propTypes = {
-    onChange: PropTypes.func.isRequired,
-    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-
-    addOnClick: PropTypes.func.isRequired,
-    removeOnClick: PropTypes.func.isRequired,
-
-    filter: PropTypes.shape(),
-    index: PropTypes.number,
-    isRemoveHidden: PropTypes.bool,
-  };
-
-  FilterClauseRow.defaultProps = {
-    filter: undefined,
-    index: undefined,
-    isRemoveHidden: false,
-  };
-
-  class FilterClauseUI extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      this.handleAddOnClick = this.handleAddOnClickFunction.bind(this);
-      this.handleChange = this.handleChangeFunction.bind(this);
-      this.handleRemoveOnClick = this.handleRemoveOnClickFunction.bind(this);
-    }
-
-    createButtonTable() {
-      const { applyOnClick, removeOnClick } = this.props;
-
-      const unfilterButton = ReactDOMFactories.button(
-        { onClick: removeOnClick },
-        "Remove"
-      );
-      const filterButton = ReactDOMFactories.button(
-        { onClick: applyOnClick },
-        "Apply"
-      );
-
-      const cells = [
-        ReactUtilities.createCell(unfilterButton, "unfilterButton", "button"),
-        ReactUtilities.createCell(filterButton, "filterButton", "button"),
-      ];
-      const row = ReactUtilities.createRow(cells, "button-row");
-
-      return ReactUtilities.createTable(row, "buttonTable", "buttons");
-    }
-
-    createTable() {
-      const rows = [];
-
-      const { filters, tableColumns } = this.props;
-      const { handleAddOnClick, handleChange, handleRemoveOnClick } = this;
-      const filters2 = R.concat([], filters);
-
-      if (filters2.length === 0) {
-        const firstColumn = tableColumns[0];
-        let newFilterClause;
-
-        switch (firstColumn.type) {
-          case FilterClauseType.BOOLEAN:
-            newFilterClause = FilterClause.create({
-              columnKey: firstColumn.key,
-              operatorKey: Object.keys(BooleanFilterOperator.properties)[0],
-            });
-            break;
-          case FilterClauseType.NUMBER:
-            newFilterClause = FilterClause.create({
-              columnKey: firstColumn.key,
-              operatorKey: Object.keys(NumberFilterOperator.properties)[0],
-              rhs: 0,
-            });
-            break;
-          case FilterClauseType.STRING:
-          case undefined:
-            newFilterClause = FilterClause.create({
-              columnKey: firstColumn.key,
-              operatorKey: Object.keys(StringFilterOperator.properties)[0],
-              rhs: "",
-            });
-            break;
-          default:
-            throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
-        }
-
-        filters2.push(newFilterClause);
-      }
-
-      for (let i = 0; i < filters2.length; i += 1) {
-        const filter = filters2[i];
-        const isRemoveHidden = filters2.length === 1 && i === 0;
-        const row = React.createElement(FilterClauseRow, {
-          key: `filterRow${i}`,
-          filter,
-          index: i,
-          isRemoveHidden,
-          tableColumns,
-          onChange: handleChange,
-          addOnClick: handleAddOnClick,
-          removeOnClick: handleRemoveOnClick,
-        });
-        rows.push(row);
-      }
-
-      return ReactUtilities.createTable(rows, "filterTable");
-    }
-
-    handleAddOnClickFunction(index) {
-      const { filters, onChange, tableColumns } = this.props;
-      const firstColumn = tableColumns[0];
-      let newFilterClause;
-
-      switch (firstColumn.type) {
-        case FilterClauseType.BOOLEAN:
-          newFilterClause = FilterClause.create({
-            columnKey: firstColumn.key,
-            operatorKey: Object.keys(BooleanFilterOperator.properties)[0],
-          });
-          break;
-        case FilterClauseType.NUMBER:
-          newFilterClause = FilterClause.create({
-            columnKey: firstColumn.key,
-            operatorKey: Object.keys(NumberFilterOperator.properties)[0],
-            rhs: 0,
-          });
-          break;
-        case FilterClauseType.STRING:
-        case undefined:
-          newFilterClause = FilterClause.create({
-            columnKey: firstColumn.key,
-            operatorKey: Object.keys(StringFilterOperator.properties)[0],
-            rhs: "",
-          });
-          break;
-        default:
-          throw new Error(`Unknown firstColumn.type: ${firstColumn.type}`);
-      }
-
-      const newFilterClauses = R.insert(index + 1, newFilterClause, filters);
-      onChange(newFilterClauses);
-    }
-
-    handleChangeFunction(filter, index) {
-      const { filters, onChange } = this.props;
-      const newFilterClauses = R.update(index, filter, filters);
-
-      onChange(newFilterClauses);
-    }
-
-    handleRemoveOnClickFunction(index) {
-      const { filters, onChange } = this.props;
-      const newFilterClauses = R.remove(index, 1, filters);
-
-      onChange(newFilterClauses);
-    }
-
-    render() {
-      const filterTable = ReactUtilities.createCell(
-        this.createTable(),
-        "filterTable",
-        "inner-table"
-      );
-      const rows0 = ReactUtilities.createRow(filterTable, "filterTableCells");
-      const table0 = ReactUtilities.createTable(rows0, "filterTableRow");
-      const cell0 = ReactUtilities.createCell(table0, "filterTable");
-      const cell1 = ReactUtilities.createCell(
-        this.createButtonTable(),
-        "buttonTable",
-        "button-panel"
-      );
-
-      const rows = [
-        ReactUtilities.createRow(cell0, "filterTablesRow"),
-        ReactUtilities.createRow(cell1, "buttonRow"),
-      ];
-
-      return ReactUtilities.createTable(rows, "filterTable", "frt-filter");
-    }
-  }
-
-  FilterClauseUI.propTypes = {
-    filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    onChange: PropTypes.func.isRequired,
-    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-
-    applyOnClick: PropTypes.func.isRequired,
-    removeOnClick: PropTypes.func.isRequired,
-  };
-
-  const mapStateToProps$1 = state => {
-    const { filters, tableColumns } = state;
-    const myTableColumns = R.filter(c => c.type !== "none", tableColumns);
+    const filterFunction = (c) => c.type !== "none";
+    const myTableColumns = R.filter(filterFunction, tableColumns);
 
     return {
-      filters,
-      tableColumns: myTableColumns
+      initialFilterGroup: myFilterGroup,
+      tableColumns: myTableColumns,
     };
   };
 
-  const mapDispatchToProps$1 = (dispatch /* , ownProps */) => ({
+  const mapDispatchToProps$1 = (dispatch) => ({
     applyOnClick: () => {
       dispatch(ActionCreator.applyFilters());
     },
-    onChange: filters => {
-      dispatch(ActionCreator.setFilters(filters));
+    onChange: (filterGroup) => {
+      dispatch(ActionCreator.setFilterGroup(filterGroup));
     },
     removeOnClick: () => {
       dispatch(ActionCreator.removeFilters());
-    }
+    },
   });
 
   var FilterContainer = ReactRedux.connect(
     mapStateToProps$1,
     mapDispatchToProps$1
-  )(FilterClauseUI);
+  )(FilterGroupUI);
 
   class ColumnCheckbox extends React.PureComponent {
     constructor(props) {
@@ -1646,8 +775,8 @@
       this.store.dispatch(ActionCreator.setAppName(appName));
       this.store.dispatch(ActionCreator.setVerbose(isVerbose));
 
-      const filters = Preferences.getFilters(appName);
-      this.store.dispatch(ActionCreator.setFilters(filters));
+      const filterGroup = Preferences.getFilterGroup(appName);
+      this.store.dispatch(ActionCreator.setFilterGroup(filterGroup));
 
       if (onFilterChange) {
         const select = (state) => state.filteredTableRows;

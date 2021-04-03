@@ -1,8 +1,9 @@
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import Filter from "./FilterClause.js";
 import NFO from "./NumberFilterOperator.js";
 import Reducer from "./Reducer.js";
+
+const { Filter, FilterGroup } = FilterJS;
 
 QUnit.module("Reducer");
 
@@ -20,24 +21,26 @@ QUnit.test("setAppName()", (assert) => {
   assert.equal(result.appName, appName);
 });
 
-QUnit.test("setFilters()", (assert) => {
+QUnit.test("setFilterGroup()", (assert) => {
   // Setup.
   const state = AppState.create();
-  const filters = [
-    Filter.create({
-      columnKey: "red",
-      operatorKey: NFO.IS_GREATER_THAN,
-      rhs: 0,
-    }),
-  ];
-  const action = ActionCreator.setFilters(filters);
+  const filterGroup = FilterGroup.create({
+    filters: [
+      Filter.create({
+        columnKey: "red",
+        operatorKey: NFO.IS_GREATER_THAN,
+        rhs: 0,
+      }),
+    ],
+  });
+  const action = ActionCreator.setFilterGroup(filterGroup);
 
   // Run.
   const result = Reducer.root(state, action);
 
   // Verify.
   assert.ok(result);
-  assert.equal(result.filters, filters);
+  assert.equal(result.filterGroup, filterGroup);
 });
 
 QUnit.test("setTableColumns()", (assert) => {

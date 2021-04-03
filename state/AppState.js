@@ -4,19 +4,19 @@ AppState.create = ({
   appName = "FilteredReactTable",
   columnToChecked = {},
   filteredTableRows = [],
-  filters = [],
+  filterGroup = undefined,
   isVerbose = false,
   tableColumns = [],
-  tableRows = []
+  tableRows = [],
 } = {}) =>
   Immutable({
     appName,
     columnToChecked,
     filteredTableRows,
-    filters,
+    filterGroup,
     isVerbose,
     tableColumns,
-    tableRows
+    tableRows,
   });
 
 Object.freeze(AppState);

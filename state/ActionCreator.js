@@ -20,15 +20,30 @@ ActionCreator.applyShowColumns = makeActionCreator(
 
 ActionCreator.removeFilters = makeActionCreator(ActionType.REMOVE_FILTERS);
 
-ActionCreator.setAppName = makeActionCreator(ActionType.SET_APP_NAME, "appName");
+ActionCreator.setAppName = makeActionCreator(
+  ActionType.SET_APP_NAME,
+  "appName"
+);
 
-ActionCreator.setFilters = makeActionCreator(ActionType.SET_FILTERS, "filters");
+ActionCreator.setFilterGroup = makeActionCreator(
+  ActionType.SET_FILTER_GROUP,
+  "filterGroup"
+);
 
-ActionCreator.setTableColumns = makeActionCreator(ActionType.SET_TABLE_COLUMNS, "tableColumns");
+ActionCreator.setTableColumns = makeActionCreator(
+  ActionType.SET_TABLE_COLUMNS,
+  "tableColumns"
+);
 
-ActionCreator.setTableRows = makeActionCreator(ActionType.SET_TABLE_ROWS, "tableRows");
+ActionCreator.setTableRows = makeActionCreator(
+  ActionType.SET_TABLE_ROWS,
+  "tableRows"
+);
 
-ActionCreator.setVerbose = makeActionCreator(ActionType.SET_VERBOSE, "isVerbose");
+ActionCreator.setVerbose = makeActionCreator(
+  ActionType.SET_VERBOSE,
+  "isVerbose"
+);
 
 Object.freeze(ActionCreator);
 

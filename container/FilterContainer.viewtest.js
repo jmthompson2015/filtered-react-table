@@ -1,11 +1,9 @@
-/* eslint no-console: ["error", { allow: ["log"] }] */
-
 import ActionCreator from "../state/ActionCreator.js";
-import FilterClause from "../state/FilterClause.js";
 import Reducer from "../state/Reducer.js";
-import SFO from "../state/StringFilterOperator.js";
 
 import FilterContainer from "./FilterContainer.js";
+
+const { FilterGroup } = FilterJS;
 
 const TableColumns = [
   {
@@ -34,13 +32,11 @@ const TableColumns = [
   },
 ];
 
-const filters = [
-  FilterClause.create({ columnKey: "red", operatorKey: SFO.IS, rhs: 255 }),
-];
+const filterGroup = FilterGroup.default(TableColumns);
 
 const store = Redux.createStore(Reducer.root);
 store.dispatch(ActionCreator.setTableColumns(TableColumns));
-store.dispatch(ActionCreator.setFilters(filters));
+store.dispatch(ActionCreator.setFilterGroup(filterGroup));
 
 const container = React.createElement(FilterContainer);
 const element = React.createElement(ReactRedux.Provider, { store }, container);

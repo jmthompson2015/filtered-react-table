@@ -1,15 +1,17 @@
 const Preferences = {};
 
-const fetchItem = appName => {
+const fetchItem = (appName) => {
   const oldItemString = localStorage.getItem(appName);
 
   return oldItemString !== undefined ? JSON.parse(oldItemString) : {};
 };
 
-Preferences.getColumnToChecked = appName => {
+Preferences.getColumnToChecked = (appName) => {
   const item = fetchItem(appName);
 
-  return item && item.columnToChecked ? Immutable(item.columnToChecked) : Immutable({});
+  return item && item.columnToChecked
+    ? Immutable(item.columnToChecked)
+    : Immutable({});
 };
 
 Preferences.setColumnToChecked = (appName, columnToChecked) => {
@@ -19,15 +21,15 @@ Preferences.setColumnToChecked = (appName, columnToChecked) => {
   localStorage.setItem(appName, JSON.stringify(newItem));
 };
 
-Preferences.getFilters = appName => {
+Preferences.getFilterGroup = (appName) => {
   const item = fetchItem(appName);
 
-  return item && item.filters ? Immutable(item.filters) : Immutable([]);
+  return item && item.filterGroup ? Immutable(item.filterGroup) : Immutable([]);
 };
 
-Preferences.setFilters = (appName, filters) => {
+Preferences.setFilterGroup = (appName, filterGroup) => {
   const oldItem = fetchItem(appName);
-  const newItem = R.merge(oldItem, { filters });
+  const newItem = R.merge(oldItem, { filterGroup });
 
   localStorage.setItem(appName, JSON.stringify(newItem));
 };

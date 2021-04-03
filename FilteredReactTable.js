@@ -118,8 +118,8 @@ class FilteredReactTable {
     this.store.dispatch(ActionCreator.setAppName(appName));
     this.store.dispatch(ActionCreator.setVerbose(isVerbose));
 
-    const filters = Preferences.getFilters(appName);
-    this.store.dispatch(ActionCreator.setFilters(filters));
+    const filterGroup = Preferences.getFilterGroup(appName);
+    this.store.dispatch(ActionCreator.setFilterGroup(filterGroup));
 
     if (onFilterChange) {
       const select = (state) => state.filteredTableRows;

@@ -1,28 +1,29 @@
 import ColorSwatch from "./ColorSwatch.js";
 
-const firstCharUpper = string => string.charAt(0).toUpperCase() + string.substring(1);
+const firstCharUpper = (string) =>
+  string.charAt(0).toUpperCase() + string.substring(1);
 
 const TableColumns = [
   {
     key: "swatch",
     label: "Swatch",
     type: "none",
-    cellFunction: row => {
+    cellFunction: (row) => {
       const color = { r: row.red, g: row.green, b: row.blue };
       return React.createElement(ColorSwatch, { color, width: 50 });
     },
-    valueFunction: row => row.name
+    valueFunction: (row) => row.name,
   },
   {
     key: "id",
     label: "ID",
     type: "number",
-    isShown: false
+    isShown: false,
   },
   {
     key: "name",
     label: "Name",
-    className: "frt-tl"
+    className: "frt-tl",
   },
   {
     key: "red",
@@ -31,7 +32,7 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr"
+    className: "frt-tr",
   },
   {
     key: "green",
@@ -40,7 +41,7 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr"
+    className: "frt-tr",
   },
   {
     key: "blue",
@@ -49,24 +50,25 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr"
+    className: "frt-tr",
   },
   {
     key: "category",
     label: "Category",
     className: "frt-tl",
-    convertFunction: row => (row.category ? firstCharUpper(row.category) : undefined)
+    convertFunction: (row) =>
+      row.category ? firstCharUpper(row.category) : undefined,
   },
   {
     key: "components",
     label: "Components",
-    valueFunction: row => row.components.join(" ")
+    valueFunction: (row) => row.components.join(" "),
   },
   {
     key: "liked",
     label: "Liked",
-    type: "boolean"
-  }
+    type: "boolean",
+  },
 ];
 
 export default TableColumns;

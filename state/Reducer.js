@@ -2,8 +2,9 @@
 
 import ActionType from "./ActionType.js";
 import AppState from "./AppState.js";
-import Filter from "./FilterClause.js";
 import Preferences from "./Preferences.js";
+
+const { Filter, FilterGroup } = FilterJS;
 
 const Reducer = {};
 
@@ -22,9 +23,8 @@ Reducer.root = (state, action) => {
         console.log(`Reducer APPLY_FILTERS`);
       }
       newFilteredTableRows = Reducer.filterTableRows(
-        state.tableColumns,
         state.tableRows,
-        state.filters
+        state.filterGroup
       );
       return R.assoc("filteredTableRows", newFilteredTableRows, state);
     case ActionType.APPLY_SHOW_COLUMNS:
@@ -50,12 +50,16 @@ Reducer.root = (state, action) => {
         console.log(`Reducer SET_APP_NAME appName = ${action.appName}`);
       }
       return R.assoc("appName", action.appName, state);
-    case ActionType.SET_FILTERS:
+    case ActionType.SET_FILTER_GROUP:
       if (state.isVerbose) {
-        console.log(`Reducer SET_FILTERS`);
+        console.log(
+          `Reducer SET_FILTER_GROUP filterGroup = ${JSON.stringify(
+            action.filterGroup
+          )}`
+        );
       }
-      Preferences.setFilters(state.appName, Immutable(action.filters));
-      return R.assoc("filters", action.filters, state);
+      Preferences.setFilterGroup(state.appName, Immutable(action.filterGroup));
+      return R.assoc("filterGroup", action.filterGroup, state);
     case ActionType.SET_TABLE_COLUMNS:
       if (state.isVerbose) {
         console.log(`Reducer SET_TABLE_COLUMNS`);
@@ -78,10 +82,12 @@ Reducer.root = (state, action) => {
   }
 };
 
-Reducer.filterTableRows = (tableColumns, tableRows, filters) =>
-  Immutable(
-    R.filter((data) => Filter.passesAll(tableColumns, filters, data), tableRows)
-  );
+Reducer.filterTableRows = (tableRows, filterGroup) => {
+  const filter = FilterGroup.selectedFilter(filterGroup);
+  const filterFunction = (data) => Filter.passes(filter)(data);
+
+  return Immutable(R.filter(filterFunction, tableRows));
+};
 
 Object.freeze(Reducer);
 

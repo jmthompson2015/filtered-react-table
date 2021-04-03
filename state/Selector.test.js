@@ -3,7 +3,7 @@ import Selector from "./Selector.js";
 
 QUnit.module("Selector");
 
-QUnit.test("filteredTableRows()", assert => {
+QUnit.test("filteredTableRows()", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
 
@@ -15,19 +15,18 @@ QUnit.test("filteredTableRows()", assert => {
   assert.equal(result.join(), [].join());
 });
 
-QUnit.test("filters()", assert => {
+QUnit.test("filterGroup()", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
 
   // Run.
-  const result = Selector.filters(store.getState());
+  const result = Selector.filterGroup(store.getState());
 
   // Verify.
-  assert.ok(result);
-  assert.equal(result.join(), [].join());
+  assert.equal(result, undefined);
 });
 
-QUnit.test("tableColumns()", assert => {
+QUnit.test("tableColumns()", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
 
@@ -39,7 +38,7 @@ QUnit.test("tableColumns()", assert => {
   assert.equal(result.join(), [].join());
 });
 
-QUnit.test("tableRows()", assert => {
+QUnit.test("tableRows()", (assert) => {
   // Setup.
   const store = Redux.createStore(Reducer.root);
 

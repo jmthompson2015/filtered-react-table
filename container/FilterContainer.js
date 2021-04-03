@@ -1,30 +1,39 @@
 import ActionCreator from "../state/ActionCreator.js";
 
-import FilterUI from "../view/FilterUI.js";
+const { FilterGroup, FilterGroupUI } = FilterJS;
 
-const mapStateToProps = state => {
-  const { filters, tableColumns } = state;
-  const myTableColumns = R.filter(c => c.type !== "none", tableColumns);
+const mapStateToProps = (state) => {
+  const { filterGroup, tableColumns } = state;
+  let myFilterGroup;
+
+  if (filterGroup && !Array.isArray(filterGroup)) {
+    myFilterGroup = filterGroup;
+  } else {
+    myFilterGroup = FilterGroup.default(tableColumns);
+  }
+
+  const filterFunction = (c) => c.type !== "none";
+  const myTableColumns = R.filter(filterFunction, tableColumns);
 
   return {
-    filters,
-    tableColumns: myTableColumns
+    initialFilterGroup: myFilterGroup,
+    tableColumns: myTableColumns,
   };
 };
 
-const mapDispatchToProps = (dispatch /* , ownProps */) => ({
+const mapDispatchToProps = (dispatch) => ({
   applyOnClick: () => {
     dispatch(ActionCreator.applyFilters());
   },
-  onChange: filters => {
-    dispatch(ActionCreator.setFilters(filters));
+  onChange: (filterGroup) => {
+    dispatch(ActionCreator.setFilterGroup(filterGroup));
   },
   removeOnClick: () => {
     dispatch(ActionCreator.removeFilters());
-  }
+  },
 });
 
 export default ReactRedux.connect(
   mapStateToProps,
   mapDispatchToProps
-)(FilterUI);
+)(FilterGroupUI);

@@ -5,11 +5,15 @@ import TableColumns from "./TableColumns.js";
 import TableRows from "./TableRows.js";
 
 const appName = "ColorTable";
-const onFilterChange = filteredTableRows => {
-  console.log(`onFilterChange() filteredTableRows = ${JSON.stringify(filteredTableRows)}`);
+const onFilterChange = (filteredTableRows) => {
+  console.log(
+    `onFilterChange() filteredTableRows = ${JSON.stringify(filteredTableRows)}`
+  );
 };
-const onShowColumnChange = columnToChecked => {
-  console.log(`onShowColumnChange() columnToChecked = ${JSON.stringify(columnToChecked)}`);
+const onShowColumnChange = (columnToChecked) => {
+  console.log(
+    `onShowColumnChange() columnToChecked = ${JSON.stringify(columnToChecked)}`
+  );
 };
 const isVerbose = true;
 
