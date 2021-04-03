@@ -4,11 +4,11 @@ import Preferences from "./state/Preferences.js";
 import Reducer from "./state/Reducer.js";
 import Selector from "./state/Selector.js";
 
-import CollapsiblePanel from "./view/CollapsiblePanel.js";
-
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
 import ShowColumnsContainer from "./container/ShowColumnsContainer.js";
+
+const { CollapsiblePane } = ReactComponent;
 
 const convert = (tableColumns) => (tableRows) => {
   const reduceFunction1 = (accum, column) => R.assoc(column.key, column, accum);
@@ -146,10 +146,14 @@ class FilteredReactTable {
     );
   }
 
-  filterPanel(title = "Filters") {
+  filterPanel(header = "Filters") {
     const filter = this.filterElement();
 
-    return React.createElement(CollapsiblePanel, { title, child: filter });
+    return React.createElement(CollapsiblePane, {
+      header,
+      element: filter,
+      isExpanded: false,
+    });
   }
 
   showColumnsElement() {
@@ -162,10 +166,14 @@ class FilteredReactTable {
     );
   }
 
-  showColumnsPanel(title = "Columns") {
+  showColumnsPanel(header = "Columns") {
     const showColumns = this.showColumnsElement();
 
-    return React.createElement(CollapsiblePanel, { title, child: showColumns });
+    return React.createElement(CollapsiblePane, {
+      header,
+      element: showColumns,
+      isExpanded: false,
+    });
   }
 
   tableElement() {

@@ -1,4 +1,4 @@
-import RU from "../../view/ReactUtilities.js";
+const { ReactUtilities: RU } = ReactComponent;
 
 const toString = ({ r, g, b }) => `rgb(${r},${g},${b})`;
 const toStyle = ({ r, g, b }) => `rgb(${r},${g},${b})`;
@@ -8,7 +8,7 @@ class ColorSwatch extends React.PureComponent {
     const { color, height, showDescription, showTitle, width } = this.props;
 
     const swatch = ReactDOMFactories.div({
-      style: { backgroundColor: toStyle(color), height, width }
+      style: { backgroundColor: toStyle(color), height, width },
     });
 
     if (showTitle || showDescription) {
@@ -27,7 +27,11 @@ class ColorSwatch extends React.PureComponent {
       if (showDescription) {
         const description = toString(color);
         const descriptionUI = RU.createSpan(description);
-        const cell2 = RU.createCell(descriptionUI, "descriptionCell", descriptionClass);
+        const cell2 = RU.createCell(
+          descriptionUI,
+          "descriptionCell",
+          descriptionClass
+        );
         rows.push(RU.createRow(cell2, "descriptionRow"));
       }
 
@@ -47,7 +51,7 @@ ColorSwatch.propTypes = {
   showTitle: PropTypes.bool,
   title: PropTypes.string,
   titleClass: PropTypes.string,
-  width: PropTypes.number
+  width: PropTypes.number,
 };
 
 ColorSwatch.defaultProps = {
@@ -57,7 +61,7 @@ ColorSwatch.defaultProps = {
   showDescription: false,
   title: "Color",
   titleClass: undefined,
-  width: 110
+  width: 110,
 };
 
 export default ColorSwatch;

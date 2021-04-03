@@ -12,6 +12,7 @@ module.exports = {
     R: true,
     React: true,
     Reactable: true,
+    ReactComponent: true,
     ReactDOM: true,
     ReactDOMFactories: true,
     ReactRedux: true,

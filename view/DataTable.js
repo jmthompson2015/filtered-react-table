@@ -1,7 +1,7 @@
 import FilterClauseType from "../state/FilterClauseType.js";
 import TCU from "../state/TableColumnUtilities.js";
 
-import ReactUtils from "./ReactUtilities.js";
+const { ReactUtilities: RU } = ReactComponent;
 
 const determineValue = (column, row) => {
   if (column.type === FilterClauseType.BOOLEAN) {
@@ -83,18 +83,15 @@ class DataTable extends React.PureComponent {
     const table = this.createTable(rowData);
 
     const rows = [
-      ReactUtils.createRow(
-        ReactUtils.createCell(rowCount, "top", "frt-rowCount"),
-        "topRow"
-      ),
-      ReactUtils.createRow(ReactUtils.createCell(table), "tableRow"),
-      ReactUtils.createRow(
-        ReactUtils.createCell(rowCount, "bottom", "frt-rowCount"),
+      RU.createRow(RU.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
+      RU.createRow(RU.createCell(table), "tableRow"),
+      RU.createRow(
+        RU.createCell(rowCount, "bottom", "frt-rowCount"),
         "bottomRow"
       ),
     ];
 
-    return ReactUtils.createTable(rows);
+    return RU.createTable(rows);
   }
 }
 

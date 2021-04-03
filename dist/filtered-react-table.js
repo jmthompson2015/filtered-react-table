@@ -250,103 +250,6 @@
 
   Object.freeze(Selector);
 
-  const ReactUtilities = {};
-
-  ReactUtilities.createCell = (element, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className,
-      style: {
-        display: "table-cell"
-      }
-    });
-
-    return ReactDOMFactories.div(newProps, element);
-  };
-
-  ReactUtilities.createRow = (cells, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className,
-      style: {
-        display: "table-row"
-      }
-    });
-
-    return ReactDOMFactories.div(newProps, cells);
-  };
-
-  ReactUtilities.createTable = (rows, key, className, props = {}) => {
-    const newProps = R.merge(props, {
-      key,
-      className,
-      style: {
-        display: "table"
-      }
-    });
-
-    return ReactDOMFactories.div(newProps, rows);
-  };
-
-  const CLOSED = "\u25B6";
-  const OPEN = "\u25BC";
-
-  const createControl = (image, onClick) =>
-    ReactDOMFactories.span({ key: "control", className: "control", onClick }, image);
-
-  const createLabel = title => ReactDOMFactories.span({ key: "label", className: "label" }, title);
-
-  const createPanel = child =>
-    ReactDOMFactories.div({ key: "childPanel", className: "child-panel" }, child);
-
-  class CollapsiblePanel extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      this.state = { isCollapsed: true };
-
-      this.handleChange = this.handleChangeFunction.bind(this);
-    }
-
-    handleChangeFunction() {
-      const { isCollapsed } = this.state;
-
-      this.setState({ isCollapsed: !isCollapsed });
-    }
-
-    render() {
-      const { isCollapsed } = this.state;
-      const { child, title } = this.props;
-
-      const image = isCollapsed ? CLOSED : OPEN;
-      const control = createControl(image, this.handleChange);
-      const label = createLabel(title);
-
-      const cell0 = ReactUtilities.createCell([control, label], "titleCell", "title-cell");
-      let answer;
-
-      if (isCollapsed) {
-        const row = ReactUtilities.createRow(cell0, "titleRow");
-        answer = ReactUtilities.createTable(row, "collapsiblePanel", "frt-collapsible-panel");
-      } else {
-        const panel = createPanel(child);
-        const cell1 = ReactUtilities.createCell(panel, "childCell", "child-cell");
-        const rows = [
-          ReactUtilities.createRow(cell0, "titleRow"),
-          ReactUtilities.createRow(cell1, "childRow")
-        ];
-        answer = ReactUtilities.createTable(rows, "collapsiblePanel", "frt-collapsible-panel");
-      }
-
-      return answer;
-    }
-  }
-
-  CollapsiblePanel.propTypes = {
-    title: PropTypes.string.isRequired,
-    child: PropTypes.shape().isRequired
-  };
-
   const FilterClauseType = {
     BOOLEAN: "boolean",
     NUMBER: "number",
@@ -385,6 +288,8 @@
   };
 
   Object.freeze(TableColumnUtilities);
+
+  const { ReactUtilities: RU$1 } = ReactComponent;
 
   const determineValue$1 = (column, row) => {
     if (column.type === FilterClauseType.BOOLEAN) {
@@ -466,18 +371,15 @@
       const table = this.createTable(rowData);
 
       const rows = [
-        ReactUtilities.createRow(
-          ReactUtilities.createCell(rowCount, "top", "frt-rowCount"),
-          "topRow"
-        ),
-        ReactUtilities.createRow(ReactUtilities.createCell(table), "tableRow"),
-        ReactUtilities.createRow(
-          ReactUtilities.createCell(rowCount, "bottom", "frt-rowCount"),
+        RU$1.createRow(RU$1.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
+        RU$1.createRow(RU$1.createCell(table), "tableRow"),
+        RU$1.createRow(
+          RU$1.createCell(rowCount, "bottom", "frt-rowCount"),
           "bottomRow"
         ),
       ];
 
-      return ReactUtilities.createTable(rows);
+      return RU$1.createTable(rows);
     }
   }
 
@@ -581,6 +483,8 @@
     isChecked: false
   };
 
+  const { ReactUtilities: RU } = ReactComponent;
+
   class ShowColumnsUI extends React.PureComponent {
     constructor(props) {
       super(props);
@@ -589,14 +493,6 @@
       this.state = { columnToChecked };
       this.handleApply = this.handleApplyFunction.bind(this);
       this.handleChange = this.handleChangeFunction.bind(this);
-    }
-
-    createButtonTable() {
-      const applyButton = ReactDOMFactories.button({ onClick: this.handleApply }, "Apply");
-      const cell = ReactUtilities.createCell(applyButton, "applyButton", "button");
-      const row = ReactUtilities.createRow(cell, "button-row");
-
-      return ReactUtilities.createTable(row, "buttonTable", "buttons");
     }
 
     handleApplyFunction() {
@@ -613,38 +509,53 @@
       this.setState({ columnToChecked: newColumnToChecked });
     }
 
+    createButtonTable() {
+      const applyButton = ReactDOMFactories.button(
+        { onClick: this.handleApply },
+        "Apply"
+      );
+      const cell = RU.createCell(applyButton, "applyButton", "button");
+      const row = RU.createRow(cell, "button-row");
+
+      return RU.createTable(row, "buttonTable", "buttons");
+    }
+
     render() {
       const { tableColumns } = this.props;
       const { columnToChecked } = this.state;
 
-      const mapFunction = column => {
+      const mapFunction = (column) => {
         const isChecked = columnToChecked[column.key];
         const checkbox = React.createElement(ColumnCheckbox, {
           column,
           isChecked,
-          onChange: this.handleChange
+          onChange: this.handleChange,
         });
-        const cell = ReactUtilities.createCell(checkbox);
-        return ReactUtilities.createRow(cell, column.key);
+        const cell = RU.createCell(checkbox);
+        return RU.createRow(cell, column.key);
       };
       const checkboxes = R.map(mapFunction, tableColumns);
 
-      const cell0 = ReactUtilities.createTable(checkboxes, "checkboxTable", "checkbox-panel");
-      const cell1 = ReactUtilities.createCell(this.createButtonTable(), "buttonTable", "button-panel");
+      const cell0 = RU.createTable(checkboxes, "checkboxTable", "checkbox-panel");
+      const cell1 = RU.createCell(
+        this.createButtonTable(),
+        "buttonTable",
+        "button-panel"
+      );
 
       const rows = [
-        ReactUtilities.createRow(cell0, "checkboxTableRow"),
-        ReactUtilities.createRow(cell1, "buttonRow")
+        RU.createRow(cell0, "checkboxTableRow"),
+        RU.createRow(cell1, "buttonRow"),
       ];
 
-      return ReactUtilities.createTable(rows, "showColumnsTable", "frt-show-columns");
+      return RU.createTable(rows, "showColumnsTable", "frt-show-columns");
     }
   }
 
   ShowColumnsUI.propTypes = {
     columnToChecked: PropTypes.shape().isRequired,
     tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    applyOnClick: PropTypes.func.isRequired
+    applyOnClick: PropTypes.func.isRequired,
   };
 
   const mapStateToProps = state => {
@@ -666,6 +577,8 @@
     mapStateToProps,
     mapDispatchToProps
   )(ShowColumnsUI);
+
+  const { CollapsiblePane } = ReactComponent;
 
   const convert = (tableColumns) => (tableRows) => {
     const reduceFunction1 = (accum, column) => R.assoc(column.key, column, accum);
@@ -803,10 +716,14 @@
       );
     }
 
-    filterPanel(title = "Filters") {
+    filterPanel(header = "Filters") {
       const filter = this.filterElement();
 
-      return React.createElement(CollapsiblePanel, { title, child: filter });
+      return React.createElement(CollapsiblePane, {
+        header,
+        element: filter,
+        isExpanded: false,
+      });
     }
 
     showColumnsElement() {
@@ -819,10 +736,14 @@
       );
     }
 
-    showColumnsPanel(title = "Columns") {
+    showColumnsPanel(header = "Columns") {
       const showColumns = this.showColumnsElement();
 
-      return React.createElement(CollapsiblePanel, { title, child: showColumns });
+      return React.createElement(CollapsiblePane, {
+        header,
+        element: showColumns,
+        isExpanded: false,
+      });
     }
 
     tableElement() {
