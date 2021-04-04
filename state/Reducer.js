@@ -84,7 +84,7 @@ Reducer.root = (state, action) => {
 
 Reducer.filterTableRows = (tableRows, filterGroup) => {
   const filter = FilterGroup.selectedFilter(filterGroup);
-  const filterFunction = (data) => Filter.passes(filter)(data);
+  const filterFunction = (data) => Filter.passes(filter, data);
 
   return Immutable(R.filter(filterFunction, tableRows));
 };
