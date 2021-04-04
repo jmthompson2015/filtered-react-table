@@ -722,6 +722,7 @@
       return React.createElement(CollapsiblePane, {
         header,
         element: filter,
+        headerClass: "b f5 ph1 pt1 tl",
         isExpanded: false,
       });
     }
@@ -742,6 +743,7 @@
       return React.createElement(CollapsiblePane, {
         header,
         element: showColumns,
+        headerClass: "b f5 ph1 pt1 tl",
         isExpanded: false,
       });
     }

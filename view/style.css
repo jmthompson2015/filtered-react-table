@@ -3,39 +3,13 @@ body {
   font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
 }
 
-.fjs-filters-ui {
-  background: #f0f0f0;
-}
-
-.frt-collapsible-panel .label {
-  font-weight: bold;
-  padding-left: 5px;
-}
-
-.frt-filter {
-  background: #f0f0f0;
-  font-size: small;
-}
-
-.frt-filter .button {
-  padding: 2px;
-}
-
-.frt-filter .buttons {
-  float: right;
-}
-
-.frt-filter .button-panel {
-  padding: 2px;
-  text-align: center;
-}
-
-.frt-filter .field {
+.fjs-filter-ui input {
   width: 100px;
 }
 
-.frt-filter-row div {
-  padding: 2px;
+.fjs-filters-ui {
+  background: #f0f0f0;
+  font-size: small;
 }
 
 .frt-rowCount {
