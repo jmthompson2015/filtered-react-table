@@ -23,7 +23,7 @@ const TableColumns = [
   {
     key: "name",
     label: "Name",
-    className: "frt-tl",
+    className: "tl",
   },
   {
     key: "red",
@@ -32,7 +32,7 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr",
+    className: "tr",
   },
   {
     key: "green",
@@ -41,7 +41,7 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr",
+    className: "tr",
   },
   {
     key: "blue",
@@ -50,12 +50,12 @@ const TableColumns = [
     min: 0,
     max: 255,
     step: 5,
-    className: "frt-tr",
+    className: "tr",
   },
   {
     key: "category",
     label: "Category",
-    className: "frt-tl",
+    className: "tl",
     convertFunction: (row) =>
       row.category ? firstCharUpper(row.category) : undefined,
   },
