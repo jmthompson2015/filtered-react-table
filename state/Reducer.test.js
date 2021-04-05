@@ -1,9 +1,8 @@
 import AppState from "./AppState.js";
 import ActionCreator from "./ActionCreator.js";
-import NFO from "./NumberFilterOperator.js";
 import Reducer from "./Reducer.js";
 
-const { Filter, FilterGroup } = FilterJS;
+const { Filter, FilterGroup, NumberOperator: NumberOp } = FilterJS;
 
 QUnit.module("Reducer");
 
@@ -28,7 +27,7 @@ QUnit.test("setFilterGroup()", (assert) => {
     filters: [
       Filter.create({
         columnKey: "red",
-        operatorKey: NFO.IS_GREATER_THAN,
+        operatorKey: NumberOp.IS_GREATER_THAN,
         rhs: 0,
       }),
     ],

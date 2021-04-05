@@ -1,7 +1,6 @@
-import NFO from "./NumberFilterOperator.js";
 import Preferences from "./Preferences.js";
 
-const { Clause, Filter, FilterGroup } = FilterJS;
+const { Clause, Filter, FilterGroup, NumberOperator: NumberOp } = FilterJS;
 
 QUnit.module("Preferences");
 
@@ -18,12 +17,12 @@ const createFilters1 = () => {
   const clauses = [
     Clause.create({
       columnKey: "red",
-      operatorKey: NFO.IS_GREATER_THAN,
+      operatorKey: NumberOp.IS_GREATER_THAN,
       rhs: 0,
     }),
     Clause.create({
       columnKey: "green",
-      operatorKey: NFO.IS_LESS_THAN,
+      operatorKey: NumberOp.IS_LESS_THAN,
       rhs: 128,
     }),
   ];
@@ -36,7 +35,7 @@ const createFilters2 = () => {
   const clauses = [
     Clause.create({
       columnKey: "blue",
-      operatorKey: NFO.IS_GREATER_THAN,
+      operatorKey: NumberOp.IS_GREATER_THAN,
       rhs: 0,
     }),
   ];
