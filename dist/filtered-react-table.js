@@ -250,29 +250,6 @@
 
   Object.freeze(Selector);
 
-  const FilterClauseType = {
-    BOOLEAN: "boolean",
-    NUMBER: "number",
-    STRING: "string",
-  };
-
-  FilterClauseType.properties = {
-    boolean: {
-      name: "Boolean",
-      key: "boolean",
-    },
-    number: {
-      name: "Number",
-      key: "number",
-    },
-    string: {
-      name: "String",
-      key: "string",
-    },
-  };
-
-  Object.freeze(FilterClauseType);
-
   const TableColumnUtilities = {};
 
   TableColumnUtilities.determineCell = (column, row) =>
@@ -289,10 +266,11 @@
 
   Object.freeze(TableColumnUtilities);
 
+  const { ClauseType } = FilterJS;
   const { ReactUtilities: RU$1 } = ReactComponent;
 
   const determineValue$1 = (column, row) => {
-    if (column.type === FilterClauseType.BOOLEAN) {
+    if (column.type === ClauseType.BOOLEAN) {
       if (row[column.key] === true) return "true";
       if (row[column.key] === false) return "false";
       return undefined;
