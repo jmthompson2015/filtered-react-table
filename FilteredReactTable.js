@@ -4,6 +4,8 @@ import Preferences from "./state/Preferences.js";
 import Reducer from "./state/Reducer.js";
 import Selector from "./state/Selector.js";
 
+import ColumnUtilities from "./view/ColumnUtilities.js";
+
 import DataTableContainer from "./container/DataTableContainer.js";
 import FilterContainer from "./container/FilterContainer.js";
 import ShowColumnsContainer from "./container/ShowColumnsContainer.js";
@@ -188,5 +190,7 @@ class FilteredReactTable {
     );
   }
 }
+
+FilteredReactTable.ColumnUtilities = ColumnUtilities;
 
 export default FilteredReactTable;
