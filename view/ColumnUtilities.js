@@ -11,6 +11,15 @@ ColumnUtilities.createIcon = (iconUrl, name, width = 32) =>
     title: name,
   });
 
+ColumnUtilities.createImageLink = (src, href, title) => {
+  const image = ReactDOMFactories.img({ src });
+
+  return ReactDOMFactories.a(
+    { key: src, href, title, target: "_blank" },
+    image
+  );
+};
+
 ColumnUtilities.createLink = (href, name) =>
   ReactDOMFactories.a({ key: name, href, target: "_blank" }, name);
 

@@ -42,6 +42,31 @@ QUnit.test("createIcon()", (assert) => {
   assert.equal(style.width, width);
 });
 
+QUnit.test("createImageLink()", (assert) => {
+  // Setup.
+  const src = "https://some/location/icon.png";
+  const href = "https://some/location/page.html";
+  const title = "My Title";
+
+  // Run.
+  const result = ColumnUtils.createImageLink(src, href, title);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.type, "a");
+  assert.equal(result.key, src);
+  const { props } = result;
+  assert.ok(props);
+  assert.equal(props.href, href);
+  assert.equal(props.title, title);
+  const child = props.children;
+  assert.ok(child);
+  assert.equal(child.type, "img");
+  const childProps = child.props;
+  assert.ok(childProps);
+  assert.equal(childProps.src, src);
+});
+
 QUnit.test("createLink()", (assert) => {
   // Setup.
   const href = "https://some/location/page.html";

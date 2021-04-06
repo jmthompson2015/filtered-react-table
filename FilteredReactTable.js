@@ -148,13 +148,18 @@ class FilteredReactTable {
     );
   }
 
-  filterPanel(header = "Filters") {
+  filterPanel(
+    header = "Filters",
+    className = "bg-light-gray ma1",
+    headerClass = "b f5 ph1 pt1 tl"
+  ) {
     const filter = this.filterElement();
 
     return React.createElement(CollapsiblePane, {
+      className,
       header,
       element: filter,
-      headerClass: "b f5 ph1 pt1 tl",
+      headerClass,
       isExpanded: false,
     });
   }
@@ -169,13 +174,18 @@ class FilteredReactTable {
     );
   }
 
-  showColumnsPanel(header = "Columns") {
+  showColumnsPanel(
+    header = "Columns",
+    className = "bg-light-gray ma1",
+    headerClass = "b f5 ph1 pt1 tl"
+  ) {
     const showColumns = this.showColumnsElement();
 
     return React.createElement(CollapsiblePane, {
+      className,
       header,
       element: showColumns,
-      headerClass: "b f5 ph1 pt1 tl",
+      headerClass,
       isExpanded: false,
     });
   }

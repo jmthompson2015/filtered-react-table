@@ -263,6 +263,15 @@
       title: name,
     });
 
+  ColumnUtilities.createImageLink = (src, href, title) => {
+    const image = ReactDOMFactories.img({ src });
+
+    return ReactDOMFactories.a(
+      { key: src, href, title, target: "_blank" },
+      image
+    );
+  };
+
   ColumnUtilities.createLink = (href, name) =>
     ReactDOMFactories.a({ key: name, href, target: "_blank" }, name);
 
@@ -736,13 +745,18 @@
       );
     }
 
-    filterPanel(header = "Filters") {
+    filterPanel(
+      header = "Filters",
+      className = "bg-light-gray ma1",
+      headerClass = "b f5 ph1 pt1 tc"
+    ) {
       const filter = this.filterElement();
 
       return React.createElement(CollapsiblePane, {
+        className,
         header,
         element: filter,
-        headerClass: "b f5 ph1 pt1 tl",
+        headerClass,
         isExpanded: false,
       });
     }
@@ -757,13 +771,18 @@
       );
     }
 
-    showColumnsPanel(header = "Columns") {
+    showColumnsPanel(
+      header = "Columns",
+      className = "bg-light-gray ma1",
+      headerClass = "b f5 ph1 pt1 tc"
+    ) {
       const showColumns = this.showColumnsElement();
 
       return React.createElement(CollapsiblePane, {
+        className,
         header,
         element: showColumns,
-        headerClass: "b f5 ph1 pt1 tl",
+        headerClass,
         isExpanded: false,
       });
     }
