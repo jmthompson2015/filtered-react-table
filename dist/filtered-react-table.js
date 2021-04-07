@@ -748,7 +748,7 @@
     filterPanel(
       header = "Filters",
       className = "bg-light-gray ma1",
-      headerClass = "b f5 ph1 pt1 tc"
+      headerClass = "b f5 ph1 pt1 tl"
     ) {
       const filter = this.filterElement();
 
@@ -774,7 +774,7 @@
     showColumnsPanel(
       header = "Columns",
       className = "bg-light-gray ma1",
-      headerClass = "b f5 ph1 pt1 tc"
+      headerClass = "b f5 ph1 pt1 tl"
     ) {
       const showColumns = this.showColumnsElement();
 
