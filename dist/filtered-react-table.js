@@ -255,12 +255,12 @@
   ColumnUtilities.createColorCell = (color, name) =>
     ReactDOMFactories.div({ style: { backgroundColor: color } }, name);
 
-  ColumnUtilities.createIcon = (iconUrl, name, width = 32) =>
+  ColumnUtilities.createIcon = (src, title, width = "auto", maxWidth = "none") =>
     ReactDOMFactories.img({
-      key: iconUrl,
-      src: iconUrl,
-      style: { width },
-      title: name,
+      key: src,
+      src,
+      style: { maxWidth, width },
+      title,
     });
 
   ColumnUtilities.createImageLink = (src, href, title) => {
