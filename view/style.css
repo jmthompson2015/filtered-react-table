@@ -3,6 +3,21 @@ body {
   font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
 }
 
+.checkbox-panel {
+  background: #f0f0f0;
+  font-size: small;
+  padding: 2px;
+}
+
+.checkbox-panel .button-panel {
+  padding: 2px;
+  text-align: center;
+}
+
+.checkbox-panel .button-table {
+  float: right;
+}
+
 .fjs-filter-ui input {
   width: 100px;
 }
@@ -15,21 +30,6 @@ body {
 .frt-rowCount {
   font-size: small;
   text-align: left;
-}
-
-.frt-show-columns {
-  background: #f0f0f0;
-  font-size: small;
-  padding: 2px;
-}
-
-.frt-show-columns .buttons {
-  float: right;
-}
-
-.frt-show-columns .button-panel {
-  padding: 2px;
-  text-align: center;
 }
 
 .frt-table {

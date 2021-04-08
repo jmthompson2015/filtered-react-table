@@ -318,7 +318,7 @@
   Object.freeze(TableColumnUtilities);
 
   const { ClauseType } = FilterJS;
-  const { ReactUtilities: RU$1 } = ReactComponent;
+  const { ReactUtilities: RU } = ReactComponent;
 
   const determineValue$1 = (column, row) => {
     if (column.type === ClauseType.BOOLEAN) {
@@ -400,15 +400,15 @@
       const table = this.createTable(rowData);
 
       const rows = [
-        RU$1.createRow(RU$1.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
-        RU$1.createRow(RU$1.createCell(table), "tableRow"),
-        RU$1.createRow(
-          RU$1.createCell(rowCount, "bottom", "frt-rowCount"),
+        RU.createRow(RU.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
+        RU.createRow(RU.createCell(table), "tableRow"),
+        RU.createRow(
+          RU.createCell(rowCount, "bottom", "frt-rowCount"),
           "bottomRow"
         ),
       ];
 
-      return RU$1.createTable(rows);
+      return RU.createTable(rows);
     }
   }
 
@@ -464,148 +464,48 @@
     mapDispatchToProps$1
   )(FilterGroupUI);
 
-  class ColumnCheckbox extends React.PureComponent {
-    constructor(props) {
-      super(props);
+  const { CheckboxPanel } = ReactComponent;
 
-      this.handleChange = this.handleChangeFunction.bind(this);
-    }
+  const getColumnMap = (tableColumns) => {
+    const reduceFunction = (accum, column) => R.assoc(column.key, column, accum);
 
-    handleChangeFunction(event) {
-      const { column, onChange } = this.props;
-      const { checked } = event.target;
-
-      onChange(column.key, checked);
-    }
-
-    render() {
-      const { column, isChecked } = this.props;
-
-      const input = ReactDOMFactories.input({
-        key: `${column.key}${isChecked}`,
-        type: "checkbox",
-        checked: isChecked,
-        onChange: this.handleChange,
-        style: { verticalAlign: "middle" }
-      });
-      const labelElement = ReactDOMFactories.span(
-        { style: { verticalAlign: "middle" } },
-        column.label
-      );
-
-      return ReactDOMFactories.label(
-        { style: { display: "block", verticalAlign: "middle" } },
-        input,
-        labelElement
-      );
-    }
-  }
-
-  ColumnCheckbox.propTypes = {
-    column: PropTypes.shape().isRequired,
-    onChange: PropTypes.func.isRequired,
-
-    isChecked: PropTypes.bool
+    return R.reduce(reduceFunction, {}, tableColumns);
   };
 
-  ColumnCheckbox.defaultProps = {
-    isChecked: false
+  const getSelectedItems = (columnToChecked) => {
+    const reduceFunction = (accum, columnKey) =>
+      columnToChecked[columnKey] === true ? R.append(columnKey, accum) : accum;
+
+    return R.reduce(reduceFunction, [], Object.keys(columnToChecked));
   };
 
-  const { ReactUtilities: RU } = ReactComponent;
-
-  class ShowColumnsUI extends React.PureComponent {
-    constructor(props) {
-      super(props);
-
-      const { columnToChecked } = this.props;
-      this.state = { columnToChecked };
-      this.handleApply = this.handleApplyFunction.bind(this);
-      this.handleChange = this.handleChangeFunction.bind(this);
-    }
-
-    handleApplyFunction() {
-      const { applyOnClick } = this.props;
-      const { columnToChecked } = this.state;
-
-      applyOnClick(columnToChecked);
-    }
-
-    handleChangeFunction(columnKey, isChecked) {
-      const { columnToChecked } = this.state;
-      const newColumnToChecked = R.assoc(columnKey, isChecked, columnToChecked);
-
-      this.setState({ columnToChecked: newColumnToChecked });
-    }
-
-    createButtonTable() {
-      const applyButton = ReactDOMFactories.button(
-        { onClick: this.handleApply },
-        "Apply"
-      );
-      const cell = RU.createCell(applyButton, "applyButton", "button");
-      const row = RU.createRow(cell, "button-row");
-
-      return RU.createTable(row, "buttonTable", "buttons");
-    }
-
-    render() {
-      const { tableColumns } = this.props;
-      const { columnToChecked } = this.state;
-
-      const mapFunction = (column) => {
-        const isChecked = columnToChecked[column.key];
-        const checkbox = React.createElement(ColumnCheckbox, {
-          column,
-          isChecked,
-          onChange: this.handleChange,
-        });
-        const cell = RU.createCell(checkbox);
-        return RU.createRow(cell, column.key);
-      };
-      const checkboxes = R.map(mapFunction, tableColumns);
-
-      const cell0 = RU.createTable(checkboxes, "checkboxTable", "checkbox-panel");
-      const cell1 = RU.createCell(
-        this.createButtonTable(),
-        "buttonTable",
-        "button-panel"
-      );
-
-      const rows = [
-        RU.createRow(cell0, "checkboxTableRow"),
-        RU.createRow(cell1, "buttonRow"),
-      ];
-
-      return RU.createTable(rows, "showColumnsTable", "frt-show-columns");
-    }
-  }
-
-  ShowColumnsUI.propTypes = {
-    columnToChecked: PropTypes.shape().isRequired,
-    tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    applyOnClick: PropTypes.func.isRequired,
-  };
-
-  const mapStateToProps = state => {
+  const mapStateToProps = (state) => {
     const { columnToChecked, tableColumns } = state;
+    const columnMap = getColumnMap(tableColumns);
+    const items = R.map(R.prop("key"), tableColumns);
+    const selectedItems = getSelectedItems(columnToChecked);
+    const labelFunction = (item) => columnMap[item].label;
 
     return {
-      columnToChecked,
-      tableColumns
+      items,
+      labelFunction,
+      selectedItems,
     };
   };
 
-  const mapDispatchToProps = dispatch => ({
-    applyOnClick: columnToChecked => {
+  const mapDispatchToProps = (dispatch) => ({
+    applyOnClick: (selectedItems) => {
+      const reduceFunction = (accum, columnKey) =>
+        R.assoc(columnKey, true, accum);
+      const columnToChecked = R.reduce(reduceFunction, {}, selectedItems);
       dispatch(ActionCreator.applyShowColumns(columnToChecked));
-    }
+    },
   });
 
   var ShowColumnsContainer = ReactRedux.connect(
     mapStateToProps,
     mapDispatchToProps
-  )(ShowColumnsUI);
+  )(CheckboxPanel);
 
   const { CollapsiblePane } = ReactComponent;
 
