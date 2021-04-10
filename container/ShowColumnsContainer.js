@@ -23,9 +23,11 @@ const mapStateToProps = (state) => {
   const labelFunction = (item) => columnMap[item].label;
 
   return {
+    className: "f7",
     items,
     labelFunction,
     selectedItems,
+    useSelectButtons: true,
   };
 };
 

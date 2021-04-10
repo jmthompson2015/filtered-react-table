@@ -487,9 +487,11 @@
     const labelFunction = (item) => columnMap[item].label;
 
     return {
+      className: "f7",
       items,
       labelFunction,
       selectedItems,
+      useSelectButtons: true,
     };
   };
 
@@ -646,18 +648,17 @@
     }
 
     filterPanel(
-      header = "Filters",
       className = "bg-light-gray ma1",
-      headerClass = "b f5 ph1 pt1 tl"
+      title = "Filters",
+      titleClass = "b f5 ph1 pt1 tl"
     ) {
       const filter = this.filterElement();
 
       return React.createElement(CollapsiblePane, {
         className,
-        header,
         element: filter,
-        headerClass,
-        isExpanded: false,
+        title,
+        titleClass,
       });
     }
 
@@ -672,18 +673,17 @@
     }
 
     showColumnsPanel(
-      header = "Columns",
       className = "bg-light-gray ma1",
-      headerClass = "b f5 ph1 pt1 tl"
+      title = "Columns",
+      titleClass = "b f5 ph1 pt1 tl"
     ) {
       const showColumns = this.showColumnsElement();
 
       return React.createElement(CollapsiblePane, {
         className,
-        header,
         element: showColumns,
-        headerClass,
-        isExpanded: false,
+        title,
+        titleClass,
       });
     }
 
