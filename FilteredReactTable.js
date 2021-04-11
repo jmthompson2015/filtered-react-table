@@ -149,8 +149,8 @@ class FilteredReactTable {
   }
 
   filterPanel(
-    className = "bg-light-gray ma1",
     title = "Filters",
+    className = "bg-light-gray ma1",
     titleClass = "b f5 ph1 pt1 tl"
   ) {
     const filter = this.filterElement();
@@ -174,8 +174,8 @@ class FilteredReactTable {
   }
 
   showColumnsPanel(
-    className = "bg-light-gray ma1",
     title = "Columns",
+    className = "bg-light-gray ma1",
     titleClass = "b f5 ph1 pt1 tl"
   ) {
     const showColumns = this.showColumnsElement();

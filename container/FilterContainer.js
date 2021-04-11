@@ -16,6 +16,7 @@ const mapStateToProps = (state) => {
   const myTableColumns = R.filter(filterFunction, tableColumns);
 
   return {
+    className: "f7",
     initialFilterGroup: myFilterGroup,
     tableColumns: myTableColumns,
   };
