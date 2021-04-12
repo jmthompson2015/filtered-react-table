@@ -394,21 +394,21 @@
     }
 
     render() {
-      const { rowData } = this.props;
+      const { className, rowCountClass, rowData } = this.props;
 
       const rowCount = `Row Count: ${rowData.length}`;
       const table = this.createTable(rowData);
 
       const rows = [
-        RU.createRow(RU.createCell(rowCount, "top", "frt-rowCount"), "topRow"),
+        RU.createRow(RU.createCell(rowCount, "top", rowCountClass), "topRow"),
         RU.createRow(RU.createCell(table), "tableRow"),
         RU.createRow(
-          RU.createCell(rowCount, "bottom", "frt-rowCount"),
+          RU.createCell(rowCount, "bottom", rowCountClass),
           "bottomRow"
         ),
       ];
 
-      return RU.createTable(rows);
+      return RU.createTable(rows, "dataTablePanel", className);
     }
   }
 
@@ -416,6 +416,14 @@
     columnToChecked: PropTypes.shape().isRequired,
     rowData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+
+    className: PropTypes.string,
+    rowCountClass: PropTypes.string,
+  };
+
+  DataTable.defaultProps = {
+    className: undefined,
+    rowCountClass: "f6 tl",
   };
 
   const mapStateToProps$2 = state => ({

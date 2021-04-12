@@ -1,17 +1,3 @@
-.fjs-filter-ui input {
-  width: 100px;
-}
-
-.fjs-filters-ui {
-  background: #f0f0f0;
-  font-size: small;
-}
-
-.frt-rowCount {
-  font-size: small;
-  text-align: left;
-}
-
 .frt-table {
   border-collapse: collapse;
   font-size: small;
