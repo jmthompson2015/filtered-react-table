@@ -42,7 +42,7 @@ const filterTableColumns = (columnToChecked, tableColumns) => {
 
 class DataTable extends React.PureComponent {
   createRow(data, key) {
-    const { tableColumns } = this.props;
+    const { rowClass, tableColumns } = this.props;
     const mapFunction = (column) => {
       const value = determineValue(column, data);
       const cell = TCU.determineCell(column, data);
@@ -59,11 +59,15 @@ class DataTable extends React.PureComponent {
     };
     const cells = R.map(mapFunction, tableColumns);
 
-    return React.createElement(Reactable.Tr, { key }, cells);
+    return React.createElement(
+      Reactable.Tr,
+      { key, className: rowClass },
+      cells
+    );
   }
 
   createTable(rowData) {
-    const { columnToChecked, tableColumns } = this.props;
+    const { columnToChecked, dataTableClass, tableColumns } = this.props;
 
     const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
     const mapFunction = (data) => this.createRow(data, data.id || data.name);
@@ -71,7 +75,11 @@ class DataTable extends React.PureComponent {
 
     return React.createElement(
       Reactable.Table,
-      { className: "frt-table", columns: myTableColumns, sortable: true },
+      {
+        className: `frt-table ${dataTableClass}`,
+        columns: myTableColumns,
+        sortable: true,
+      },
       rows
     );
   }
@@ -101,11 +109,15 @@ DataTable.propTypes = {
   tableColumns: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 
   className: PropTypes.string,
+  dataTableClass: PropTypes.string,
+  rowClass: PropTypes.string,
   rowCountClass: PropTypes.string,
 };
 
 DataTable.defaultProps = {
   className: undefined,
+  dataTableClass: "bg-white collapse f6 tc",
+  rowClass: "striped--white-smoke",
   rowCountClass: "f6 tl",
 };
 
