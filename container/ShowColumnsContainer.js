@@ -15,20 +15,23 @@ const getSelectedItems = (columnToChecked) => {
   return R.reduce(reduceFunction, [], Object.keys(columnToChecked));
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps = {}) => {
   const { columnToChecked, tableColumns } = state;
   const columnMap = getColumnMap(tableColumns);
   const items = R.map(R.prop("key"), tableColumns);
   const selectedItems = getSelectedItems(columnToChecked);
   const labelFunction = (item) => columnMap[item].label;
 
-  return {
-    className: "f7",
-    items,
-    labelFunction,
-    selectedItems,
-    useSelectButtons: true,
-  };
+  return R.mergeRight(
+    {
+      className: "f7",
+      items,
+      labelFunction,
+      selectedItems,
+      useSelectButtons: true,
+    },
+    ownProps
+  );
 };
 
 const mapDispatchToProps = (dispatch) => ({

@@ -2,7 +2,7 @@ import ActionCreator from "../state/ActionCreator.js";
 
 const { FilterGroup, FilterGroupUI } = FilterJS;
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps = {}) => {
   const { filterGroup, tableColumns } = state;
   let myFilterGroup;
 
@@ -15,11 +15,14 @@ const mapStateToProps = (state) => {
   const filterFunction = (c) => c.type !== "none";
   const myTableColumns = R.filter(filterFunction, tableColumns);
 
-  return {
-    className: "f7",
-    initialFilterGroup: myFilterGroup,
-    tableColumns: myTableColumns,
-  };
+  return R.mergeRight(
+    {
+      className: "f7",
+      initialFilterGroup: myFilterGroup,
+      tableColumns: myTableColumns,
+    },
+    ownProps
+  );
 };
 
 const mapDispatchToProps = (dispatch) => ({

@@ -438,17 +438,21 @@
     rowCountClass: "f6 tl",
   };
 
-  const mapStateToProps$2 = state => ({
-    columnToChecked: state.columnToChecked,
-    rowData: state.filteredTableRows,
-    tableColumns: state.tableColumns
-  });
+  const mapStateToProps$2 = (state, ownProps = {}) =>
+    R.mergeRight(
+      {
+        columnToChecked: state.columnToChecked,
+        rowData: state.filteredTableRows,
+        tableColumns: state.tableColumns,
+      },
+      ownProps
+    );
 
   var DataTableContainer = ReactRedux.connect(mapStateToProps$2)(DataTable);
 
   const { FilterGroup, FilterGroupUI } = FilterJS;
 
-  const mapStateToProps$1 = (state) => {
+  const mapStateToProps$1 = (state, ownProps = {}) => {
     const { filterGroup, tableColumns } = state;
     let myFilterGroup;
 
@@ -461,11 +465,14 @@
     const filterFunction = (c) => c.type !== "none";
     const myTableColumns = R.filter(filterFunction, tableColumns);
 
-    return {
-      className: "f7",
-      initialFilterGroup: myFilterGroup,
-      tableColumns: myTableColumns,
-    };
+    return R.mergeRight(
+      {
+        className: "f7",
+        initialFilterGroup: myFilterGroup,
+        tableColumns: myTableColumns,
+      },
+      ownProps
+    );
   };
 
   const mapDispatchToProps$1 = (dispatch) => ({
@@ -500,20 +507,23 @@
     return R.reduce(reduceFunction, [], Object.keys(columnToChecked));
   };
 
-  const mapStateToProps = (state) => {
+  const mapStateToProps = (state, ownProps = {}) => {
     const { columnToChecked, tableColumns } = state;
     const columnMap = getColumnMap(tableColumns);
     const items = R.map(R.prop("key"), tableColumns);
     const selectedItems = getSelectedItems(columnToChecked);
     const labelFunction = (item) => columnMap[item].label;
 
-    return {
-      className: "f7",
-      items,
-      labelFunction,
-      selectedItems,
-      useSelectButtons: true,
-    };
+    return R.mergeRight(
+      {
+        className: "f7",
+        items,
+        labelFunction,
+        selectedItems,
+        useSelectButtons: true,
+      },
+      ownProps
+    );
   };
 
   const mapDispatchToProps = (dispatch) => ({
@@ -658,8 +668,8 @@
       return Selector.filteredTableRows(this.store.getState());
     }
 
-    filterElement() {
-      const container = React.createElement(FilterContainer);
+    filterElement(filterProps) {
+      const container = React.createElement(FilterContainer, filterProps);
 
       return React.createElement(
         ReactRedux.Provider,
@@ -683,8 +693,11 @@
       });
     }
 
-    showColumnsElement() {
-      const container = React.createElement(ShowColumnsContainer);
+    showColumnsElement(showColumnsProps) {
+      const container = React.createElement(
+        ShowColumnsContainer,
+        showColumnsProps
+      );
 
       return React.createElement(
         ReactRedux.Provider,
@@ -708,8 +721,8 @@
       });
     }
 
-    tableElement() {
-      const container = React.createElement(DataTableContainer);
+    tableElement(dataTableProps) {
+      const container = React.createElement(DataTableContainer, dataTableProps);
 
       return React.createElement(
         ReactRedux.Provider,

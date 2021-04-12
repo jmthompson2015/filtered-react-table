@@ -138,8 +138,8 @@ class FilteredReactTable {
     return Selector.filteredTableRows(this.store.getState());
   }
 
-  filterElement() {
-    const container = React.createElement(FilterContainer);
+  filterElement(filterProps) {
+    const container = React.createElement(FilterContainer, filterProps);
 
     return React.createElement(
       ReactRedux.Provider,
@@ -163,8 +163,11 @@ class FilteredReactTable {
     });
   }
 
-  showColumnsElement() {
-    const container = React.createElement(ShowColumnsContainer);
+  showColumnsElement(showColumnsProps) {
+    const container = React.createElement(
+      ShowColumnsContainer,
+      showColumnsProps
+    );
 
     return React.createElement(
       ReactRedux.Provider,
@@ -188,8 +191,8 @@ class FilteredReactTable {
     });
   }
 
-  tableElement() {
-    const container = React.createElement(DataTableContainer);
+  tableElement(dataTableProps) {
+    const container = React.createElement(DataTableContainer, dataTableProps);
 
     return React.createElement(
       ReactRedux.Provider,
