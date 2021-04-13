@@ -95,7 +95,7 @@ class FilteredReactTable {
     appName,
     onFilterChange,
     onShowColumnChange,
-    isVerbose
+    isVerbose = false
   ) {
     verifyParameter("tableColumns", tableColumns);
     verifyParameter("tableRows", tableRows);
@@ -148,19 +148,16 @@ class FilteredReactTable {
     );
   }
 
-  filterPanel(
-    title = "Filters",
-    className = "bg-light-gray ma1",
-    titleClass = "b f5 ph1 pt1 tl"
-  ) {
-    const filter = this.filterElement();
+  filterPanel(collapsiblePaneProps = {}, filterProps = {}) {
+    const props = R.mergeRight(
+      {
+        title: "Filters",
+        element: this.filterElement(filterProps),
+      },
+      collapsiblePaneProps
+    );
 
-    return React.createElement(CollapsiblePane, {
-      className,
-      element: filter,
-      title,
-      titleClass,
-    });
+    return React.createElement(CollapsiblePane, props);
   }
 
   showColumnsElement(showColumnsProps) {
@@ -176,19 +173,16 @@ class FilteredReactTable {
     );
   }
 
-  showColumnsPanel(
-    title = "Columns",
-    className = "bg-light-gray ma1",
-    titleClass = "b f5 ph1 pt1 tl"
-  ) {
-    const showColumns = this.showColumnsElement();
+  showColumnsPanel(collapsiblePaneProps = {}, showColumnsProps = {}) {
+    const props = R.mergeRight(
+      {
+        title: "Columns",
+        element: this.showColumnsElement(showColumnsProps),
+      },
+      collapsiblePaneProps
+    );
 
-    return React.createElement(CollapsiblePane, {
-      className,
-      element: showColumns,
-      title,
-      titleClass,
-    });
+    return React.createElement(CollapsiblePane, props);
   }
 
   tableElement(dataTableProps) {

@@ -15,7 +15,7 @@ const onShowColumnChange = (columnToChecked) => {
     `onShowColumnChange() columnToChecked = ${JSON.stringify(columnToChecked)}`
   );
 };
-const isVerbose = true;
+const isVerbose = false;
 
 const frt = new FilteredReactTable(
   TableColumns,
