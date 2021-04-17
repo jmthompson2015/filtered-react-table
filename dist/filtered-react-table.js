@@ -10,6 +10,7 @@
   ActionType.APPLY_SHOW_COLUMNS = "applyShowColumns";
   ActionType.REMOVE_FILTERS = "removeFilters";
   ActionType.SET_APP_NAME = "setAppName";
+  ActionType.SET_DEFAULT_SORT = "setDefaultSort";
   ActionType.SET_FILTER_GROUP = "setFilterGroup";
   ActionType.SET_TABLE_COLUMNS = "setTableColumns";
   ActionType.SET_TABLE_ROWS = "setTableRows";
@@ -40,6 +41,11 @@
   ActionCreator.setAppName = makeActionCreator(
     ActionType.SET_APP_NAME,
     "appName"
+  );
+
+  ActionCreator.setDefaultSort = makeActionCreator(
+    ActionType.SET_DEFAULT_SORT,
+    "defaultSort"
   );
 
   ActionCreator.setFilterGroup = makeActionCreator(
@@ -131,6 +137,7 @@
   AppState.create = ({
     appName = "FilteredReactTable",
     columnToChecked = {},
+    defaultSort = undefined,
     filteredTableRows = [],
     filterGroup = undefined,
     isVerbose = false,
@@ -140,6 +147,7 @@
     Immutable({
       appName,
       columnToChecked,
+      defaultSort,
       filteredTableRows,
       filterGroup,
       isVerbose,
@@ -197,6 +205,15 @@
           console.log(`Reducer SET_APP_NAME appName = ${action.appName}`);
         }
         return R.assoc("appName", action.appName, state);
+      case ActionType.SET_DEFAULT_SORT:
+        if (state.isVerbose) {
+          console.log(
+            `Reducer SET_DEFAULT_SORT defaultSort = ${JSON.stringify(
+            action.defaultSort
+          )}`
+          );
+        }
+        return R.assoc("defaultSort", action.defaultSort, state);
       case ActionType.SET_FILTER_GROUP:
         if (state.isVerbose) {
           console.log(
@@ -384,7 +401,12 @@
     }
 
     createTable(rowData) {
-      const { columnToChecked, dataTableClass, tableColumns } = this.props;
+      const {
+        columnToChecked,
+        dataTableClass,
+        defaultSort,
+        tableColumns,
+      } = this.props;
 
       const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
       const mapFunction = (data) => this.createRow(data, data.id || data.name);
@@ -395,6 +417,7 @@
         {
           className: `frt-table ${dataTableClass}`,
           columns: myTableColumns,
+          defaultSort,
           sortable: true,
         },
         rows
@@ -427,6 +450,7 @@
 
     className: PropTypes.string,
     dataTableClass: PropTypes.string,
+    defaultSort: PropTypes.shape(),
     rowClass: PropTypes.string,
     rowCountClass: PropTypes.string,
   };
@@ -434,6 +458,7 @@
   DataTable.defaultProps = {
     className: undefined,
     dataTableClass: "bg-white collapse f6 tc",
+    defaultSort: undefined,
     rowClass: "striped--white-smoke",
     rowCountClass: "f6 tl",
   };
@@ -442,6 +467,7 @@
     R.mergeRight(
       {
         columnToChecked: state.columnToChecked,
+        defaultSort: state.defaultSort,
         rowData: state.filteredTableRows,
         tableColumns: state.tableColumns,
       },

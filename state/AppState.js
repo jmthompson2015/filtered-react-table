@@ -3,6 +3,7 @@ const AppState = {};
 AppState.create = ({
   appName = "FilteredReactTable",
   columnToChecked = {},
+  defaultSort = undefined,
   filteredTableRows = [],
   filterGroup = undefined,
   isVerbose = false,
@@ -12,6 +13,7 @@ AppState.create = ({
   Immutable({
     appName,
     columnToChecked,
+    defaultSort,
     filteredTableRows,
     filterGroup,
     isVerbose,

@@ -25,6 +25,11 @@ ActionCreator.setAppName = makeActionCreator(
   "appName"
 );
 
+ActionCreator.setDefaultSort = makeActionCreator(
+  ActionType.SET_DEFAULT_SORT,
+  "defaultSort"
+);
+
 ActionCreator.setFilterGroup = makeActionCreator(
   ActionType.SET_FILTER_GROUP,
   "filterGroup"

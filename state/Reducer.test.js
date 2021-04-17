@@ -20,6 +20,20 @@ QUnit.test("setAppName()", (assert) => {
   assert.equal(result.appName, appName);
 });
 
+QUnit.test("setDefaultSort()", (assert) => {
+  // Setup.
+  const state = AppState.create();
+  const defaultSort = 12;
+  const action = ActionCreator.setDefaultSort(defaultSort);
+
+  // Run.
+  const result = Reducer.root(state, action);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.defaultSort, defaultSort);
+});
+
 QUnit.test("setFilterGroup()", (assert) => {
   // Setup.
   const state = AppState.create();

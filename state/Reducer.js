@@ -50,6 +50,15 @@ Reducer.root = (state, action) => {
         console.log(`Reducer SET_APP_NAME appName = ${action.appName}`);
       }
       return R.assoc("appName", action.appName, state);
+    case ActionType.SET_DEFAULT_SORT:
+      if (state.isVerbose) {
+        console.log(
+          `Reducer SET_DEFAULT_SORT defaultSort = ${JSON.stringify(
+            action.defaultSort
+          )}`
+        );
+      }
+      return R.assoc("defaultSort", action.defaultSort, state);
     case ActionType.SET_FILTER_GROUP:
       if (state.isVerbose) {
         console.log(

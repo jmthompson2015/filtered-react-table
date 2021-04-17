@@ -67,7 +67,12 @@ class DataTable extends React.PureComponent {
   }
 
   createTable(rowData) {
-    const { columnToChecked, dataTableClass, tableColumns } = this.props;
+    const {
+      columnToChecked,
+      dataTableClass,
+      defaultSort,
+      tableColumns,
+    } = this.props;
 
     const myTableColumns = filterTableColumns(columnToChecked, tableColumns);
     const mapFunction = (data) => this.createRow(data, data.id || data.name);
@@ -78,6 +83,7 @@ class DataTable extends React.PureComponent {
       {
         className: `frt-table ${dataTableClass}`,
         columns: myTableColumns,
+        defaultSort,
         sortable: true,
       },
       rows
@@ -110,6 +116,7 @@ DataTable.propTypes = {
 
   className: PropTypes.string,
   dataTableClass: PropTypes.string,
+  defaultSort: PropTypes.shape(),
   rowClass: PropTypes.string,
   rowCountClass: PropTypes.string,
 };
@@ -117,6 +124,7 @@ DataTable.propTypes = {
 DataTable.defaultProps = {
   className: undefined,
   dataTableClass: "bg-white collapse f6 tc",
+  defaultSort: undefined,
   rowClass: "striped--white-smoke",
   rowCountClass: "f6 tl",
 };
