@@ -89,14 +89,15 @@ const verifyParameter = (name, value) => {
 };
 
 class FilteredReactTable {
-  constructor(
+  constructor({
     tableColumns,
     tableRows,
+    defaultSort,
     appName,
     onFilterChange,
     onShowColumnChange,
-    isVerbose = false
-  ) {
+    isVerbose = false,
+  }) {
     verifyParameter("tableColumns", tableColumns);
     verifyParameter("tableRows", tableRows);
 
@@ -117,6 +118,7 @@ class FilteredReactTable {
     this.store.dispatch(ActionCreator.setTableColumns(tableColumns));
     this.store.dispatch(ActionCreator.applyShowColumns(columnToChecked));
     this.store.dispatch(ActionCreator.setTableRows(tableRows2));
+    this.store.dispatch(ActionCreator.setDefaultSort(defaultSort));
     this.store.dispatch(ActionCreator.setAppName(appName));
     this.store.dispatch(ActionCreator.setVerbose(isVerbose));
 
