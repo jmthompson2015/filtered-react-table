@@ -28,6 +28,7 @@ const mapStateToProps = (state, ownProps = {}) => {
       items,
       labelFunction,
       selectedItems,
+      useApplyButton: true,
       useSelectButtons: true,
     },
     ownProps
