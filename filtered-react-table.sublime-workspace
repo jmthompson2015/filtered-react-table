@@ -1,0 +1,332 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"summ",
+				"summaryError"
+			],
+			[
+				"wishl",
+				"wishlistError"
+			],
+			[
+				"colle",
+				"collectionError"
+			],
+			[
+				"wish",
+				"wishlistIsBusy"
+			],
+			[
+				"coll",
+				"collectionIsBusy"
+			],
+			[
+				"express",
+				"express_underground_belt"
+			],
+			[
+				"fast",
+				"fast_splitter"
+			],
+			[
+				"resource",
+				"resourceKeys"
+			],
+			[
+				"reduc",
+				"reduceFunction1"
+			],
+			[
+				"elect",
+				"electronic_circuit"
+			],
+			[
+				"Factor",
+				"FactorioResource"
+			],
+			[
+				"reduceF",
+				"reduceFunction2"
+			],
+			[
+				"res",
+				"resourceKey"
+			],
+			[
+				"gener",
+				"generateParentEdges"
+			],
+			[
+				"FactorioR",
+				"FactorioResource"
+			],
+			[
+				"Rec",
+				"RecipeData"
+			],
+			[
+				"resour",
+				"resourceKeys"
+			],
+			[
+				"coppe",
+				"copper_wire"
+			],
+			[
+				"iron",
+				"iron_gear_wheel"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Discover Packages"
+			],
+			[
+				"Package Control: L",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/jmthompson/Documents/SoftwareDev/git/filtered-react-table"
+	],
+	"file_history":
+	[
+		"/Users/jmthompson/Documents/SoftwareDev/git/bookaward/src/app/MysteryBookAward.html",
+		"/Users/jmthompson/Documents/SoftwareDev/git/bookaward/package.json",
+		"/Users/jmthompson/Documents/SoftwareDev/git/bookaward/index.html",
+		"/Users/jmthompson/Documents/SoftwareDev/git/bookaward/src/api/CrimeAndBeyondFetcher.js",
+		"/Users/jmthompson/Documents/SoftwareDev/git-experimental/tictactoejs/src/components/Finance.vue",
+		"/Users/jmthompson/Documents/SoftwareDev/git-experimental/tictactoejs/src/components/TicTacToe.vue",
+		"/Users/jmthompson/Documents/SoftwareDev/git-experimental/tictactoejs/src/App.vue",
+		"/Users/jmthompson/Documents/SoftwareDev/git-experimental/tictactoejs/index.html",
+		"/Users/jmthompson/Library/Application Support/Sublime Text/Packages/JsPrettier/JsPrettier.sublime-settings",
+		"/Users/jmthompson/Library/Application Support/Sublime Text/Packages/User/JsPrettier.sublime-settings",
+		"/Users/jmthompson/Library/Application Support/Sublime Text/Packages/User/ESLint.sublime-settings",
+		"/Users/jmthompson/Library/Application Support/Sublime Text/Packages/ESLint/ESLint.sublime-settings",
+		"/Users/jmthompson/Documents/SoftwareDev/git-experimental/tictactoejs/src/components/HelloWorld.vue",
+		"/Users/jmthompson/Documents/SoftwareDev/git/gamefinder/model/GameCollectionFetcher.js",
+		"/Users/jmthompson/Documents/SoftwareDev/git/gamefinder/model/GameDetailFetcher.js",
+		"/Users/jmthompson/Documents/SoftwareDev/git/gamefinder/model/GameSummaryFetcher.js",
+		"/Users/jmthompson/Documents/SoftwareDev/git/gamefinder/converter/GameDetailFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/FetchUtilities.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/view/ProgressUI.viewtest.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/view/ProgressUI.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/Reducer.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/container/ProgressContainer.viewtest.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameLoader.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/ActionType.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/container/ProgressContainer.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/ActionCreator.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameSummaryFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameDetailFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameCollectionFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/User.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/AppState.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/view/ProgressUI.viewtest.html",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/app/GameFinder.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/app/GameFinder.dev.html",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/app/GameFinder.html",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameSummaryFetcher.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameLoader.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameDetailFetcher.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/model/GameCollectionFetcher.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/TableRow.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/test-all.sh",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/EntityUtilities.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Selector.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Designer.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Selector.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Category.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/GameDetail.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Mechanic.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/User.test.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/TestSuite.html",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/state/Selector.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/converter/GameSummaryFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/converter/GameCollectionFetcher.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/artifact/Designer.js",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/package.json",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/README.md",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/.gitignore",
+		"/Users/jmthompson/Documents/Software Development/git/gamefinder/converter/convert-all.sh",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dot/automation_science_pack.dot",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/generate.sh",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/utility/FileWriter.js",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/artifact/FactorioResource.js",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/artifact/FactorioRecipe.js",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/gen.sh",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/package.json",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/.gitignore",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dot/automation-science-pack.dot",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dot/chemical-science-pack.dot",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dot/military-science-pack.dot",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dot/logistic-science-pack.dot",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/dist/chemical-science-pack.png",
+		"/Users/jmthompson/Documents/Software Development/git/factorio-accessory/app/GraphGenerator.js"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 98.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"folders":
+	[
+		{
+			"path": "/Users/jmthompson/Documents/SoftwareDev/git/filtered-react-table"
+		}
+	],
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 299.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

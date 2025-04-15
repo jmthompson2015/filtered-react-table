@@ -1,6 +1,6 @@
 #! /bin/bash
 
-export BASE=/Volumes/StorageDrive/jmthompson/git/filtered-react-table
+export BASE=/Users/jmthompson/Documents/SoftwareDev/git/filtered-react-table
 export BIN=${BASE}/node_modules/rollup/dist/bin
 
 ${BIN}/rollup -c

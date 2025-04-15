@@ -546,6 +546,7 @@
         items,
         labelFunction,
         selectedItems,
+        useApplyButton: true,
         useSelectButtons: true,
       },
       ownProps
